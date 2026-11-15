@@ -90,6 +90,8 @@ a.btn{text-decoration:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:9px 16px;border-radius:12px;background:var(--soft);font:700 15px var(--f-disp);color:var(--mut)}
 .chip.on{background:var(--acc);color:#fff}
+a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--acc)}
+.btn.backb{min-height:46px;padding:0 18px 0 12px;font:700 16px var(--f-disp);background:var(--soft);border:1px solid var(--line);gap:6px}.btn.backb svg{width:22px;height:22px;stroke-width:2.4}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--soft);color:var(--mut)}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .empty{text-align:center;padding:36px 16px;color:var(--mut)}
@@ -179,7 +181,7 @@ a.btn{text-decoration:none}
 .srow.w .sn{color:var(--warm)}
 .srow .pv{color:var(--mut);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .srow input{width:100%;height:44px;border-radius:10px;border:0;background:var(--soft);text-align:center;font:700 24px var(--f-disp);font-variant-numeric:tabular-nums;padding:0 4px}
-.srow input::placeholder{color:var(--mut);opacity:.55;font-weight:600}
+.srow input::placeholder{color:var(--mut);opacity:.5;font-weight:700}
 .srow .ck{height:44px;width:48px;border-radius:12px;background:var(--soft);display:grid;place-items:center;color:var(--mut)}
 .srow .ck svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .srow.done{background:var(--ok-bg)}
@@ -536,6 +538,11 @@ const EXL=[
  ['jrdouble','Double unders','rope',['mollets','epaules'],'bw'],
  ['jrhigh','Corde : montées de genoux','rope',['jambes'],'time'],
  ['jrnone','Sauts sans corde (corde imaginaire)','rope0',['mollets'],'time'],
+ ['jralt','Corde : pieds alternés (footing)','rope',['mollets','jambes'],'time'],
+ ['jrboxer','Corde : pas du boxeur','rope',['mollets'],'time'],
+ ['jrside','Corde : sauts latéraux','rope',['mollets','jambes'],'time'],
+ ['jrcross','Corde : croisés (criss-cross)','rope',['mollets','epaules'],'time'],
+ ['jrsingle','Corde : sur un pied','rope',['mollets'],'time'],
  ['russian','Russian twist','russian',['abdos'],'bw'],
  ['mountain','Mountain climbers','mountain',['abdos','jambes'],'time'],
  ['sideplank','Gainage latéral','sideplank',['abdos'],'time'],
@@ -748,6 +755,161 @@ Object.assign(DESC,{
 const EQUIP={barre:'Barre + disques',halteres:'Haltères',banc:'Banc',traction:'Barre de traction',dips:'Barres parallèles',poulie:'Poulies / machines',kb:'Kettlebell',corde:'Corde à sauter',rameur:'Rameur',ski:'SkiErg',sled:'Traîneau (sled)',wallball:'Médecine-ball',sac:'Sandbag'};
 const REQ={bench:['barre','banc'],incline:['halteres','banc'],fly:['poulie'],pecdeck:['poulie'],dips:['dips'],pushdown:['poulie'],skull:['barre','banc'],ohp:['barre'],dbpress:['halteres'],latraise:['halteres'],reardelt:['halteres'],deadlift:['barre'],row:['barre'],pulldown:['poulie'],seatedrow:['poulie'],pullup:['traction'],chinup:['traction'],curl:['halteres'],hammer:['halteres'],squat:['barre'],legpress:['poulie'],lunge:['halteres'],rdl:['barre'],hipthrust:['barre','banc'],legcurl:['poulie'],legext:['poulie'],legraise:['traction'],ski:['ski'],sledpush:['sled'],sledpull:['sled'],rowerg:['rameur'],farmers:['kb'],sbl:['sac'],wallball:['wallball'],muscleup:['traction'],lafB1:['traction'],jumprope:['corde'],jrdouble:['corde'],jrhigh:['corde'],dbbench:['halteres','banc'],dbrow:['halteres'],facepull:['poulie'],goblet:['halteres'],dbrdl:['halteres'],stepup:['banc'],boxjump:['banc'],kbswing:['kb'],thruster:['halteres'],barcurl:['barre'],conccurl:['halteres'],inclinecurl:['halteres','banc'],cablecurl:['poulie'],ohtricep:['halteres'],kickback:['halteres'],closebench:['barre','banc'],tbarrow:['barre'],pullover:['halteres','banc'],shrug:['halteres'],cablecrunch:['poulie'],dbfly:['halteres','banc'],arnold:['halteres'],uprow:['halteres'],bulgarian:['halteres','banc'],sumo:['halteres'],hacksquat:['poulie'],chestpress:['poulie'],shoulderpress:['poulie']};
 const SUBS={bench:['incline','pushup'],incline:['bench','pushup'],fly:['pushup'],pecdeck:['pushup'],dips:['diamond'],pushdown:['diamond'],skull:['diamond'],ohp:['dbpress','pike'],dbpress:['ohp','pike'],latraise:['lafC'],reardelt:['lafE'],deadlift:['lafI'],row:['seatedrow','australian'],pulldown:['pullup','australian'],seatedrow:['row','australian'],pullup:['pulldown','australian'],chinup:['pulldown','australian'],curl:['hammer','australian'],hammer:['curl','australian'],squat:['lunge','airsquat'],legpress:['squat','airsquat'],lunge:['airsquat'],rdl:['lafI'],hipthrust:['airsquat'],legcurl:['lafI'],legext:['airsquat'],legraise:['legraisefloor'],ski:['burpee'],sledpush:['burpee'],sledpull:['australian'],rowerg:['run'],farmers:['plank'],sbl:['lunge','airsquat'],wallball:['airsquat'],muscleup:['australian'],lafB1:['lafB'],jumprope:['jrnone'],jrdouble:['jrnone'],jrhigh:['jrnone'],dbbench:['pushup'],dbrow:['australian','doorrow'],facepull:['ytw'],goblet:['airsquat'],dbrdl:['hipbridge'],stepup:['bwlunge'],boxjump:['airsquat'],kbswing:['dbrdl','burpee'],thruster:['airsquat'],barcurl:['curl','australian'],conccurl:['curl','australian'],inclinecurl:['curl','australian'],cablecurl:['curl','australian'],ohtricep:['diamond'],kickback:['diamond'],closebench:['diamond'],tbarrow:['dbrow','australian'],pullover:['australian'],shrug:['farmers','ytw'],cablecrunch:['crunch'],dbfly:['fly','pushup'],arnold:['dbpress','pike'],uprow:['latraise','pike'],bulgarian:['bwlunge'],sumo:['airsquat'],hacksquat:['squat','airsquat'],chestpress:['bench','pushup'],shoulderpress:['dbpress','pike']};
+/* ---------- Exercices ajoutés (V0.6) ---------- */
+POSES.ohtri={h:[50,28],s:[50,38],p:[52,63],e1:[55,16],w1:[45,22],e2:[53,16],w2:[43,22],k1:[70,64],f1:[72,90],k2:[68,65],f2:[70,90],eq:FL+bench(36,62,66),eqf:dbl(44,22)};
+POSES.ohtri1={h:[50,28],s:[50,38],p:[52,63],e1:[55,16],w1:[45,22],e2:[46,46],w2:[56,52],k1:[70,64],f1:[72,90],k2:[68,65],f2:[70,90],eq:FL+bench(36,62,66),eqf:dbl(44,22)};
+EXL.push(
+ /* Triceps */
+ ['ohtri2','Extension triceps assis, haltère au-dessus de la tête (2 mains)','ohtri',['bras'],'weight'],
+ ['ohtri1','Extension triceps assis, haltère au-dessus de la tête (1 main)','ohtri1',['bras'],'weight'],
+ ['benchdips','Dips sur chaise / banc','dips',['bras','pecs'],'bw'],
+ ['ropepush','Extension triceps à la corde (poulie)','pushdown',['bras'],'weight'],
+ ['ohcable','Extension triceps au-dessus de la tête (poulie)','ohtri',['bras'],'weight'],
+ ['dbskull','Extension couchée (haltères)','skull',['bras'],'weight'],
+ ['revpush','Extension triceps prise inversée (poulie)','pushdown',['bras'],'weight'],
+ /* Biceps / avant-bras */
+ ['preacher','Curl pupitre (Larry Scott)','curl',['bras'],'weight'],
+ ['revcurl','Curl inversé (prise pronation)','curl',['bras'],'weight'],
+ ['zottman','Curl Zottman','curl',['bras'],'weight'],
+ ['curl21','Curl 21 (barre)','curl',['bras'],'weight'],
+ ['spidercurl','Spider curl (banc incliné)','incline',['bras'],'weight'],
+ ['wristcurl','Curl poignets (avant-bras)','curl',['bras'],'weight'],
+ /* Pecs */
+ ['inclinebb','Développé incliné (barre)','incline',['pecs','epaules'],'weight'],
+ ['declinebench','Développé décliné (barre)','bench',['pecs','bras'],'weight'],
+ ['inclinefly','Écarté incliné (haltères)','incline',['pecs'],'weight'],
+ ['lowfly','Écarté poulie basse (haut des pecs)','fly',['pecs'],'weight'],
+ ['squeeze','Squeeze press (haltères)','bench',['pecs','bras'],'weight'],
+ ['widepush','Pompes prise large','pushup',['pecs'],'bw'],
+ ['archer','Pompes archer','pushup',['pecs','bras'],'bw'],
+ ['clappush','Pompes claquées','pushup',['pecs','bras'],'bw'],
+ ['kneepush','Pompes sur les genoux','pushup',['pecs','bras'],'bw'],
+ /* Dos */
+ ['closepull','Tirage vertical prise serrée','pulldown',['dos','bras'],'weight'],
+ ['straightarm','Pull-over poulie bras tendus','pulldown',['dos'],'weight'],
+ ['pendlay','Rowing Pendlay','row',['dos','bras'],'weight'],
+ ['chestrow','Rowing buste appuyé (haltères)','row',['dos','bras'],'weight'],
+ ['rackpull','Rack pull','deadlift',['dos','lombaires'],'weight'],
+ ['goodmorning','Good morning','deadlift',['lombaires','jambes'],'weight'],
+ ['neutralpull','Tractions prise neutre','pullup',['dos','bras'],'bw'],
+ ['negpull','Tractions négatives (descente lente)','pullup',['dos','bras'],'bw'],
+ ['bandpull','Tractions assistées (élastique)','pullup',['dos','bras'],'bw'],
+ ['scappull','Tractions scapulaires','pullup',['dos'],'bw'],
+ /* Épaules */
+ ['cablelat','Élévation latérale à la poulie','lateral',['epaules'],'weight'],
+ ['frontraise','Élévations frontales (haltères)','front',['epaules'],'weight'],
+ ['pushpress','Push press (barre)','ohp',['epaules','jambes'],'weight'],
+ ['landmine','Landmine press','ohp',['epaules','pecs'],'weight'],
+ ['revpecdeck','Oiseau à la machine (reverse pec deck)','rearfly',['epaules','dos'],'weight'],
+ ['bandapart','Écartés élastique (band pull-apart)','rearfly',['epaules','dos'],'bw'],
+ ['wallwalk','Wall walk','handstand',['epaules','abdos'],'bw'],
+ /* Jambes & fessiers */
+ ['frontsquat','Squat avant (barre)','squat',['jambes','abdos'],'weight'],
+ ['jumpsquat','Squats sautés','airsquat',['jambes','mollets'],'bw'],
+ ['revlunge','Fentes arrière (haltères)','lunge',['jambes'],'weight'],
+ ['walklunge','Fentes marchées (haltères)','lunge',['jambes'],'weight'],
+ ['splitsquat','Fente statique (split squat)','lunge',['jambes'],'bw'],
+ ['cossack','Squat cosaque','airsquat',['jambes'],'bw'],
+ ['sissy','Sissy squat','airsquat',['jambes'],'bw'],
+ ['seatedlegcurl','Leg curl assis','legext',['jambes'],'weight'],
+ ['adductor','Adducteurs (machine)','legext',['jambes'],'weight'],
+ ['abductor','Abducteurs (machine)','legext',['jambes'],'weight'],
+ ['nordic','Nordic curl (ischios)','legcurl',['jambes'],'bw'],
+ ['singlerdl','Soulevé de terre une jambe (haltère)','deadlift',['jambes','lombaires'],'weight'],
+ ['singlebridge','Pont fessier une jambe','hipthrust',['jambes'],'bw'],
+ ['seatedcalf','Mollets assis','legext',['mollets'],'weight'],
+ ['singlecalf','Mollets debout sur une jambe','calf',['mollets'],'bw'],
+ ['skater','Skater jumps (sauts latéraux)','lunge',['jambes','mollets'],'bw'],
+ /* Abdos & gainage */
+ ['situp','Sit-up','crunch',['abdos'],'bw'],
+ ['toetouch','Crunch touche-pieds (jambes en l’air)','crunch',['abdos'],'bw'],
+ ['heeltouch','Touches de talons (obliques)','crunch',['abdos'],'bw'],
+ ['sidecrunch','Crunch oblique','crunch',['abdos'],'bw'],
+ ['scissor','Ciseaux','legfloor',['abdos'],'time'],
+ ['windshield','Essuie-glaces','legfloor',['abdos'],'bw'],
+ ['kneeraise','Relevés de genoux suspendu','legraise',['abdos'],'bw'],
+ ['toesbar','Toes to bar','legraise',['abdos','dos'],'bw'],
+ ['dragonflag','Dragon flag','legfloor',['abdos'],'bw'],
+ ['hollowrock','Hollow rock','hollow',['abdos'],'time'],
+ ['plankjack','Planche jacks','plank',['abdos'],'time'],
+ ['plankupdown','Planche dynamique (up-down)','plank',['abdos','bras'],'bw'],
+ ['rkcplank','Planche RKC (contraction max)','plank',['abdos'],'time'],
+ ['sideplankdip','Gainage latéral avec descente de hanche','sideplank',['abdos'],'bw'],
+ ['copenhagen','Gainage Copenhague','sideplank',['abdos','jambes'],'time'],
+ ['pallof','Pallof press (poulie / élastique)','front',['abdos'],'weight'],
+ ['woodchop','Bûcheron à la poulie (wood chop)','front',['abdos','epaules'],'weight'],
+ ['bearcrawl','Bear crawl (marche de l’ours)','mountain',['abdos','epaules'],'time'],
+ ['standcrunch','Crunch debout genou-coude','stand',['abdos'],'bw'],
+ ['crossclimber','Mountain climbers croisés','mountain',['abdos'],'time'],
+ /* HYROX / fonctionnel / cardio */
+ ['assault','Assault bike / vélo','run',['jambes'],'time'],
+ ['dbsnatch','Snatch haltère','deadlift',['epaules','jambes'],'weight'],
+ ['devilpress','Devil press (haltères)','bbj',['epaules','jambes','pecs'],'weight'],
+ ['sbclean','Sandbag clean','deadlift',['dos','jambes'],'weight'],
+ ['goblunge','Fentes goblet (kettlebell)','lunge',['jambes'],'weight'],
+ ['shuttle','Navettes (shuttle run)','run',['jambes'],'dist'],
+ ['sprawl','Sprawls','bbj',['jambes','abdos'],'bw'],
+ ['boxover','Box step-overs','lunge',['jambes'],'bw'],
+ ['burpeebox','Burpee box jump','bbj',['jambes','pecs'],'bw'],
+ ['highknees','Montées de genoux','run',['jambes'],'time'],
+ ['buttkick','Talons-fesses','run',['jambes'],'time'],
+ ['wbhold','Gainage ballon (wall ball hold)','squat',['jambes','epaules'],'time'],
+ ['sledpushh','Sled push lourd','sledpush',['jambes','pecs'],'distw'],
+ ['rowsprint','Rameur sprint','rower',['dos','jambes'],'dist'],
+ ['skisprint','SkiErg sprint','ski',['dos','bras'],'dist']
+);
+Object.assign(DESC,{
+ ohtri2:'Assis sur une chaise ou un banc, dos droit, un haltère tenu à deux mains derrière la tête, coudes pointés vers le plafond et serrés. Tendre les bras au-dessus de la tête, redescendre lentement. Seuls les avant-bras bougent.',
+ ohtri1:'Assis, dos droit, haltère dans une main derrière la tête, coude vers le plafond (l’autre main peut tenir le coude). Tendre le bras, redescendre lentement. Faire les deux bras.',
+ benchdips:'Mains sur le bord d’une chaise ou d’un banc derrière soi, jambes devant. Descendre en pliant les coudes vers l’arrière jusqu’à 90°, remonter. Jambes pliées = plus facile.',
+ ropepush:'Poulie haute avec corde : coudes collés au corps, tendre les bras en écartant la corde en bas.',
+ ohcable:'Dos à la poulie, corde derrière la tête : tendre les bras vers l’avant et le haut, coudes fixes.',
+ dbskull:'Allongé, haltères au-dessus de la poitrine paumes face à face : plier les coudes pour descendre les haltères près des oreilles, remonter.',
+ preacher:'Bras posés sur le pupitre : curl complet, descente lente jusqu’à bras presque tendus.',
+ revcurl:'Prise pronation (paumes vers le bas) : curl en gardant les poignets droits. Travaille avant-bras et brachial.',
+ zottman:'Monter en supination, tourner les paumes vers le bas en haut, redescendre lentement en pronation.',
+ curl21:'7 reps sur la moitié basse, 7 sur la moitié haute, 7 en amplitude complète, sans pause.',
+ inclinebb:'Banc incliné à 30–45°, descendre la barre en haut des pectoraux, pousser.',
+ squeeze:'Haltères collés l’un contre l’autre au-dessus de la poitrine : les serrer fort pendant toute la montée et la descente.',
+ archer:'Mains très écartées : descendre vers une main en gardant l’autre bras tendu, alterner.',
+ kneepush:'Pompes genoux au sol, corps droit des genoux à la tête : pour progresser vers les pompes complètes.',
+ straightarm:'Face à la poulie haute, bras tendus : ramener la barre vers les cuisses en serrant les dorsaux.',
+ pendlay:'Buste parallèle au sol, la barre repart du sol à chaque répétition : tirage explosif vers le bas des pecs.',
+ chestrow:'Poitrine appuyée sur un banc incliné : tirer les haltères vers les hanches sans tricher avec le buste.',
+ goodmorning:'Barre sur les trapèzes, genoux légèrement fléchis : pencher le buste en poussant les hanches en arrière, dos plat, remonter.',
+ negpull:'Monter au-dessus de la barre (saut ou chaise) puis descendre le plus lentement possible (3–5 s).',
+ scappull:'Suspendu bras tendus : abaisser et serrer les omoplates pour monter de quelques cm, sans plier les bras.',
+ cablelat:'Poulie basse, poignée dans la main opposée : monter le bras sur le côté jusqu’à l’épaule, tension continue.',
+ pushpress:'Légère flexion des genoux puis extension explosive pour lancer la barre au-dessus de la tête.',
+ bandapart:'Élastique tenu bras tendus devant soi : l’écarter jusqu’à la poitrine en serrant les omoplates.',
+ wallwalk:'Départ en position de pompe pieds au mur : remonter les pieds le long du mur en reculant les mains, jusqu’à la verticale, puis redescendre.',
+ frontsquat:'Barre sur l’avant des épaules, coudes hauts : squat buste très droit.',
+ cossack:'Pieds très écartés : descendre sur une jambe en gardant l’autre tendue, pointe vers le haut, alterner.',
+ nordic:'À genoux, chevilles bloquées : descendre le buste vers l’avant le plus lentement possible en résistant avec les ischios.',
+ singlerdl:'Sur une jambe, pencher le buste en tendant l’autre jambe vers l’arrière, dos plat, haltère qui descend le long de la jambe.',
+ skater:'Sauter latéralement d’une jambe sur l’autre, comme un patineur, en touchant le sol de la main opposée.',
+ situp:'Allongé genoux pliés, pieds au sol : monter le buste jusqu’aux genoux, redescendre en contrôlant.',
+ toetouch:'Allongé, jambes tendues à la verticale : monter les mains vers les pieds en décollant les épaules.',
+ heeltouch:'Allongé genoux pliés, épaules décollées : toucher le talon droit puis le gauche en inclinant le buste.',
+ scissor:'Allongé, jambes tendues décollées : croiser les jambes l’une au-dessus de l’autre, lombaires plaquées.',
+ windshield:'Allongé, bras en croix, jambes à la verticale : les descendre d’un côté puis de l’autre sans toucher le sol.',
+ kneeraise:'Suspendu à la barre : monter les genoux vers la poitrine en enroulant le bassin, sans balancer.',
+ toesbar:'Suspendu : monter les pieds jusqu’à toucher la barre.',
+ dragonflag:'Allongé sur un banc, mains derrière la tête agrippées : monter le corps droit à la verticale sur les épaules, redescendre lentement d’un bloc.',
+ hollowrock:'En position hollow body, se balancer d’avant en arrière sans perdre la forme « banane ».',
+ rkcplank:'Planche sur les avant-bras en contractant tout au maximum (fessiers, abdos, quadriceps, tirer les coudes vers les pieds). 10–20 s suffisent.',
+ copenhagen:'Gainage latéral avec la jambe du dessus posée sur un banc, l’autre dans le vide : tenir. Travaille les adducteurs.',
+ pallof:'De profil à la poulie ou à l’élastique, mains contre la poitrine : tendre les bras devant soi sans laisser le buste tourner. Faire les deux côtés.',
+ woodchop:'Poulie haute de côté : tirer en diagonale vers la hanche opposée en tournant le buste, bras tendus.',
+ bearcrawl:'À quatre pattes, genoux décollés à 2 cm du sol : avancer main et pied opposés, dos plat.',
+ standcrunch:'Debout, mains derrière la tête : monter le genou vers le coude opposé en contractant les abdos, alterner.',
+ devilpress:'Burpee avec haltères au sol, puis en se relevant envoyer les haltères au-dessus de la tête en un seul mouvement.',
+ sbclean:'Sandbag au sol entre les pieds : le soulever en explosant des hanches et le recevoir sur l’épaule ou contre la poitrine.',
+ sprawl:'Comme un burpee sans pompe ni saut : mains au sol, jambes en arrière, hanches basses, revenir debout.',
+ boxover:'Monter sur la box et redescendre de l’autre côté, en alternant les jambes.',
+});
+Object.assign(REQ,{ohtri2:['halteres'],ohtri1:['halteres'],ropepush:['poulie'],ohcable:['poulie'],dbskull:['halteres','banc'],revpush:['poulie'],preacher:['barre','banc'],revcurl:['barre'],zottman:['halteres'],curl21:['barre'],spidercurl:['halteres','banc'],wristcurl:['halteres'],inclinebb:['barre','banc'],declinebench:['barre','banc'],inclinefly:['halteres','banc'],lowfly:['poulie'],squeeze:['halteres','banc'],closepull:['poulie'],straightarm:['poulie'],pendlay:['barre'],chestrow:['halteres','banc'],rackpull:['barre'],goodmorning:['barre'],neutralpull:['traction'],negpull:['traction'],bandpull:['traction'],scappull:['traction'],cablelat:['poulie'],frontraise:['halteres'],pushpress:['barre'],landmine:['barre'],revpecdeck:['poulie'],frontsquat:['barre'],revlunge:['halteres'],walklunge:['halteres'],seatedlegcurl:['poulie'],adductor:['poulie'],abductor:['poulie'],singlerdl:['halteres'],seatedcalf:['poulie'],kneeraise:['traction'],toesbar:['traction'],dragonflag:['banc'],copenhagen:['banc'],pallof:['poulie'],woodchop:['poulie'],assault:['rameur'],dbsnatch:['halteres'],devilpress:['halteres'],sbclean:['sac'],goblunge:['kb'],boxover:['banc'],burpeebox:['banc'],wbhold:['wallball'],sledpushh:['sled'],rowsprint:['rameur'],skisprint:['ski']});
+Object.assign(SUBS,{ohtri2:['benchdips','diamond'],ohtri1:['benchdips','diamond'],ropepush:['benchdips','diamond'],ohcable:['ohtri2','diamond'],dbskull:['ohtri2','diamond'],revpush:['diamond'],preacher:['conccurl','curl'],revcurl:['hammer'],zottman:['hammer'],curl21:['curl'],spidercurl:['conccurl','curl'],wristcurl:['farmers'],inclinebb:['incline','declinepush'],declinebench:['bench','pushup'],inclinefly:['dbfly','declinepush'],lowfly:['inclinefly','declinepush'],squeeze:['diamond'],closepull:['chinup','australian'],straightarm:['pullover','australian'],pendlay:['row','dbrow'],chestrow:['dbrow','australian'],rackpull:['deadlift','dbrdl'],goodmorning:['dbrdl','superman'],neutralpull:['pullup','australian'],negpull:['australian'],bandpull:['negpull','australian'],scappull:['australian'],cablelat:['latraise','lafC'],frontraise:['lafD'],pushpress:['dbpress','pike'],landmine:['dbpress','pike'],revpecdeck:['reardelt','ytw'],frontsquat:['goblet','airsquat'],revlunge:['bwlunge'],walklunge:['bwlunge'],seatedlegcurl:['nordic','hipbridge'],adductor:['cossack'],abductor:['glutekick'],singlerdl:['singlebridge'],seatedcalf:['singlecalf'],kneeraise:['reversecrunch'],toesbar:['vups','reversecrunch'],dragonflag:['legraisefloor'],copenhagen:['sideplank'],pallof:['plankshoulder'],woodchop:['russian'],assault:['highknees','run'],dbsnatch:['kbswing','burpee'],devilpress:['burpee'],sbclean:['dbsnatch','burpee'],goblunge:['bwlunge'],boxover:['bwlunge'],burpeebox:['burpee'],wbhold:['wallsit'],sledpushh:['sledpush','burpee'],rowsprint:['run'],skisprint:['burpee']});
 const hasEq=(id,eq)=>(REQ[id]||[]).every(q=>eq.includes(q));
 function adapt(id,eq,used){if(!eq||hasEq(id,eq))return id;const ok=(SUBS[id]||[]).filter(a=>hasEq(a,eq));return ok.find(a=>!used||!used.has(a))||ok[0]||id}
 const BASE={};EXL.forEach(([id,n,pose,m,t])=>BASE[id]={id,n,pose,m,t});
@@ -986,11 +1148,91 @@ function seedPrograms(){
    day('Initiation · 15 min',[it('jumprope',10,{time:30,rest:30})]),
    day('HIIT corde',[it('jumprope',8,{time:45,rest:15}),it('jrdouble',5,{reps:10,rest:45}),it('jrhigh',4,{time:30,rest:30}),it('mountain',3,{time:30,rest:30})]),
    day('Endurance',[it('jumprope',4,{time:300,rest:60})]),
+   day('Technique & variété',[it('jumprope',2,{time:60,rest:30}),it('jralt',3,{time:45,rest:30}),it('jrboxer',3,{time:45,rest:30}),it('jrside',3,{time:30,rest:30}),it('jrcross',3,{time:30,rest:45}),it('jrsingle',2,{time:30,rest:30,note:'Chaque pied'})]),
   ]),
   P('p-abdo','abdo','Programme Abdos','Sangle abdominale complète : grand droit, obliques et gainage profond.',[
    day('Abdos express · 10 min',[it('crunch',3,{reps:20,rest:30}),it('bicycle',3,{reps:20,rest:30}),it('plank',3,{time:45,rest:30}),it('mountain',3,{time:30,rest:30})]),
    day('Gainage',[it('plank',4,{time:60,rest:45}),it('sideplank',3,{time:40,rest:30,note:'Chaque côté'}),it('hollow',3,{time:30,rest:45}),it('deadbug',3,{reps:12,rest:30})]),
    day('Abdos complet',[it('legraise',4,{reps:12,rest:60}),it('vups',3,{reps:12,rest:45}),it('russian',3,{reps:20,rest:45}),it('legraisefloor',3,{reps:15,rest:45}),it('crunch',3,{reps:20,rest:30}),it('plank',3,{time:60,rest:45})]),
+  ]),
+  /* ----- Ajouts V0.6 ----- */
+  P('p-abdo-tabata','abdo','Abdos Tabata 8 min','Format Tabata : 20 s à fond, 10 s de repos, 8 tours par exercice. Court et très intense.',[
+   day('Tabata abdos A',[it('mountain',8,{time:20,rest:10}),it('bicycle',8,{time:20,rest:10})]),
+   day('Tabata abdos B',[it('plankjack',8,{time:20,rest:10}),it('flutter',8,{time:20,rest:10})]),
+   day('Tabata abdos C',[it('crossclimber',8,{time:20,rest:10}),it('hollowrock',8,{time:20,rest:10})]),
+  ]),
+  P('p-abdo-30','abdo','Défi abdos 30 jours','4 blocs d’une semaine : on augmente les répétitions et le temps de gainage chaque semaine. 4 à 5 séances par semaine.',[
+   day('Semaine 1',[it('crunch',3,{reps:15,rest:30}),it('heeltouch',3,{reps:20,rest:30}),it('legraisefloor',3,{reps:10,rest:30}),it('plank',3,{time:30,rest:30})]),
+   day('Semaine 2',[it('crunch',3,{reps:20,rest:30}),it('heeltouch',3,{reps:30,rest:30}),it('reversecrunch',3,{reps:12,rest:30}),it('russian',3,{reps:20,rest:30}),it('plank',3,{time:45,rest:30})]),
+   day('Semaine 3',[it('situp',3,{reps:15,rest:30}),it('toetouch',3,{reps:15,rest:30}),it('windshield',3,{reps:10,rest:30}),it('bicycle',3,{reps:30,rest:30}),it('plank',3,{time:60,rest:30})]),
+   day('Semaine 4',[it('vups',4,{reps:12,rest:30}),it('toetouch',3,{reps:20,rest:30}),it('windshield',3,{reps:14,rest:30}),it('russian',3,{reps:30,rest:30}),it('sideplank',2,{time:45,rest:20,note:'Chaque côté'}),it('plank',3,{time:75,rest:30})]),
+  ]),
+  P('p-abdo-av','abdo','Abdos avancés (suspendu)','Pour ceux qui maîtrisent déjà les bases : relevés à la barre, roue, dragon flag.',[
+   day('Suspendu',[it('kneeraise',3,{reps:15,rest:60}),it('toesbar',4,{reps:8,rest:90}),it('windshield',3,{reps:10,rest:60}),it('hollowrock',3,{time:30,rest:45})]),
+   day('Force du tronc',[it('abwheel',4,{reps:10,rest:75}),it('dragonflag',4,{reps:5,rest:90}),it('lsit',4,{time:15,rest:60}),it('rkcplank',3,{time:20,rest:45})]),
+  ]),
+  P('p-abdo-core','abdo','Core d’athlète (anti-rotation)','Gainage « fonctionnel » qui protège le dos et transfère la force : idéal en complément du HYROX ou de la course.',[
+   day('Anti-rotation',[it('pallof',3,{reps:12,rest:45,note:'Chaque côté'}),it('woodchop',3,{reps:12,rest:45,note:'Chaque côté'}),it('deadbug',3,{reps:12,rest:30}),it('sideplankdip',3,{reps:12,rest:30,note:'Chaque côté'})]),
+   day('Gainage dynamique',[it('bearcrawl',4,{time:30,rest:30}),it('plankshoulder',3,{reps:20,rest:30}),it('copenhagen',3,{time:20,rest:30,note:'Chaque côté'}),it('birddog',3,{reps:12,rest:30}),it('farmers',3,{dist:40,rest:60})]),
+  ]),
+  P('p-abdo-debout','abdo','Abdos debout (sans aller au sol)','Pratique au bureau, à l’hôtel ou si le sol n’est pas confortable.',[
+   day('Abdos debout 12 min',[it('standcrunch',3,{reps:20,rest:20}),it('highknees',3,{time:30,rest:20}),it('jumpingjack',3,{time:30,rest:20}),it('woodchop',3,{reps:12,rest:30,note:'Sans poulie : mains jointes, mouvement à vide'})]),
+  ]),
+  P('p-hyrox-half','hyrox','HYROX · Demi-simulation','4 × (1 km + station) : la moitié d’une course HYROX pour tester l’allure sans se cramer.',[
+   day('Demi-course A',[it('run',1,{dist:1000,rest:0}),it('ski',1,{dist:1000,rest:0}),it('run',1,{dist:1000,rest:0}),it('sledpush',1,{dist:50,rest:0}),it('run',1,{dist:1000,rest:0}),it('sledpull',1,{dist:50,rest:0}),it('run',1,{dist:1000,rest:0}),it('bbj',1,{dist:80,rest:0})]),
+   day('Demi-course B',[it('run',1,{dist:1000,rest:0}),it('rowerg',1,{dist:1000,rest:0}),it('run',1,{dist:1000,rest:0}),it('farmers',1,{dist:200,rest:0}),it('run',1,{dist:1000,rest:0}),it('sbl',1,{dist:100,rest:0}),it('run',1,{dist:1000,rest:0}),it('wallball',1,{reps:100,rest:0})]),
+  ]),
+  P('p-hyrox-engine','hyrox','HYROX · Engine (ergos & course)','Développer le cardio spécifique : intervalles au rameur, SkiErg et course.',[
+   day('Ergos intervalles',[it('rowsprint',5,{dist:500,rest:90}),it('skisprint',5,{dist:500,rest:90})]),
+   day('Course fractionnée',[it('run',6,{dist:800,rest:90}),it('run',4,{dist:200,rest:45,note:'Vite'})]),
+   day('Long mixte',[it('run',3,{dist:2000,rest:60}),it('rowerg',3,{dist:1000,rest:60}),it('assault',3,{time:300,rest:60})]),
+  ]),
+  P('p-hyrox-stations','hyrox','HYROX · Spécial stations','Volume et technique sur les stations qui font perdre le plus de temps : wall balls, lunges, sled et burpees.',[
+   day('Wall balls & lunges',[it('wallball',5,{reps:20,rest:60}),it('sbl',4,{dist:25,rest:60}),it('wbhold',3,{time:30,rest:45}),it('goblunge',3,{reps:20,rest:60})]),
+   day('Sled & burpees',[it('sledpushh',6,{dist:25,rest:90}),it('sledpull',6,{dist:25,rest:90}),it('bbj',4,{dist:20,rest:60}),it('sprawl',3,{reps:15,rest:45})]),
+   day('Grip & carry',[it('farmers',5,{dist:50,rest:60}),it('kbswing',4,{reps:20,rest:60}),it('deadlift',4,{reps:6,rest:120}),it('dbsnatch',3,{reps:10,rest:60,note:'Chaque bras'})]),
+  ]),
+  P('p-hyrox-av','hyrox','HYROX · Avancé 4 jours','Pour viser un chrono : force, engine, compromised running et simulation longue.',[
+   day('Force',[it('frontsquat',5,{reps:5,rest:150}),it('deadlift',4,{reps:5,rest:150}),it('pushpress',4,{reps:6,rest:120}),it('walklunge',3,{reps:20,rest:90})]),
+   day('Engine',[it('run',5,{dist:1000,rest:60}),it('skisprint',5,{dist:250,rest:45}),it('rowsprint',5,{dist:250,rest:45})]),
+   day('Compromised running',[it('run',4,{dist:1000,rest:0}),it('wallball',4,{reps:25,rest:0}),it('burpeebox',4,{reps:10,rest:0}),it('sledpushh',4,{dist:25,rest:90})]),
+   day('Simulation longue',[it('run',8,{dist:1000,rest:0,note:'Enchaîner avec une station différente à chaque km'}),it('devilpress',3,{reps:10,rest:60}),it('farmers',2,{dist:100,rest:60})]),
+  ]),
+  P('p-triceps','muscle','Triceps en béton','Les trois chefs du triceps, dont les extensions assis au-dessus de la tête à 1 et 2 mains.',[
+   day('Triceps haltères (maison)',[it('ohtri2',4,{reps:12,rest:75}),it('ohtri1',3,{reps:12,rest:60,note:'Chaque bras'}),it('dbskull',3,{reps:12,rest:60}),it('kickback',3,{reps:15,rest:45}),it('benchdips',3,{reps:15,rest:60})]),
+   day('Triceps salle',[it('closebench',4,{reps:8,rest:120}),it('ropepush',3,{reps:12,rest:60}),it('ohcable',3,{reps:12,rest:60}),it('revpush',3,{reps:15,rest:45}),it('dips',3,{reps:10,rest:90})]),
+  ]),
+  P('p-bras2','muscle','Bras · supersets biceps / triceps','Chaque biceps est enchaîné avec un triceps : grosse congestion en 40 minutes.',[
+   day('Supersets haltères',[it('curl',3,{reps:12,rest:0}),it('ohtri2',3,{reps:12,rest:75}),it('hammer',3,{reps:12,rest:0}),it('ohtri1',3,{reps:10,rest:75,note:'Chaque bras'}),it('zottman',3,{reps:10,rest:0}),it('benchdips',3,{reps:15,rest:75})]),
+   day('Supersets salle',[it('preacher',3,{reps:10,rest:0}),it('ropepush',3,{reps:12,rest:75}),it('cablecurl',3,{reps:12,rest:0}),it('ohcable',3,{reps:12,rest:75}),it('curl21',2,{reps:21,rest:0}),it('revpush',2,{reps:15,rest:75})]),
+  ]),
+  P('p-cali0','cali','Callisthénie · De 0 à la 1re traction','Progression pour obtenir sa première traction et ses premières vraies pompes.',[
+   day('Tirage',[it('scappull',3,{reps:8,rest:60}),it('australian',4,{reps:10,rest:75}),it('negpull',4,{reps:4,rest:90}),it('bandpull',3,{reps:6,rest:90})]),
+   day('Poussée',[it('kneepush',3,{reps:12,rest:60}),it('lafA1',3,{reps:10,rest:60}),it('pushup',3,{reps:6,rest:75}),it('benchdips',3,{reps:10,rest:60})]),
+   day('Jambes & tronc',[it('airsquat',4,{reps:20,rest:60}),it('splitsquat',3,{reps:10,rest:60,note:'Chaque jambe'}),it('hollow',3,{time:20,rest:45}),it('plank',3,{time:40,rest:45})]),
+  ]),
+  P('p-cali2','cali','Callisthénie · Intermédiaire','Pour ceux qui font 8+ tractions : volume, variantes avancées et premiers skills.',[
+   day('Haut du corps',[it('pullup',5,{reps:8,rest:120}),it('dips',4,{reps:12,rest:90}),it('archer',3,{reps:6,rest:90,note:'Chaque côté'}),it('neutralpull',3,{reps:8,rest:90}),it('clappush',3,{reps:8,rest:90})]),
+   day('Skills',[it('wallwalk',4,{reps:3,rest:90}),it('handstand',5,{time:20,rest:60}),it('lsit',4,{time:15,rest:60}),it('toesbar',3,{reps:8,rest:90}),it('frontlever',4,{time:8,rest:90,note:'Version tuck (genoux pliés) au début'})]),
+   day('Jambes',[it('pistol',4,{reps:5,rest:90,note:'Chaque jambe, assisté si besoin'}),it('cossack',3,{reps:8,rest:60,note:'Chaque côté'}),it('nordic',3,{reps:5,rest:120}),it('jumpsquat',3,{reps:15,rest:60}),it('singlecalf',3,{reps:15,rest:45,note:'Chaque jambe'})]),
+  ]),
+  P('p-hiit-db','circuit','HIIT haltères 25 min','Circuit métabolique avec une paire d’haltères : 40 s d’effort, 20 s de repos.',[
+   day('HIIT haltères',[it('thruster',4,{time:40,rest:20}),it('devilpress',4,{time:40,rest:20}),it('dbsnatch',4,{time:40,rest:20}),it('revlunge',4,{time:40,rest:20}),it('dbrow',4,{time:40,rest:20})]),
+  ]),
+  P('p-cardio-maison','circuit','Cardio maison sans matériel','Faire monter le cardio dans un salon, sans sauter partout chez les voisins pour la version B.',[
+   day('Cardio A (intense)',[it('jumpingjack',4,{time:40,rest:20}),it('highknees',4,{time:30,rest:30}),it('skater',4,{time:40,rest:20}),it('burpee',4,{reps:10,rest:40}),it('jumpsquat',4,{reps:15,rest:30})]),
+   day('Cardio B (sans saut)',[it('buttkick',4,{time:40,rest:20}),it('standcrunch',4,{time:40,rest:20}),it('bearcrawl',4,{time:30,rest:30}),it('sprawl',4,{reps:10,rest:30}),it('crossclimber',4,{time:30,rest:30})]),
+  ]),
+  P('p-fessiers','muscle','Fessiers galbés','Grand, moyen et petit fessier : hip thrust, fentes et travail unilatéral.',[
+   day('Fessiers salle',[it('hipthrust',4,{reps:10,rest:120}),it('bulgarian',3,{reps:10,rest:90,note:'Chaque jambe'}),it('rdl',3,{reps:10,rest:90}),it('abductor',3,{reps:15,rest:60}),it('glutekick',3,{reps:15,rest:45,note:'Chaque jambe'})]),
+   day('Fessiers maison',[it('singlebridge',4,{reps:12,rest:60,note:'Chaque jambe'}),it('splitsquat',3,{reps:12,rest:60,note:'Chaque jambe'}),it('sumo',3,{reps:15,rest:60}),it('cossack',3,{reps:8,rest:60,note:'Chaque côté'}),it('glutekick',3,{reps:20,rest:45,note:'Chaque jambe'})]),
+  ]),
+  P('p-dos-pull','muscle','Dos & tractions (progression)','Tractions sous toutes les formes et tirages lourds pour un dos large et épais.',[
+   day('Tractions',[it('pullup',4,{reps:6,rest:120}),it('neutralpull',3,{reps:8,rest:90}),it('chinup',3,{reps:8,rest:90}),it('scappull',2,{reps:10,rest:60})]),
+   day('Tirages lourds',[it('pendlay',4,{reps:6,rest:120}),it('rackpull',3,{reps:5,rest:150}),it('chestrow',3,{reps:10,rest:90}),it('straightarm',3,{reps:12,rest:60}),it('facepull',3,{reps:15,rest:45})]),
+  ]),
+  P('p-corde-abdo','corde','Corde + abdos 20 min','Alterner 1 min de corde et un exercice d’abdos : cardio et sangle en même temps.',[
+   day('Corde & abdos',[it('jumprope',5,{time:60,rest:15}),it('crunch',5,{reps:20,rest:15}),it('jralt',3,{time:60,rest:15}),it('plank',3,{time:40,rest:15}),it('jrboxer',3,{time:60,rest:15}),it('russian',3,{reps:20,rest:30})]),
   ]),
  ];
 }
@@ -1002,6 +1244,8 @@ if(!S){S={programs:seedPrograms(),custom:[],sessions:[],cfgAt:0,pending:[],delet
 S.pending=S.pending||[];if((S.seedV||1)<2){const sd=seedPrograms();sd.forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=2;}
 if(S.seedV<3){const sd=seedPrograms();const old=S.programs.find(p=>p.id==='p-lafay');if(old&&old.builtin)S.programs=S.programs.filter(p=>p.id!=='p-lafay');sd.forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=3;S.cfgAt=Date.now();}
 if(S.seedV<4){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=4;S.cfgAt=Date.now();}
+if(S.seedV<5){const sd=seedPrograms().find(p=>p.id==='p-corde'),old=S.programs.find(p=>p.id==='p-corde'),nd=sd&&sd.days.find(d=>d.name==='Technique & variété');if(old&&nd&&!old.days.some(d=>d.name===nd.name))old.days.push(nd);S.seedV=5;S.cfgAt=Date.now();}
+if(S.seedV<6){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=6;S.cfgAt=Date.now();}
 S.lafay=S.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]};
 S.deleted=S.deleted||[];S.custom=S.custom||[];
 let W=LS.get(AKEY,null);
@@ -1134,7 +1378,7 @@ VIEWS.programs=()=>{
  const f=view.cat||'all';
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
- <div class="chips"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}</div>
+ <div class="chips"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip bike" href="${JERIDE_URL}" target="_blank" rel="noopener">🚴 Vélo · JeRIDE ↗</a></div>
  <div class="grid sec" style="margin-top:16px">${list.map(progCard).join('')||`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`}</div>`;
 };
 function progCard(p){
@@ -1149,7 +1393,7 @@ function progCard(p){
 VIEWS.program=()=>{
  const p=S.programs.find(x=>x.id===view.pid);if(!p)return VIEWS.programs();
  const c=CATS[p.cat]||CATS.libre;
- return `<div class="top"><button class="ib" data-a="tab" data-v="programs" aria-label="Retour">${ic('back')}</button><div class="acts"><button class="ib" data-a="progMenu" data-p="${p.id}" aria-label="Options">${ic('dots')}</button></div></div>
+ return `<div class="top"><button class="btn backb" data-a="tab" data-v="programs">${ic('back')}Retour</button><div class="acts"><button class="ib" data-a="progMenu" data-p="${p.id}" aria-label="Options">${ic('dots')}</button></div></div>
  <span class="pill"><i class="dot" style="background:${c.c}"></i>${c.n}</span>
  <h1 style="margin-top:10px">${esc(p.name)}</h1>
  ${p.desc?`<p class="mut" style="max-width:68ch">${esc(p.desc)}</p>`:''}
@@ -1162,7 +1406,7 @@ VIEWS.program=()=>{
 
 VIEWS.dayedit=()=>{
  const p=S.programs.find(x=>x.id===view.pid),d=p&&p.days.find(x=>x.id===view.did);if(!d)return VIEWS.programs();
- return `<div class="top"><button class="ib" data-a="openProgram" data-p="${p.id}" aria-label="Retour">${ic('back')}</button><div class="acts"><button class="btn sm dng" data-a="delDay" data-p="${p.id}" data-d="${d.id}">${ic('trash')}Supprimer</button><button class="btn sm pri" data-a="startDay" data-p="${p.id}" data-d="${d.id}">Démarrer</button></div></div>
+ return `<div class="top"><button class="btn backb" data-a="openProgram" data-p="${p.id}">${ic('back')}Retour</button><div class="acts"><button class="btn sm dng" data-a="delDay" data-p="${p.id}" data-d="${d.id}">${ic('trash')}Supprimer</button><button class="btn sm pri" data-a="startDay" data-p="${p.id}" data-d="${d.id}">Démarrer</button></div></div>
  <div class="eyebrow">${esc(p.name)}</div>
  <input class="search" style="font:800 22px var(--f-disp);margin:8px 0 16px;border:0;background:transparent;padding:0" id="dayname" value="${esc(d.name)}" data-f="dayname" aria-label="Nom de la séance">
  <div class="card">${d.items.length?d.items.map((i,k)=>{const e=ex(i.exId),t=TYPES[e.t];return `<div class="edit-it">${picto(i.exId)}<div style="min-width:0"><div style="font-weight:700">${esc(e.n)}</div>
@@ -1202,7 +1446,11 @@ function exCard(item,k){
  </div><button class="btn addset" data-a="addSet" data-k="${k}">${ic('plus')}Ajouter une série</button></div>`;
 }
 function phOf(item,c,pv){const tv=c==='time'?item.target?.time:item.target?.[c];const v=pv&&pv[c]!=null?pv[c]:tv;return v==null?'':(c==='time'?fmtT(v):String(v))}
-function inp(item,k,j,c,pv){const s=item.sets[j],v=s[c];const ph=phOf(item,c,pv);
+/* Suggestion grisée : d'abord la série d'avant dans cette séance, sinon la séance précédente, sinon l'objectif du programme */
+function sugOf(item,j,c,pv){for(let i=j-1;i>=0;i--){const p=item.sets[i];if(!p||p.w)continue;if(p[c]!=null)return p[c]}const tv=c==='time'?item.target?.time:item.target?.[c];return pv&&pv[c]!=null?pv[c]:tv}
+function phTxt(v,c){return v==null?'':(c==='time'?fmtT(v):String(v))}
+function refreshPh(k){const item=W&&W.items[k];if(!item)return;const e=ex(item.exId),last=lastFor(item.exId),done=last?last.sets.filter(x=>x.done):[];item.sets.forEach((s,j)=>TYPES[e.t].cols.forEach(c=>{const el=document.getElementById(`s${k}_${j}_${c}`);if(el&&s[c]==null)el.placeholder=phTxt(sugOf(item,j,c,done[j]),c)||(c==='kg'?'0':'–')}))}
+function inp(item,k,j,c,pv){const s=item.sets[j],v=s[c];const ph=phTxt(sugOf(item,j,c,pv),c);
  const im=c==='kg'?'decimal':'numeric';
  return `<input id="s${k}_${j}_${c}" inputmode="${im}" data-f="set" data-k="${k}" data-j="${j}" data-c="${c}" value="${v==null?'':(c==='time'?fmtT(v):v)}" placeholder="${esc(ph||(c==='kg'?'0':'–'))}" aria-label="${c}">`}
 
@@ -1224,7 +1472,7 @@ VIEWS.history=()=>{
 };
 VIEWS.session=()=>{
  const s=S.sessions.find(x=>x.id===view.sid);if(!s)return VIEWS.history();
- return `<div class="top"><button class="ib" data-a="tab" data-v="history" aria-label="Retour">${ic('back')}</button><div class="acts"><button class="btn sm" data-a="redo" data-s="${s.id}">${ic('play')}Refaire</button><button class="ib" style="color:var(--danger)" data-a="delSession" data-s="${s.id}" aria-label="Supprimer">${ic('trash')}</button></div></div>
+ return `<div class="top"><button class="btn backb" data-a="tab" data-v="history">${ic('back')}Retour</button><div class="acts"><button class="btn sm" data-a="redo" data-s="${s.id}">${ic('play')}Refaire</button><button class="ib" style="color:var(--danger)" data-a="delSession" data-s="${s.id}" aria-label="Supprimer">${ic('trash')}</button></div></div>
  ${view.fresh?`<div class="card" style="background:var(--ok-bg);color:var(--ok-ink);margin-bottom:16px;font-weight:600">Séance enregistrée. Bien joué !${(s.prs||[]).length?` ${s.prs.length} record(s) battu(s).`:''}</div>`:''}
  <div class="eyebrow">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)} → ${HOUR.format(s.end)}</div><h1 style="margin-top:6px">${esc(s.name)}</h1>
  <div class="card kpis sec"><div class="kpi"><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(s.volume)} <small>kg</small></div></div><div class="kpi"><div class="l">Séries</div><div class="v">${s.sets}</div></div></div>
@@ -1259,7 +1507,7 @@ VIEWS.exercise=()=>{
  const e=ex(view.eid),en=entries(e.id),ms=METRICS[e.t],mk=view.m||ms[0][0],M=ms.find(m=>m[0]===mk)||ms[0];
  const pts=en.map(x=>({t:x.t,v:M[2](x.sets),sid:x.sid})).filter(p=>p.v!=null&&isFinite(p.v));
  const recs=ms.map(m=>{let best=null;en.forEach(x=>{const v=m[2](x.sets);if(v==null||!isFinite(v))return;if(!best||(m[4]?v<best.v:v>best.v))best={v,t:x.t}});return {m,best}});
- return `<div class="top"><button class="ib" data-a="back" aria-label="Retour">${ic('back')}</button><div class="acts">${e.custom?`<button class="btn sm dng" data-a="delEx" data-e="${e.id}">${ic('trash')}Supprimer</button>`:''}</div></div>
+ return `<div class="top"><button class="btn backb" data-a="back">${ic('back')}Retour</button><div class="acts">${e.custom?`<button class="btn sm dng" data-a="delEx" data-e="${e.id}">${ic('trash')}Supprimer</button>`:''}</div></div>
  <div class="ex-hero"><div class="pic">${fig(e.pose,e.m)}</div><div style="min-width:0">
   <div class="eyebrow">${e.m.map(m=>MUS[m]).join(' · ')} · ${TYPES[e.t].n}</div><h1 style="margin:6px 0 ${DESC[e.id]?8:16}px">${esc(e.n)}</h1>
   ${DESC[e.id]?`<p style="margin:0 0 16px;line-height:1.55;max-width:68ch">${esc(DESC[e.id])}${PAGE[e.id]?` <span class="mut">(livre p. ${PAGE[e.id]})</span>`:''}</p>`:''}
@@ -1318,7 +1566,7 @@ function equipBody(){const p=S.programs.find(x=>x.id===EQ.pid),need=equipNeeded(
 function equipFoot(){return `<button class="btn" data-a="close">Annuler</button><button class="btn pri" data-a="eqOk">${EQ.did?'Démarrer':'Enregistrer'}</button>`}
 function refreshEquip(){$('#sheet .sb').innerHTML=equipBody()}
 function fillFromPh(item,j){const e=ex(item.exId),pv=(lastFor(item.exId)?.sets||[]).filter(x=>x.done)[j],s=item.sets[j];
- TYPES[e.t].cols.forEach(c=>{if(s[c]==null){const v=pv&&pv[c]!=null?pv[c]:item.target?.[c];if(v!=null)s[c]=v}})}
+ TYPES[e.t].cols.forEach(c=>{if(s[c]==null){const v=sugOf(item,j,c,pv);if(v!=null)s[c]=v}})}
 function finishWorkout(){
  const items=W.items.map(i=>({exId:i.exId,note:i.note,sets:i.sets.filter(s=>s.done).map(s=>({kg:s.kg,reps:s.reps,time:s.time,dist:s.dist,w:!!s.w,done:true}))})).filter(i=>i.sets.length);
  const end=W.pausedAt||Date.now();
@@ -1438,7 +1686,7 @@ const A={
    if(item.rest>0&&!s.w)W.rest={end:Date.now()+item.rest*1000,total:item.rest,name:ex(item.exId).n}}
   else s.done=false;
   saveW();const card=$('#ex'+k);if(card){const tmp=document.createElement('div');tmp.innerHTML=exCard(item,k);card.replaceWith(tmp.firstElementChild)}updWkStats();renderRest()},
- addSet:el=>{const item=W.items[+el.dataset.k];const l=item.sets[item.sets.length-1];item.sets.push({kg:l?.kg??null,reps:l?.reps??null,time:l?.time??null,dist:l?.dist??null,done:false,w:false});saveW();render()},
+ addSet:el=>{const item=W.items[+el.dataset.k];const l=item.sets[item.sets.length-1];item.sets.push({kg:null,reps:null,time:null,dist:null,done:false,w:false});saveW();render()},
  setMenu:el=>{const k=+el.dataset.k,j=+el.dataset.j,s=W.items[k].sets[j];openSheet(`<h2>Série ${j+1}</h2><div><button class="mi" data-a="setW" data-k="${k}" data-j="${j}"><b style="color:var(--warm);width:20px;text-align:center">W</b>${s.w?'Marquer comme série normale':'Marquer comme échauffement'}</button><button class="mi dng" data-a="setDel" data-k="${k}" data-j="${j}">${ic('trash')}Supprimer la série</button></div>`)},
  setW:el=>{const s=W.items[+el.dataset.k].sets[+el.dataset.j];s.w=!s.w;saveW();closeSheet();render()},
  setDel:el=>{W.items[+el.dataset.k].sets.splice(+el.dataset.j,1);saveW();closeSheet();render()},
@@ -1646,7 +1894,8 @@ Object.assign(A,{
 });
 
 /* ===================== Version ===================== */
-const APP_V='V0.3',APP_BUILD='15/11/2026 à 16:40';
+const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
+const APP_V='V0.6',APP_BUILD='15/11/2026 à 17:27';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -1898,7 +2147,7 @@ document.addEventListener('pointerdown',audio,{once:true});
 $('#ov').addEventListener('click',closeSheet);
 let inputT=null;
 document.addEventListener('input',e=>{const el=e.target,f=el.dataset.f;if(!f)return;
- if(f==='set'){const item=W.items[+el.dataset.k],s=item.sets[+el.dataset.j],c=el.dataset.c;s[c]=c==='time'?digitsToSec(el.value):num(el.value);if(c==='time'&&el.value.replace(/\D/g,'').length>=3){el.value=fmtT(s[c])}clearTimeout(inputT);inputT=setTimeout(saveW,300);updWkStats()}
+ if(f==='set'){const item=W.items[+el.dataset.k],s=item.sets[+el.dataset.j],c=el.dataset.c;s[c]=c==='time'?digitsToSec(el.value):num(el.value);if(c==='time'&&el.value.replace(/\D/g,'').length>=3){el.value=fmtT(s[c])}clearTimeout(inputT);inputT=setTimeout(saveW,300);updWkStats();refreshPh(+el.dataset.k)}
  else if(f==='wkname'){W.name=el.value;clearTimeout(inputT);inputT=setTimeout(saveW,300)}
  else if(f==='wnote'){W.items[+el.dataset.k].note=el.value;clearTimeout(inputT);inputT=setTimeout(saveW,300)}
  else if(f==='pkq'){PK.q=el.value;refreshPicker()}
