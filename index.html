@@ -1025,8 +1025,6 @@ function seedPrograms(){
    day('Legs',[it('squat',4,{reps:8,rest:150}),it('rdl',3,{reps:10,rest:120}),it('legpress',3,{reps:12}),it('hipthrust',3,{reps:10}),it('calf',4,{reps:15,rest:45})]),
   ]),
   P('p-libre','libre','Programme libre','Ajoutez les mouvements que vous voulez, dans l’ordre que vous voulez.',[day('Ma séance',[])]),
-  P('p-lafay','lafay','Méthode Lafay · niveaux 2 à 4',"Poids du corps, peu de repos. Lettre = exercice, chiffre = variante. Les 13 niveaux complets, les critères de passage et la progression automatique des variantes sont dans l’onglet « Lafay ».",
-   [2,3,4].map(n=>day('Niveau '+n,LAF[n-1].sess[0].items.map(x=>it('L'+x.e,x.side?x.s*2:x.s,{reps:x.r||null,rest:x.rest,time:x.t||null,note:[x.side?'Jambe droite puis gauche':'',x.tip||''].filter(Boolean).join(' · ')}))))),
   P('p-hyrox-deb','hyrox','HYROX · Débutant 3 jours',"Initiation sur 8 semaines, sur le modèle des plans gratuits HYROX : une séance force + stations, une séance cardio, une séance hybride. Commence léger et monte les charges petit à petit.",[
    day('Force + stations',[it('squat',4,{reps:8,rest:120}),it('deadlift',3,{reps:6,rest:150}),it('sledpush',4,{dist:25,kg:102,rest:90}),it('sledpull',4,{dist:25,kg:78,rest:90}),it('farmers',3,{dist:50,kg:16,rest:60}),it('wallball',3,{reps:15,kg:6,rest:60})]),
    day('Engine (cardio)',[it('run',5,{dist:1000,rest:90,note:'Allure régulière, ~80 % de l’effort'}),it('rowerg',3,{dist:500,rest:60}),it('ski',3,{dist:500,rest:60})]),
@@ -1251,6 +1249,7 @@ if(S.seedV<3){const sd=seedPrograms();const old=S.programs.find(p=>p.id==='p-laf
 if(S.seedV<4){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=4;S.cfgAt=Date.now();}
 if(S.seedV<5){const sd=seedPrograms().find(p=>p.id==='p-corde'),old=S.programs.find(p=>p.id==='p-corde'),nd=sd&&sd.days.find(d=>d.name==='Technique & variété');if(old&&nd&&!old.days.some(d=>d.name===nd.name))old.days.push(nd);S.seedV=5;S.cfgAt=Date.now();}
 if(S.seedV<6){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=6;S.cfgAt=Date.now();}
+if(S.seedV<7){S.programs=S.programs.filter(p=>!(p.id==='p-lafay'&&p.builtin));S.seedV=7;S.cfgAt=Date.now();}
 S.lafay=S.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]};
 S.deleted=S.deleted||[];S.custom=S.custom||[];
 let W=LS.get(AKEY,null);
@@ -1384,7 +1383,7 @@ VIEWS.programs=()=>{
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
  <div class="chips"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip bike" href="${JERIDE_URL}" target="_blank" rel="noopener">🚴 Vélo · JeRIDE ↗</a></div>
- <div class="grid sec" style="margin-top:16px">${list.map(progCard).join('')||`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`}</div>`;
+ <div class="grid sec" style="margin-top:16px">${f==='all'||f==='lafay'?lafCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
 function progCard(p){
  const c=CATS[p.cat]||CATS.libre;const exs=[...new Set(p.days.flatMap(d=>d.items.map(i=>i.exId)))];
@@ -1478,7 +1477,7 @@ VIEWS.history=()=>{
 VIEWS.session=()=>{
  const s=S.sessions.find(x=>x.id===view.sid);if(!s)return VIEWS.history();
  return `<div class="top"><button class="btn backb" data-a="tab" data-v="history">${ic('back')}Retour</button><div class="acts"><button class="btn sm" data-a="redo" data-s="${s.id}">${ic('play')}Refaire</button><button class="ib" style="color:var(--danger)" data-a="delSession" data-s="${s.id}" aria-label="Supprimer">${ic('trash')}</button></div></div>
- ${view.fresh?`<div class="card" style="background:var(--ok-bg);color:var(--ok-ink);margin-bottom:16px;font-weight:600">Séance enregistrée. Bien joué !${(s.prs||[]).length?` ${s.prs.length} record(s) battu(s).`:''}</div>`:''}
+ ${view.fresh?`<div class="card" style="background:var(--ok-bg);color:var(--ok-ink);margin-bottom:16px;font-weight:600">Séance enregistrée. Bien joué !${view.laf?' '+esc(view.laf):''}${(s.prs||[]).length?` ${s.prs.length} record(s) battu(s).`:''}</div>`:''}
  <div class="eyebrow">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)} → ${HOUR.format(s.end)}</div><h1 style="margin-top:6px">${esc(s.name)}</h1>
  <div class="card kpis sec"><div class="kpi"><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(s.volume)} <small>kg</small></div></div><div class="kpi"><div class="l">Séries</div><div class="v">${s.sets}</div></div></div>
  <div class="quick" style="margin-top:12px"><button class="btn" data-a="health" data-s="${s.id}"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#FF2D55"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8.2 3.2 4.5 6.9 4.5c2.1 0 3.6 1.1 5.1 3 1.5-1.9 3-3 5.1-3 3.7 0 5.9 3.7 4.4 7.2C19.5 16.4 12 21 12 21z"/></svg>Envoyer vers Santé</button><button class="btn" data-a="strava" data-s="${s.id}"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#FC4C02"><path d="M10 2L4 14h4l2-4 2 4h4zM14.5 14l-2 4 2 4 2-4 2-4h-3z"/></svg>Envoyer vers Strava</button></div>
@@ -1579,7 +1578,7 @@ function finishWorkout(){
   if(prev.length){const pb=prev.map(x=>M[2](x.sets)).filter(x=>x!=null);if(pb.length&&(M[4]?v<Math.min(...pb):v>Math.max(...pb)))prs.push(i.exId)}});
  const s={id:W.id,cat:W.cat||'libre',name:W.name||'Séance',programId:W.programId||null,dayId:W.dayId||null,start:W.start,end,duration:elapsed(W),items,volume:volOf(items),sets:setsOf(items),prs,lafLvl:W.lafLvl||null,lafSess:W.lafSess||null,qf:W.qf||null};
  S.sessions.unshift(s);S.sessions.sort((a,b)=>b.start-a.start);S.pending.push(s.id);save();pushSess(s.id);
- W=null;saveW();unwake();go('session',{sid:s.id,fresh:true});
+ W=null;saveW();unwake();go('session',{sid:s.id,fresh:true,laf:s.lafLvl?lafAfter():''});
 }
 function actType(s){const c=s.cat||'libre';return {hyrox:{health:'Entraînement fonctionnel',strava:'HIIT'},circuit:{health:'Entraînement fonctionnel',strava:'HIIT'},corde:{health:'Corde à sauter',strava:'Entraînement'},abdo:{health:'Renforcement du tronc',strava:'Entraînement'},cali:{health:'Musculation fonctionnelle',strava:'Musculation'},lafay:{health:'Musculation fonctionnelle',strava:'Musculation'}}[c]||{health:'Musculation traditionnelle',strava:'Musculation'}}
 function kcalOf(s){const kg=LS.get('jelift.bw',80);return Math.round((MET[s.cat]||5)*kg*s.duration/3600000)}
@@ -1657,7 +1656,7 @@ const A={
  exInfo:el=>{backStack.push({...view});go('exercise',{eid:el.dataset.e})},
  metric:el=>{view.m=el.dataset.v;render()},
  openSession:el=>{backStack=[];go('session',{sid:el.dataset.s})},
- redo:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);startWorkout({id:uid(),name:s.name,cat:s.cat,programId:s.programId,dayId:s.dayId,start:Date.now(),pausedMs:0,pausedAt:null,rest:null,items:s.items.map(i=>({...mkItem(i.exId,{sets:i.sets.length}),note:i.note}))})},
+ redo:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);if(s.lafLvl&&s.lafSess&&LAF[s.lafLvl-1]){lafStart(s.lafLvl,s.lafSess);return}startWorkout({id:uid(),name:s.name,cat:s.cat,programId:s.programId,dayId:s.dayId,start:Date.now(),pausedMs:0,pausedAt:null,rest:null,items:s.items.map(i=>({...mkItem(i.exId,{sets:i.sets.length}),note:i.note}))})},
  delSession:el=>{const id=el.dataset.s;confirmSheet('Supprimer cette séance ?','Elle sera retirée de l’historique et des courbes.','Supprimer',()=>{S.sessions=S.sessions.filter(x=>x.id!==id);S.tomb.push(id);S.pending=S.pending.filter(x=>x!==id);if(sessCol)sessCol.doc(id).delete().catch(()=>{S.deleted.push(id);save()});else S.deleted.push(id);save();go('history')})},
  eqT:el=>{const k=el.dataset.v;EQ.sel.includes(k)?EQ.sel=EQ.sel.filter(x=>x!==k):EQ.sel.push(k);refreshEquip()},
  eqNone:()=>{EQ.sel=[];refreshEquip()},
@@ -1723,7 +1722,7 @@ function applyTheme(){document.documentElement.setAttribute('data-theme',LS.get(
 /* ===================== Méthode Lafay : logique ===================== */
 const LN=c=>ex('L'+c).n.replace(/^[A-Z]\d* · /,'');
 /* Dernière perf d'un exercice : séries (hors échauffement) de l'occurrence la plus fournie dans la séance la plus récente */
-function lafPerf(code){const id='L'+code;for(const s of S.sessions){const its=s.items.filter(i=>i.exId===id);if(!its.length)continue;let best=null,bt=-1;its.forEach(i=>{const w=i.sets.filter(x=>!x.w&&x.done!==false);const t=w.reduce((a,x)=>a+(x.reps||x.time||0),0);if(t>bt){bt=t;best=w}});if(best&&best.length)return {sets:best,t:s.start}}return null}
+function lafPerf(code){const id='L'+code,old='laf'+code;for(const s of S.sessions){const its=s.items.filter(i=>i.exId===id||i.exId===old);if(!its.length)continue;let best=null,bt=-1;its.forEach(i=>{const w=i.sets.filter(x=>!x.w&&x.done!==false);const t=w.reduce((a,x)=>a+(x.reps||x.time||0),0);if(t>bt){bt=t;best=w}});if(best&&best.length)return {sets:best,t:s.start}}return null}
 const perfTxt=p=>p?p.sets.map(x=>x.reps!=null?x.reps:x.time!=null?fmtT(x.time):'–').join(' · '):'';
 const weeksAt=()=>Math.floor((Date.now()-(S.lafay.since||Date.now()))/(7*864e5));
 const sessAt=n=>S.sessions.filter(s=>s.lafLvl===n&&s.start>=(n===S.lafay.lvl?S.lafay.since:0)).length;
@@ -1790,7 +1789,31 @@ VIEWS.lafay=()=>{
     <div class="card"><h3 style="margin:0 0 6px">Règles d’or</h3><p class="mut" style="margin:0;line-height:1.55;font-size:14px">Échauffe-toi avant chaque séance. Respecte les temps de repos (un minuteur se lance après chaque série validée). Tente de battre tes records à chaque séance. Tu « bloques » quand 2 à 3 séances passent sans progrès sur la plupart des exercices.</p></div></div>
   </div></div>`;
 };
-function lafTestBox(){const p=lafPerf('B'),b=p?Math.max(...p.sets.map(s=>s.reps||0)):null;const rec=b==null?null:b<=4?'p1':b<=7?'p2':'n2';
+/* Carte « Méthode Lafay » dans Programmes : le vrai programme complet (13 niveaux) avec le suivi de progression */
+function lafCard(){
+ const L=S.lafay,cur=L.lvl,C=LAF[cur-1],cc=lafCrit(cur),okN=cc.filter(c=>c.ok).length,pct=cc.length?Math.round(100*okN/cc.length):0;
+ const nk=lafNext(cur),ns=C.sess.find(s=>s.k===nk)||C.sess[0],codes=[...new Set(ns.items.map(x=>lafCur(x)))];
+ const ready=C.sess.flatMap(se=>se.items).map(lafNextVar).filter(Boolean).length,n=sessAt(cur);
+ return `<div class="card pcard" style="border-color:${CATS.lafay.c}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:${CATS.lafay.c}"></i>${CATS.lafay.n}</span><span class="mut" style="font-size:13px">13 niveaux · progression suivie</span></div>
+ <h2 style="margin-top:10px">Méthode Lafay · niveau ${ROM[cur]}</h2>
+ <div class="mut" style="font-size:14px;margin-top:2px">${esc(C.t)} · ${n} séance${n>1?'s':''} à ce niveau · ${weeksAt()} sem.</div>
+ <div class="strip">${codes.slice(0,6).map(c=>picto('L'+c)).join('')}${codes.length>6?`<span class="more">+${codes.length-6}</span>`:''}</div>
+ <div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>Vers le niveau ${cur<13?cur+1:'max'}</span><span>${okN}/${cc.length}</span></div><div class="pbar"><i style="width:${pct}%"></i></div></div>
+ <div class="days">Prochaine séance : <b>${esc(ns.n)}</b>${ready?` · <span style="color:var(--ok)">${ready} variante${ready>1?'s':''} à faire évoluer</span>`:''}${pct===100&&cur<13?` · <span style="color:var(--ok)">objectifs atteints !</span>`:''}</div>
+ <div class="row"><button class="btn" data-a="tab" data-v="lafay">Ouvrir</button><button class="btn pri" data-a="lafStart" data-l="${cur}" data-s="${ns.k}">Démarrer</button></div></div>`;
+}
+/* Message affiché après une séance Lafay : où en est la progression */
+function lafAfter(){
+ const cur=S.lafay.lvl,C=LAF[cur-1];if(!C)return '';
+ const seen=new Set(),ready=C.sess.flatMap(se=>se.items).map(lafNextVar).filter(v=>v&&!seen.has(v.to)&&seen.add(v.to));
+ const cc=lafCrit(cur),ok=cc.filter(c=>c.ok).length,nk=lafNext(cur),ns=C.sess.find(s=>s.k===nk);
+ const m=[];
+ if(ready.length)m.push('Lafay : '+ready.map(v=>v.from+' → '+v.to).join(', ')+' débloqué'+(ready.length>1?'s':'')+' (à valider dans l’onglet Lafay).');
+ if(cc.length&&ok===cc.length&&cur<13)m.push(`Tous les objectifs du niveau ${cur} sont atteints : tu peux passer au niveau ${cur+1} !`);
+ else if(cc.length)m.push(`Niveau ${cur} : ${ok}/${cc.length} objectifs atteints.`);
+ if(ns)m.push('Prochaine séance : '+ns.n+'.');
+ return m.join(' ');
+}function lafTestBox(){const p=lafPerf('B'),b=p?Math.max(...p.sets.map(s=>s.reps||0)):null;const rec=b==null?null:b<=4?'p1':b<=7?'p2':'n2';
  return `<div class="card" style="margin-top:12px;background:var(--soft);box-shadow:none"><h3 style="margin:0 0 6px">Ton résultat au test de B (dips)</h3>
  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input id="lafB" class="search" style="width:110px;text-align:center" inputmode="numeric" placeholder="reps" value="${b??''}"><button class="btn pri" data-a="lafTest">Valider</button>
  ${rec?`<span style="font-weight:600">${rec==='p1'?'→ Programme 1':rec==='p2'?'→ Programme 2':'→ Niveau 2 directement !'}</span>`:''}</div>
@@ -1900,7 +1923,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V0.7',APP_BUILD='15/11/2026 à 17:33';
+const APP_V='V0.9',APP_BUILD='15/11/2026 à 17:41';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2029,6 +2052,11 @@ function authHTML(){
  const tabs=authMode==='forgot'?'':`<div class="seg" role="tablist"><button class="${authMode==='login'?'on':''}" data-a="authMode" data-v="login" role="tab">Se connecter</button><button class="${authMode==='create'?'on':''}" data-a="authMode" data-v="create" role="tab">Créer un compte</button></div>`;
  const remBox=`<label class="rem"><input type="checkbox" id="arem" ${rem?'checked':''}>Rester connecté sur cet appareil</label>`;
  let body='';
+ const cloudLnk=`<button class="lnk" data-a="authMode" data-v="cloud" style="color:var(--mut);font-weight:600">☁️ Sauvegarde en ligne : ${on?'configurée · modifier':'à configurer'}</button>`;
+ if(authMode==='cloud'){const c=sbCfg();body=`<h2>Sauvegarde en ligne</h2><p class="lead">Adresse et clé « anon public » du projet Supabase de JeFIT (les mêmes sur tous vos appareils).</p>
+  <div class="form"><label>URL du projet<input id="cu" placeholder="https://xxxx.supabase.co" value="${esc(c.url)}" autocomplete="off" autocapitalize="off" spellcheck="false"></label><label>Clé anon public<input id="ck" placeholder="eyJhbGciOi…" value="${esc(c.key)}" autocomplete="off" autocapitalize="off" spellcheck="false"></label></div>
+  <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authCloud">Enregistrer</button>
+  <button class="lnk" data-a="authMode" data-v="login">Retour</button>`;return `<div class="ac">${WM()}${body}</div>`}
  if(authMode==='forgot')body=`<h2>Mot de passe oublié</h2><p class="lead">Le compte de cet appareil sera remplacé par un nouveau. Vos programmes et séances restent dans ce navigateur.</p>
   <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authReset" style="background:var(--danger);color:#fff">Créer un nouveau compte</button>
   <button class="lnk" data-a="authMode" data-v="login">Retour</button>`;
@@ -2043,7 +2071,7 @@ function authHTML(){
   <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" maxlength="30"></label><label>Mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer le mot de passe<input id="ap2" type="password" autocomplete="new-password"></label></div>
   ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Créer mon compte</button>
   <p class="note">${on?'Vos séances sont gardées dans ce navigateur et sauvegardées en ligne.':'Vos séances sont gardées dans ce navigateur : pas besoin de les retaper.'}</p>`;
- return `<div class="ac">${WM()}${tabs}${body}</div>`;
+ return `<div class="ac">${WM()}${tabs}${body}${authMode==='forgot'||SB_DEF.url?'':cloudLnk}</div>`;
 }
 function showAuth(){authMode=ACC.get()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
 function authFocus(){if($('#splash'))return;const i=[...document.querySelectorAll('#auth input:not([type=checkbox])')].find(x=>!x.value)||document.querySelector('#auth input');if(i)i.focus()}
@@ -2066,7 +2094,7 @@ async function authGo(btn){
    }else if(sbOn()){
     try{await sbLogin(name,pw)}catch(e){aErr(e.status===400?'Nom ou mot de passe incorrect.':'Connexion impossible : '+e.message);return}
     await makeAccount(name,pw);
-   }else{aErr('Aucun compte sur cet appareil : créez-en un avec l’onglet « Créer un compte ».');return}
+   }else{aErr('La sauvegarde en ligne n’est pas configurée sur cet appareil : impossible de retrouver le compte créé ailleurs. Configurez-la en bas de l’écran.');return}
   }else{
    if(ACC.get()){authMode='login';$('#auth').innerHTML=authHTML();return}
    const name=v('an').trim().replace(/\s+/g,' '),p1=v('ap1'),p2=v('ap2');
@@ -2084,6 +2112,7 @@ async function authGo(btn){
 }
 Object.assign(A,{
  authGo:el=>authGo(el),
+ authCloud:()=>{const url=$('#cu').value.trim().replace(/\/+$/,''),key=$('#ck').value.trim();if(url&&!/^https:\/\/.+/.test(url)){aErr('L’adresse doit commencer par https://');return}LS.set('jefit.sb',{url,key});LS.del('jefit.sbs');setSb(url&&key?'nolink':'off');authMode=ACC.get()?'login':(url&&key?'login':'create');$('#auth').innerHTML=authHTML();authFocus();toast(url&&key?'Sauvegarde en ligne configurée':'Configuration effacée')},
  authMode:el=>{authMode=el.dataset.v;$('#auth').innerHTML=authHTML();authFocus()},
  authReset:()=>{LS.del('jefit.account');LS.del('jefit.logged');LS.del('jefit.sbs');authMode='create';$('#auth').innerHTML=authHTML();authFocus()},
  logout:()=>confirmSheet('Se déconnecter ?','Vos données restent sur cet appareil. Il faudra votre mot de passe pour revenir.','Se déconnecter',()=>{LS.del('jefit.logged');showAuth()}),
