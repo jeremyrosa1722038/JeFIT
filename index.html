@@ -309,6 +309,13 @@ table.sets-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nu
 @keyframes spTag{to{opacity:1;letter-spacing:.32em}}
 @keyframes spGlow{to{filter:drop-shadow(0 0 16px rgba(255,150,30,.5))}}
 @keyframes spHalo{to{opacity:1;transform:scale(1)}}
+/* Logo du haut : rejoue l'apparition toutes les minutes */
+svg.wma{overflow:visible}
+.wma .sl{transform-box:fill-box;transform-origin:right center;transform:scaleX(0);animation:spX .55s cubic-bezier(.3,.9,.3,1) forwards;animation-delay:var(--d)}
+.wma .lt{transform:translateY(48px);animation:spUp .85s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--d)}
+.wma .db{transform-box:fill-box;transform-origin:center;opacity:0;transform:translateY(-34px) rotate(-90deg);animation:spDb .9s cubic-bezier(.34,1.56,.64,1) .62s forwards}
+svg.wma{animation:wmGlow 2.6s ease}
+@keyframes wmGlow{0%,40%{filter:none}60%{filter:drop-shadow(0 0 10px rgba(255,150,30,.6))}100%{filter:none}}
 #auth .ac{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
 #auth.in .ac{opacity:1;transform:none}
 
@@ -1639,7 +1646,7 @@ Object.assign(A,{
 });
 
 /* ===================== Version ===================== */
-const APP_V='V0.2',APP_BUILD='15/11/2026 à 16:18';
+const APP_V='V0.3',APP_BUILD='15/11/2026 à 16:40';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -1836,33 +1843,55 @@ Object.assign(A,{
  replayIntro:()=>splash(),
 });
 
-/* ===================== Intro : le logo apparaît lettre par lettre ===================== */
-function splash(){
- if($('#splash'))return;
+/* ===================== Logo animé (intro + rappel toutes les minutes) ===================== */
+let logoN=0;
+function logoSVG(p){
  const tx=(x,len,s)=>`<text x="${x}" y="40" font-family="Rubik,system-ui,sans-serif" font-weight="900" font-size="41" textLength="${len}" lengthAdjust="spacingAndGlyphs">${s}</text>`;
  const LN=[[-12,14,16],[-18,22,20],[-10,30,12]];
  const lines=c=>LN.map(([x,y,w],i)=>`<rect ${c?`class="sl" style="--d:${.05+i*.09}s"`:''} x="${x}" y="${y}" width="${w}" height="4.5" rx="2.2"/>`).join('');
  const DB='<rect x="97" y="9" width="19" height="7.5" rx="2.6"/><rect x="100.5" y="17.2" width="12" height="3" rx="1.2"/><rect x="104" y="19.5" width="5" height="11" rx="1.6"/><rect x="100.5" y="29.8" width="12" height="3" rx="1.2"/><rect x="97" y="33.5" width="19" height="7.5" rx="2.6"/>';
  const JEF=tx(10,82,'JEF'),T=tx(120,28,'T');
  const CL=[[3,34],[37,27.5],[64.5,32],[116,38]];
- const lt=(i,t,del)=>`<g clip-path="url(#spc${i})"><g class="lt" style="--d:${del}s">${t}</g></g>`;
- const svg=`<svg viewBox="0 0 162 48" role="img" aria-label="JeFIT"><defs>${CL.map(([x,w],i)=>`<clipPath id="spc${i}"><rect x="${x}" y="-14" width="${w}" height="58"/></clipPath>`).join('')}
-  <linearGradient id="spSh" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="-40" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+ const lt=(i,t,del)=>`<g clip-path="url(#${p}c${i})"><g class="lt" style="--d:${del}s">${t}</g></g>`;
+ return `<defs>${CL.map(([x,w],i)=>`<clipPath id="${p}c${i}"><rect x="${x}" y="-14" width="${w}" height="58"/></clipPath>`).join('')}
+  <linearGradient id="${p}sh" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="-40" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
   <g transform="translate(18 0) skewX(-12)"><g fill="url(#jlg)">${lines(1)}${lt(0,JEF,.3)}${lt(1,JEF,.42)}${lt(2,JEF,.54)}<g class="db">${DB}</g>${lt(3,T,.82)}</g>
-  <g fill="url(#spSh)">${lines(0)}${JEF}${DB}${T}</g></g></svg>`;
+  <g fill="url(#${p}sh)">${lines(0)}${JEF}${DB}${T}</g></g>`;
+}
+/* Reflet lumineux qui balaie le logo */
+function logoSheen(g,stop){if(!g)return;const t0=performance.now();const f=now=>{const k=Math.min(1,(now-t0)/800),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,x=-90+e*290;g.setAttribute('x1',x);g.setAttribute('x2',x+50);if(k<1&&!(stop&&stop()))requestAnimationFrame(f)};requestAnimationFrame(f)}
+const reduceMotion=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+function splash(){
+ if($('#splash'))return;
  const d=document.createElement('div');d.id='splash';
- d.innerHTML=`<div class="spw">${svg}<div class="spu"></div><div class="sp-tag">Prêt à transpirer ?</div></div><div class="sp-skip">Touchez pour passer</div>`;
+ d.innerHTML=`<div class="spw"><svg viewBox="0 0 162 48" role="img" aria-label="JeFIT">${logoSVG('sp')}</svg><div class="spu"></div><div class="sp-tag">Prêt à transpirer ?</div></div><div class="sp-skip">Touchez pour passer</div>`;
  document.body.appendChild(d);
  let done=false;const timers=[];
  const end=()=>{if(done)return;done=true;timers.forEach(clearTimeout);d.classList.add('out');const a=$('#auth');if(a)setTimeout(()=>a.classList.add('in'),150);setTimeout(()=>{d.remove();authFocus()},600)};
  d.addEventListener('click',end);
- const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
- const sheen=()=>{const g=d.querySelector('#spSh');if(!g)return;const t0=performance.now();const f=now=>{const k=Math.min(1,(now-t0)/800),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,x=-90+e*290;g.setAttribute('x1',x);g.setAttribute('x2',x+50);if(k<1&&!done)requestAnimationFrame(f)};requestAnimationFrame(f)};
- const start=()=>{if(done)return;d.classList.add('go');if(reduce){timers.push(setTimeout(end,1400));return}timers.push(setTimeout(sheen,1450),setTimeout(end,3000))};
+ const reduce=reduceMotion();
+ const start=()=>{if(done)return;d.classList.add('go');if(reduce){timers.push(setTimeout(end,1400));return}timers.push(setTimeout(()=>logoSheen(d.querySelector('#spsh'),()=>done),1450),setTimeout(end,3000))};
  if(reduce)d.querySelectorAll('.sl,.lt,.db').forEach(e=>{e.style.animationDuration='1ms';e.style.animationDelay='0s'});
  const fr=document.fonts&&document.fonts.load?document.fonts.load('900 41px Rubik'):Promise.resolve();
  Promise.race([fr,new Promise(r=>setTimeout(r,700))]).then(start,start);
 }
+
+/* Toutes les minutes, le logo du haut rejoue son apparition */
+function logoReplay(){
+ if(document.hidden||reduceMotion()||$('#splash')||$('#auth'))return;
+ document.querySelectorAll('#nav .brand svg.wm, #main .top svg.wm').forEach(old=>{
+  if(!old.getBoundingClientRect().width)return;
+  const p='lg'+(++logoN);
+  const n=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  n.setAttribute('class',old.getAttribute('class')+' wma');n.setAttribute('viewBox','0 0 162 48');n.setAttribute('role','img');n.setAttribute('aria-label','JeFIT');
+  n.innerHTML=logoSVG(p);old.replaceWith(n);
+  const cls=old.getAttribute('class');
+  setTimeout(()=>logoSheen(n.querySelector('#'+p+'sh'),()=>!n.isConnected),1450);
+  setTimeout(()=>{if(!n.isConnected)return;const t=document.createElement('div');t.innerHTML=WM(cls);n.replaceWith(t.firstElementChild)},3000);
+ });
+}
+setInterval(logoReplay,60000);
 
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const f=A[el.dataset.a];if(f){e.preventDefault();f(el,e)}});
 document.addEventListener('pointerdown',audio,{once:true});
