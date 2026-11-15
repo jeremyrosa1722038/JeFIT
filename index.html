@@ -329,6 +329,11 @@ svg.wma{animation:wmGlow 2.6s ease}
 #auth .lead{text-align:center;margin:-8px 0 0;color:var(--mut);font-size:14px}
 #auth .err{color:var(--danger);font-size:14px;min-height:20px;text-align:center}
 #auth .lnk{color:var(--acc);font-weight:700;font-size:14px;text-align:center;width:100%;padding:6px}
+#auth .seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
+#auth .seg button{flex:1;height:44px;border-radius:11px;font:700 15px var(--f-disp);color:var(--mut)}
+#auth .seg button.on{background:var(--grad);color:var(--acc-ink)}
+#auth .rem{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mut);cursor:pointer}
+#auth .rem input{width:20px;height:20px;accent-color:var(--acc)}
 #auth .note{font-size:12px;color:var(--mut);text-align:center;margin:0}
 
 /* ---------- Paramètres ---------- */
@@ -1895,7 +1900,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V0.6',APP_BUILD='15/11/2026 à 17:27';
+const APP_V='V0.7',APP_BUILD='15/11/2026 à 17:33';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2018,56 +2023,62 @@ VIEWS.settings=()=>{
 };
 
 /* ===================== Écran de connexion ===================== */
-let authMode='create';
+let authMode='login';
 function authHTML(){
- const a=ACC.get(),on=sbOn();
+ const a=ACC.get(),on=sbOn(),rem=!!LS.get('jefit.remember',false);
+ const tabs=authMode==='forgot'?'':`<div class="seg" role="tablist"><button class="${authMode==='login'?'on':''}" data-a="authMode" data-v="login" role="tab">Se connecter</button><button class="${authMode==='create'?'on':''}" data-a="authMode" data-v="create" role="tab">Créer un compte</button></div>`;
+ const remBox=`<label class="rem"><input type="checkbox" id="arem" ${rem?'checked':''}>Rester connecté sur cet appareil</label>`;
  let body='';
- if(authMode==='login'&&a)body=`<h2>Bon retour, ${esc(a.name)} !</h2><p class="lead">Entrez votre mot de passe.</p>
-  <div class="form"><label>Mot de passe<input id="ap1" type="password" autocomplete="current-password"></label></div>
-  <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Entrer</button>
-  <button class="lnk" data-a="authMode" data-v="forgot">Mot de passe oublié ?</button>`;
- else if(authMode==='forgot')body=`<h2>Mot de passe oublié</h2><p class="lead">Le compte de cet appareil sera remplacé par un nouveau. Vos programmes et séances restent dans ce navigateur.</p>
+ if(authMode==='forgot')body=`<h2>Mot de passe oublié</h2><p class="lead">Le compte de cet appareil sera remplacé par un nouveau. Vos programmes et séances restent dans ce navigateur.</p>
   <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authReset" style="background:var(--danger);color:#fff">Créer un nouveau compte</button>
   <button class="lnk" data-a="authMode" data-v="login">Retour</button>`;
- else if(authMode==='restore')body=`<h2>Retrouver mon compte</h2><p class="lead">Connectez-vous à votre compte en ligne pour récupérer vos séances.</p>
-  <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words"></label><label>Mot de passe<input id="ap1" type="password" autocomplete="current-password"></label></div>
-  <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Se connecter</button>
-  <button class="lnk" data-a="authMode" data-v="create">Créer un compte à la place</button>`;
- else body=`<h2>Créer mon compte</h2><p class="lead">Un compte unique pour enregistrer vos entraînements.</p>
+ else if(authMode==='login')body=`<h2>${a?'Bon retour, '+esc(a.name)+' !':'Connexion'}</h2><p class="lead">${a?'Entrez votre mot de passe pour ouvrir JeFIT.':on?'Connectez-vous à votre compte en ligne.':'Aucun compte sur cet appareil pour l’instant.'}</p>
+  <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" value="${a?esc(a.name):''}"></label><label>Mot de passe<input id="ap1" type="password" autocomplete="current-password"></label></div>
+  ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Se connecter</button>
+  ${a?`<button class="lnk" data-a="authMode" data-v="forgot">Mot de passe oublié ?</button>`:''}`;
+ else if(a)body=`<h2>Créer un compte</h2><p class="lead">Un compte existe déjà sur cet appareil : <b>${esc(a.name)}</b>. JeFIT n’autorise qu’un compte par appareil.</p>
+  <button class="btn pri blk" data-a="authMode" data-v="login">Me connecter</button>
+  <button class="lnk" data-a="authMode" data-v="forgot">Mot de passe oublié ? Remplacer ce compte</button>`;
+ else body=`<h2>Créer un compte</h2><p class="lead">Un compte unique pour enregistrer vos entraînements.</p>
   <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" maxlength="30"></label><label>Mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer le mot de passe<input id="ap2" type="password" autocomplete="new-password"></label></div>
-  <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Créer mon compte</button>
-  ${on?`<button class="lnk" data-a="authMode" data-v="restore">J’ai déjà un compte en ligne</button>`:''}
+  ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Créer mon compte</button>
   <p class="note">${on?'Vos séances sont gardées dans ce navigateur et sauvegardées en ligne.':'Vos séances sont gardées dans ce navigateur : pas besoin de les retaper.'}</p>`;
- return `<div class="ac">${WM()}${body}</div>`;
+ return `<div class="ac">${WM()}${tabs}${body}</div>`;
 }
 function showAuth(){authMode=ACC.get()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
-function authFocus(){if($('#splash'))return;const i=document.querySelector('#auth input');if(i)i.focus()}
+function authFocus(){if($('#splash'))return;const i=[...document.querySelectorAll('#auth input:not([type=checkbox])')].find(x=>!x.value)||document.querySelector('#auth input');if(i)i.focus()}
 function hideAuth(){const d=$('#auth');if(d)d.remove()}
 const aErr=t=>{const e=$('#aerr');if(e)e.textContent=t};
 async function makeAccount(name,pw){const salt=uid()+uid(),algo=pwAlgo();ACC.set({name,salt,algo,hash:await hashPw(pw,salt,algo),created:Date.now()});LS.set('jefit.logged',true)}
 async function authGo(btn){
  const v=id=>{const e=$('#'+id);return e?e.value:''};
+ const remember=!!($('#arem')&&$('#arem').checked);
  btn.disabled=true;aErr('');
  try{
   if(authMode==='login'){
-   const a=ACC.get(),pw=v('ap1');
-   if((await hashPw(pw,a.salt,a.algo))!==a.hash){aErr('Mot de passe incorrect.');return}
-   LS.set('jefit.logged',true);
-   if(sbOn()&&!sbLinked())try{await sbConnect(a.name,pw)}catch(e){}
-  }else if(authMode==='restore'){
-   const name=v('an').trim(),pw=v('ap1');if(!name||!pw){aErr('Nom et mot de passe requis.');return}
-   try{await sbLogin(name,pw)}catch(e){aErr(e.status===400?'Nom ou mot de passe incorrect.':'Connexion impossible : '+e.message);return}
-   await makeAccount(name,pw);
+   const a=ACC.get(),name=v('an').trim().replace(/\s+/g,' '),pw=v('ap1');
+   if(!name||!pw){aErr('Nom et mot de passe requis.');return}
+   if(a){
+    if(slug(name)!==slug(a.name)){aErr('Ce nom ne correspond pas au compte de cet appareil ('+a.name+').');return}
+    if((await hashPw(pw,a.salt,a.algo))!==a.hash){aErr('Mot de passe incorrect.');return}
+    LS.set('jefit.logged',true);
+    if(sbOn()&&!sbLinked())try{await sbConnect(a.name,pw)}catch(e){}
+   }else if(sbOn()){
+    try{await sbLogin(name,pw)}catch(e){aErr(e.status===400?'Nom ou mot de passe incorrect.':'Connexion impossible : '+e.message);return}
+    await makeAccount(name,pw);
+   }else{aErr('Aucun compte sur cet appareil : créez-en un avec l’onglet « Créer un compte ».');return}
   }else{
+   if(ACC.get()){authMode='login';$('#auth').innerHTML=authHTML();return}
    const name=v('an').trim().replace(/\s+/g,' '),p1=v('ap1'),p2=v('ap2');
    if(name.length<2){aErr('Choisissez un nom (2 caractères min.).');return}
    if(p1.length<6){aErr('Le mot de passe doit faire au moins 6 caractères.');return}
    if(p1!==p2){aErr('Les deux mots de passe sont différents.');return}
    let note='';
-   if(sbOn()){try{await sbSignup(name,p1)}catch(e){if(sbTaken(e)){aErr('Ce nom est déjà pris : choisissez-en un autre ou « J’ai déjà un compte en ligne ».');return}note=e.code==='confirm'?e.message:'Sauvegarde en ligne indisponible pour l’instant : vous pourrez la connecter dans Paramètres.'}}
+   if(sbOn()){try{await sbSignup(name,p1)}catch(e){if(sbTaken(e)){aErr('Ce nom est déjà pris : choisissez-en un autre ou connectez-vous.');return}note=e.code==='confirm'?e.message:'Sauvegarde en ligne indisponible pour l’instant : vous pourrez la connecter dans Paramètres.'}}
    await makeAccount(name,p1);
    if(note)setTimeout(()=>toast(note),2400);
   }
+  LS.set('jefit.remember',remember);
   hideAuth();render();toast('Bienvenue '+ACC.get().name+' !');sbSync();
  }finally{btn.disabled=false}
 }
@@ -2161,6 +2172,7 @@ document.addEventListener('change',e=>{const el=e.target,f=el.dataset.f;if(!f)re
 });
 applyTheme();render();if(W)wake();initSync();
 splash();
+if(!LS.get('jefit.remember',false))LS.del('jefit.logged');
 if(!ACC.logged())showAuth();else sbSync();
 if(!sbOn())setSb('off');else if(!sbLinked())setSb('nolink');
 </script>
