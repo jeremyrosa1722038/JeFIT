@@ -313,12 +313,21 @@ table.sets-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nu
 .jrs .tg{font:900 15px var(--f-disp);letter-spacing:.42em;text-transform:uppercase;color:#FFB35C;animation:jrUp .5s .75s both}
 .jrs .sub{font:700 13px var(--f-body);color:rgba(255,255,255,.55);animation:jrUp .5s .9s both}
 .jrs .bar{margin-top:10px;width:150px;height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;animation:jrUp .4s 1s both}
-.jrs .bar i{display:block;height:100%;width:40%;border-radius:4px;background:linear-gradient(90deg,#FFC21A,#FF6A1A);animation:jrBar 1s ease-in-out infinite}
+.jrs .bar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#FFC21A,#FF6A1A);transition:width .15s linear}
+.jrs .sub b{color:#fff;font-variant-numeric:tabular-nums}
 @keyframes jrIn{0%{opacity:0;transform:translateX(-70vw) skewX(-22deg);filter:blur(12px)}65%{opacity:1;transform:translateX(14px) skewX(5deg);filter:blur(0)}100%{opacity:1;transform:none}}
 @keyframes jrLn{0%{transform:translateX(-110%);opacity:0}25%{opacity:.9}100%{transform:translateX(130vw);opacity:0}}
 @keyframes jrUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes jrBar{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
 @media (prefers-reduced-motion:reduce){.jrs *{animation-duration:1ms!important;animation-delay:0s!important}}
+.jfback{position:fixed;inset:0;z-index:80;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:radial-gradient(circle at 50% 45%,#3a1c06 0%,#0A0E16 62%);animation:jfbIn .3s ease-out both;transition:opacity .45s,transform .45s}
+.jfback.out{opacity:0;transform:scale(1.06)}
+.jfback .jfb-logo{width:min(320px,70vw);height:auto;animation:jfbLogo .8s cubic-bezier(.2,.9,.25,1.15) both;filter:drop-shadow(0 12px 40px rgba(255,120,20,.35))}
+.jfback .ln{position:absolute;right:0;height:4px;border-radius:4px;background:linear-gradient(270deg,transparent,#FFB21A 70%,#FF6A1A);animation:jfbLn 1s cubic-bezier(.3,.6,.3,1) both;opacity:0}
+.jfback .tg{font:900 15px var(--f-disp);letter-spacing:.42em;text-transform:uppercase;color:#FFB35C;animation:jrUp .45s .45s both}
+@keyframes jfbIn{from{opacity:0}to{opacity:1}}
+@keyframes jfbLogo{0%{opacity:0;transform:translateX(70vw) skewX(22deg);filter:blur(12px)}65%{opacity:1;transform:translateX(-14px) skewX(-5deg);filter:blur(0)}100%{opacity:1;transform:none}}
+@keyframes jfbLn{0%{transform:translateX(110%);opacity:0}25%{opacity:.9}100%{transform:translateX(-130vw);opacity:0}}
 /* Barre « Séance en cours » visible sur les autres pages (mobile) */
 .livebar{position:fixed;z-index:24;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:0 max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
 .livebar .resume{box-shadow:0 10px 28px -10px rgba(0,0,0,.55);padding:12px 16px}
@@ -2253,7 +2262,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V2.9',APP_BUILD='16/11/2026 à 19:15';
+const APP_V='V3.0',APP_BUILD='16/11/2026 à 20:00';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2300,11 +2309,11 @@ function sbWelcome(){if(!sbOn()||!sbLinked())return;sbFn('welcome').then(j=>{if(
 const sbTaken=e=>/already|registered|exists/i.test(e&&e.message||'')||(e&&e.code==='user_already_exists');
 /* Connexion au compte en ligne ; le crée s'il n'existe pas encore */
 async function sbConnect(name,pw){try{await sbLogin(name,pw)}catch(e){if(e.status!==400)throw e;try{await sbSignup(name,pw)}catch(e2){if(sbTaken(e2)){const x=new Error('Mot de passe incorrect pour ce compte en ligne.');x.code='badpw';throw x}throw e2}}}
-function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
+function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
 function sbMerge(r){
  if(!r||r.app!=='JeFIT')return false;let ch=false;
  const tomb=new Set([...(S.tomb||[]),...(r.tomb||[])]);if(tomb.size!==S.tomb.length){S.tomb=[...tomb];ch=true}
- if((r.cfgAt||0)>(S.cfgAt||0)){S.programs=clone(r.programs||S.programs);S.custom=clone(r.custom||[]);if(r.lafay)S.lafay=clone(r.lafay);if(Array.isArray(r.avoid))S.avoid=clone(r.avoid);if(r.cycles&&typeof r.cycles==='object')S.cycles=clone(r.cycles);S.cfgAt=r.cfgAt;ch=true;if(typeof queuePushCfg==='function')queuePushCfg()}
+ if((r.cfgAt||0)>(S.cfgAt||0)){S.programs=clone(r.programs||S.programs);S.custom=clone(r.custom||[]);if(r.lafay)S.lafay=clone(r.lafay);if(Array.isArray(r.avoid))S.avoid=clone(r.avoid);if(r.cycles&&typeof r.cycles==='object')S.cycles=clone(r.cycles);if(typeof r.mly==='string')S.mly=r.mly;S.cfgAt=r.cfgAt;ch=true;if(typeof queuePushCfg==='function')queuePushCfg()}
  const have=new Set(S.sessions.map(s=>s.id));(r.sessions||[]).forEach(s=>{if(!have.has(s.id)&&!tomb.has(s.id)){S.sessions.push(clone(s));S.pending.push(s.id);ch=true}});
  const n=S.sessions.length;S.sessions=S.sessions.filter(s=>!tomb.has(s.id));if(S.sessions.length!==n)ch=true;
  if(ch){S.sessions.sort((a,b)=>b.start-a.start);LS.set(KEY,S);S.pending.forEach(pushSess)}
@@ -2543,7 +2552,7 @@ const LT='<';/* les balises sont recomposées pour ne pas perturber la lecture d
 function jrSrc(){const t=document.getElementById('jeride-src');return t?t.textContent.replace(/<@JRc@!--/g,LT+'!--').replace(/<@JRe@\/script/g,LT+'/script').replace(/<@JRs@script/g,LT+'script'):''}
 function jrLogo(src){if(jrLogoUrl)return jrLogoUrl;const m=/<img src="(data:image\/png;base64,[^"]+)" alt="JERIDE">/.exec(src||jrSrc());return jrLogoUrl=m?m[1]:''}
 function jrSplashHTML(){const lines=[18,27,36,64,73].map((t,i)=>`<i class="ln" style="top:${t}%;animation-delay:${i*.08}s;width:${30+i*7}vw"></i>`).join('');
- return `<div class="jrs">${lines}<img src="${jrLogo()}" alt="JeRIDE"><div class="tg">Mode vélo</div><div class="sub">Connecté au compte ${esc((ACC.get()||{}).name||'JeFIT')}</div><div class="bar"><i></i></div></div>`}
+ return `<div class="jrs">${lines}<img src="${jrLogo()}" alt="JeRIDE"><div class="tg">Mode vélo</div><div class="sub">Chargement <b class="jrpct">0</b> %</div><div class="bar"><i class="jrbar"></i></div></div>`}
 function jrOpen(tab,rid){
  const src=jrFrame?'':jrSrc();if(!jrFrame&&!src){toast('JeRIDE n’est pas intégré à cette version');return}
  let d=$('#jr');if(!d){d=document.createElement('div');d.id='jr';document.body.appendChild(d)}
@@ -2554,14 +2563,22 @@ function jrOpen(tab,rid){
   jrFrame.addEventListener('load',()=>{jrLoaded=true});
   jrFrame.srcdoc=src.replace(/<\/body>/i,LT+'script>('+jrBridge.toString()+')()'+LT+'/script></body>');d.appendChild(jrFrame)}
  const minT=reduceMotion()?300:first?2000:1100;
- const wait=()=>{if(!d.classList.contains('on'))return;if(jrLoaded&&Date.now()-t0>=minT){d.classList.add('ready');try{const w=jrFrame.contentWindow;w.focus();if(tab){const b=w.document.querySelector('.tabs button[data-v="'+tab+'"]');if(b)b.click()}if(rid!=null&&w.showSess)setTimeout(()=>{try{w.showSess(isNaN(+rid)?rid:+rid)}catch(e){}},250)}catch(e){}}else setTimeout(wait,120)};wait();
+ /* Pourcentage de chargement : avance jusqu'à 90 % pendant le chargement, 100 % quand JeRIDE est prêt */
+ const pct=()=>{const k=Math.min(1,(Date.now()-t0)/minT),v=jrLoaded?Math.round(90+10*k):Math.round(90*(1-Math.pow(1-k,2)));const b=d.querySelector('.jrpct'),i=d.querySelector('.jrbar');if(b)b.textContent=Math.min(100,v);if(i)i.style.width=Math.min(100,v)+'%'};
+ const wait=()=>{if(!d.classList.contains('on'))return;pct();if(jrLoaded&&Date.now()-t0>=minT){d.classList.add('ready');try{const w=jrFrame.contentWindow;w.focus();if(tab){const b=w.document.querySelector('.tabs button[data-v="'+tab+'"]');if(b)b.click()}if(rid!=null&&w.showSess)setTimeout(()=>{try{w.showSess(isNaN(+rid)?rid:+rid)}catch(e){}},250)}catch(e){}}else setTimeout(wait,120)};wait();
 }
-function jrClose(){const d=$('#jr');if(d)d.classList.remove('on','ready');document.documentElement.classList.remove('jr-on');sbSync();loadRides()}
+/* Retour vers JeFIT : petite cinématique avec le logo JeFIT qui arrive par la droite */
+function jrClose(){const d=$('#jr');if(!d||!d.classList.contains('on'))return;
+ const fin=()=>{d.classList.remove('on','ready');document.documentElement.classList.remove('jr-on');sbSync();loadRides()};
+ if(reduceMotion()){fin();return}
+ const b=document.createElement('div');b.className='jfback';const lines=[22,31,62,71].map((t,i)=>`<i class="ln" style="top:${t}%;animation-delay:${i*.06}s;width:${32+i*6}vw"></i>`).join('');
+ b.innerHTML=`${lines}${WM('wm jfb-logo')}<div class="tg">Mode muscu</div>`;document.body.appendChild(b);
+ setTimeout(fin,450);setTimeout(()=>b.classList.add('out'),1050);setTimeout(()=>b.remove(),1500)}
 /* Ce qui est partagé avec JeRIDE (le cadre lit window.parent.JF) */
 /* Petit logo JeFIT en image (dessiné avec la police de JeFIT) pour le bouton retour de JeRIDE */
 let jfLogoUrl=null;
 function jfLogoPng(){if(jfLogoUrl)return jfLogoUrl;try{const k=3,cv=document.createElement('canvas');cv.width=162*k;cv.height=48*k;const c=cv.getContext('2d'),g=c.createLinearGradient(0,0,cv.width,0);g.addColorStop(0,'#FFC21A');g.addColorStop(1,'#FF6A1A');cvLogo(c,0,0,k,g);jfLogoUrl=cv.toDataURL('image/png')}catch(e){jfLogoUrl=''}return jfLogoUrl}
-window.JF={sbOn,sbLinked,sbCfg,sbToken,close:jrClose,logo:jfLogoPng,uid:()=>(LS.get('jefit.sbs',{})||{}).uid,name:()=>(ACC.get()||{}).name||''};
+window.JF={sbOn,sbLinked,sbCfg,sbToken,close:jrClose,logo:jfLogoPng,mly:()=>S.mly||'',setMly:v=>{if((S.mly||'')!==v){S.mly=v;touchCfg()}},uid:()=>(LS.get('jefit.sbs',{})||{}).uid,name:()=>(ACC.get()||{}).name||''};
 /* Exécuté DANS JeRIDE : bouton retour, synchro via le compte JeFIT, import des anciennes sorties */
 function jrBridge(){
  const P=window.parent&&window.parent!==window&&window.parent.JF;if(!P)return;
@@ -2592,13 +2609,17 @@ function jrBridge(){
    ls.set('jfMigrated',true);log('Import JeRIDE : '+n+' élément(s) repris de l’ancienne synchro');if(n){try{renderHist()}catch(e){}try{renderRoutes()}catch(e){}toast('☁️ '+n+' sortie(s)/parcours JeRIDE repris dans ton compte JeFIT',4500)}}
   catch(e){log('Import JeRIDE impossible : '+e.message)}};
  const sync0=Cloud.sync.bind(Cloud);let mig=null;Cloud.sync=async m=>{if(!mig)mig=migrate();await mig;return sync0(m)};
- /* Réglages : la synchro passe par le compte JeFIT, plus besoin d'adresse ni de code */
+ /* « Réglages » devient « Paramètres », comme dans JeFIT */
+ const tb=document.querySelector('.tabs button[data-v="cfg"]');if(tb)tb.textContent='Paramètres';
+ /* L'ancienne synchro (adresse, clé, code) ne sert plus : tout passe par le compte JeFIT */
  const kv=byId('clUrl')&&byId('clUrl').closest('.kv');
- if(kv){[...kv.children].slice(0,6).forEach(e=>e.style.display='none');const h=kv.previousElementSibling&&kv.previousElementSibling.previousElementSibling,p=kv.previousElementSibling;
-  if(h&&h.tagName==='H3')h.textContent='☁️ Synchronisation · compte JeFIT';
-  if(p&&p.tagName==='P')p.innerHTML='Tes sorties et parcours sont sauvegardés avec ton compte JeFIT <b>'+(P.name()||'')+'</b> et retrouvés sur tous tes appareils, automatiquement.';
-  const row=kv.nextElementSibling;if(row)[...row.querySelectorAll('button')].forEach(btn=>{if(!/Cloud\.sync/.test(btn.getAttribute('onclick')||''))btn.style.display='none'})}
- try{Cloud.st(Cloud.on()?'Compte JeFIT connecté':'Connecte-toi à JeFIT pour sauvegarder en ligne',Cloud.on()?true:false)}catch(e){}
+ if(kv){const p=kv.previousElementSibling,h=p&&p.previousElementSibling,row=kv.nextElementSibling;
+  [h,p,row].forEach(e=>{if(e)e.style.display='none'});[...kv.children].slice(0,6).forEach(e=>e.style.display='none');
+  const note=document.createElement('p');note.style.cssText='color:var(--mut);font-size:13px;margin:4px 0 0';note.innerHTML='☁️ Sauvegarde automatique avec ton compte JeFIT <b>'+(P.name()||'')+'</b> : tes sorties suivent sur tous tes appareils.';kv.parentNode.insertBefore(note,kv)}
+ try{Cloud.st(Cloud.on()?'Compte JeFIT connecté ✓':'Connecte-toi à JeFIT pour sauvegarder en ligne',Cloud.on()?true:false)}catch(e){}
+ /* Clé Mapillary (photos de rue) : partagée par le compte JeFIT, à saisir une seule fois */
+ try{const loc=ls.get('mlyToken',''),acc=P.mly();if(!loc&&acc){ls.set('mlyToken',acc);const i=byId('mlyTok');if(i)i.value=acc}else if(loc&&loc!==acc)P.setMly(loc);
+  const i=byId('mlyTok');if(i)i.addEventListener('change',()=>P.setMly(i.value.trim()))}catch(e){}
 }
 
 /* Toutes les minutes, le logo du haut rejoue son apparition */
@@ -2726,6 +2747,9 @@ main{flex:1;overflow:hidden;position:relative}
 .list{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
 .it{padding:12px 14px;border-radius:12px;background:var(--panel2);border:2px solid transparent;text-align:left;width:100%}
 .it.on{border-color:var(--org)}
+.it.hl{border-color:var(--org);box-shadow:0 0 0 4px rgba(255,138,26,.18)}
+.wbars div[onclick]{cursor:pointer;border-radius:8px}.wbars div[onclick]:hover i{filter:brightness(1.15)}
+.wbars div.sel{color:var(--org)}.wbars div.sel i{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--org)}
 .it .d{font-size:12px;color:var(--mut);font-weight:700}.it .n{font-size:16px;font-weight:700;margin:3px 0}.it .k{font-size:13px;color:var(--mut)}
 .det{padding:16px;overflow:auto;display:flex;flex-direction:column;gap:12px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
@@ -4424,7 +4448,7 @@ DB.open().then(async()=>{const d=ls.get('draft',null);if(d&&d.pts&&d.pts.length>
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')Cloud.later()});
 
 /* ---------- historique ---------- */
-let selId=null,chartKey='p',cache=[];
+let selWeek=null,selId=null,chartKey='p',cache=[];
 const dfmt=iso=>new Date(iso).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}).toUpperCase()+' · '+new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const dur=s=>s>=3600?Math.floor(s/3600)+' h '+pad(Math.floor(s%3600/60)):Math.round(s/60)+' min';
 let hPer=ls.get('hPer','mois'),calY=new Date().getFullYear(),calM=new Date().getMonth(),selDay=null;
@@ -4439,10 +4463,11 @@ async function renderHist(){
  const tile=(l,v,c)=>`<div class="tot"><div class="lbl">${l}</div><div class="v" style="color:${c||'inherit'}">${v}</div></div>`;
  $('hTot').innerHTML=tile('Séances',inP.length)+tile('Distance',fr(sum('dist')/1000,1)+'<span class="unit">km</span>')+tile('Temps',Math.floor(tt/3600)+' h '+pad(Math.floor(tt%3600/60)))+tile('Calories',fr(sum('kcal'))+'<span class="unit">kcal</span>','var(--pur)')+tile('Dénivelé',fr(sum('gain'))+'<span class="unit">m</span>','var(--org)');
  renderCal();
- const L=$('hList'),shown=selDay?cache.filter(s=>dkey(s.start)===selDay):inP;
+ const inW=s=>!!selWeek&&new Date(s.start)>=selWeek&&new Date(s.start)<selWeek+7*864e5;
+ const L=$('hList'),shown=selDay?cache.filter(s=>dkey(s.start)===selDay):selWeek?cache.filter(inW):inP;
  L.innerHTML=!cache.length?'<div class="empty">Aucune séance pour l’instant.<br>Ta première sortie apparaîtra ici 🚴</div>':
-  `<div class="lbl" style="padding:4px">${selDay?new Date(selDay+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+` · <a onclick="selDay=null;renderHist()" style="color:var(--org)">tout voir</a>`:shown.length+' séance'+(shown.length>1?'s':'')+' sur la période'}</div>`+
-  (shown.length?shown.map(s=>`<button class="it${s.id===selId?' on':''}" onclick="showSess(${s.id})"><div class="d">${dfmt(s.start)}</div><div class="n">${s.name}</div><div class="k"><b>${fr(s.sum.dist/1000,1)} km</b> · ${dur(s.sum.dur)} · <b>${s.sum.kcal} kcal</b></div></button>`).join(''):'<div class="empty" style="padding:16px">Rien sur cette période.</div>');
+  `<div class="lbl" style="padding:4px">${selWeek&&!selDay?'Semaine du '+new Date(selWeek).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+' · '+shown.length+' séance'+(shown.length>1?'s':'')+` · <a onclick="selWeek=null;renderHist()" style="color:var(--org)">tout voir</a>`:selDay?new Date(selDay+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+` · <a onclick="selDay=null;renderHist()" style="color:var(--org)">tout voir</a>`:shown.length+' séance'+(shown.length>1?'s':'')+' sur la période'}</div>`+
+  (shown.length?shown.map(s=>`<button class="it${s.id===selId?' on':''}${inW(s)?' hl':''}" onclick="showSess(${s.id})"><div class="d">${dfmt(s.start)}</div><div class="n">${s.name}</div><div class="k"><b>${fr(s.sum.dist/1000,1)} km</b> · ${dur(s.sum.dur)} · <b>${s.sum.kcal} kcal</b></div></button>`).join(''):'<div class="empty" style="padding:16px">Rien sur cette période.</div>');
  if(selId&&cache.find(s=>s.id===selId))showSess(selId);else{selId=null;renderSummary()}
 }
 function renderCal(){
@@ -4457,17 +4482,20 @@ function renderCal(){
  $('cal').innerHTML=`<div class="calh"><button onclick="calNav(-1)">‹</button><b style="font-size:17px;text-transform:capitalize">${first.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</b><button onclick="calNav(1)">›</button></div><div class="calg">${g}</div>
  <div class="streak">🔥 Série : <b>${n} semaine${n>1?'s':''}</b> d'affilée · ${ms} séance${ms>1?'s':''} ce mois-ci</div>`}
 function calNav(k){calM+=k;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}renderCal()}
-function pickDay(k){selDay=selDay===k?null:k;const s=cache.find(x=>dkey(x.start)===k);selId=selDay&&s?s.id:null;renderHist()}
+/* Toucher une colonne orange (ou sa date) : affiche les sorties de cette semaine, comme dans JeFIT */
+function pickWeek(t){const n=cache.filter(s=>new Date(s.start)>=t&&new Date(s.start)<t+7*864e5).length;if(selWeek!==t&&!n){toast('Aucune sortie cette semaine-là');return}
+ selWeek=selWeek===t?null:t;selDay=null;selId=null;renderHist();const L=$('hList');if(L&&selWeek)L.scrollIntoView({behavior:'smooth',block:'start'})}
+function pickDay(k){selWeek=null;selDay=selDay===k?null:k;const s=cache.find(x=>dkey(x.start)===k);selId=selDay&&s?s.id:null;renderHist()}
 function renderSummary(){
  if(!cache.length){$('hDet').innerHTML='<div class="empty">Ton journal se remplira au fil de tes séances 🚴<br>Lance ta première séance depuis l’onglet « Séance ».</div>';return}
  const w0=monday(new Date()),bars=[];for(let i=11;i>=0;i--){const a=new Date(w0);a.setDate(a.getDate()-7*i);const b=new Date(a);b.setDate(b.getDate()+7);
-  bars.push({l:a.getDate()+'/'+(a.getMonth()+1),km:cache.filter(s=>{const d=new Date(s.start);return d>=a&&d<b}).reduce((x,s)=>x+s.sum.dist/1000,0)})}
+  bars.push({t:a.getTime(),l:a.getDate()+'/'+(a.getMonth()+1),km:cache.filter(s=>{const d=new Date(s.start);return d>=a&&d<b}).reduce((x,s)=>x+s.sum.dist/1000,0)})}
  const mx=Math.max(1,...bars.map(b=>b.km));
  const best=(k)=>cache.reduce((a,s)=>(s.sum[k]||0)>(a?a.sum[k]||0:-1)?s:a,null);
  const rec=(l,s,v)=>s?`<button class="st" style="text-align:left" onclick="showSess(${s.id})"><div class="lbl">${l}</div><div class="v" style="font-size:20px">${v}</div><div style="font-size:12px;color:var(--mut)">${dfmt(s.start)}</div></button>`:'';
  const b1=best('dist'),b2=best('pAvg'),b3=best('dur'),b4=best('gain');
  $('hDet').innerHTML=`<div class="lbl">Kilomètres par semaine · 12 dernières semaines</div>
- <div class="wbars">${bars.map(b=>`<div><span>${b.km?fr(b.km,0):''}</span><i style="height:${b.km/mx*100}%"></i>${b.l}</div>`).join('')}</div>
+ <div class="wbars">${bars.map(b=>`<div class="${selWeek===b.t?'sel':''}" onclick="pickWeek(${b.t})" title="Voir les sorties de cette semaine"><span>${b.km?fr(b.km,0):''}</span><i style="height:${b.km/mx*100}%"></i>${b.l}</div>`).join('')}</div>
  <div class="lbl" style="margin-top:6px">Records 🏆</div>
  <div class="rec">${rec('Plus longue distance',b1,fr(b1.sum.dist/1000,1)+' km')+rec('Plus longue durée',b3,dur(b3.sum.dur))+rec('Meilleure puissance moy.',b2,fr(b2.sum.pAvg)+' W')+(b4&&b4.sum.gain?rec('Plus gros dénivelé',b4,fr(b4.sum.gain)+' m'):'')}</div>`;
 }
