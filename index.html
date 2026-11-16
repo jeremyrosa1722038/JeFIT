@@ -956,6 +956,84 @@ Object.assign(REQ,{ohtri2:['halteres'],ohtri1:['halteres'],ropepush:['poulie'],o
 Object.assign(SUBS,{ohtri2:['benchdips','diamond'],ohtri1:['benchdips','diamond'],ropepush:['benchdips','diamond'],ohcable:['ohtri2','diamond'],dbskull:['ohtri2','diamond'],revpush:['diamond'],preacher:['conccurl','curl'],revcurl:['hammer'],zottman:['hammer'],curl21:['curl'],spidercurl:['conccurl','curl'],wristcurl:['farmers'],inclinebb:['incline','declinepush'],declinebench:['bench','pushup'],inclinefly:['dbfly','declinepush'],lowfly:['inclinefly','declinepush'],squeeze:['diamond'],closepull:['chinup','australian'],straightarm:['pullover','australian'],pendlay:['row','dbrow'],chestrow:['dbrow','australian'],rackpull:['deadlift','dbrdl'],goodmorning:['dbrdl','superman'],neutralpull:['pullup','australian'],negpull:['australian'],bandpull:['negpull','australian'],scappull:['australian'],cablelat:['latraise','lafC'],frontraise:['lafD'],pushpress:['dbpress','pike'],landmine:['dbpress','pike'],revpecdeck:['reardelt','ytw'],frontsquat:['goblet','airsquat'],revlunge:['bwlunge'],walklunge:['bwlunge'],seatedlegcurl:['nordic','hipbridge'],adductor:['cossack'],abductor:['glutekick'],singlerdl:['singlebridge'],seatedcalf:['singlecalf'],kneeraise:['reversecrunch'],toesbar:['vups','reversecrunch'],dragonflag:['legraisefloor'],copenhagen:['sideplank'],pallof:['plankshoulder'],woodchop:['russian'],assault:['highknees','run'],dbsnatch:['kbswing','burpee'],devilpress:['burpee'],sbclean:['dbsnatch','burpee'],goblunge:['bwlunge'],boxover:['bwlunge'],burpeebox:['burpee'],wbhold:['wallsit'],sledpushh:['sledpush','burpee'],rowsprint:['run'],skisprint:['burpee']});
 const hasEq=(id,eq)=>(REQ[id]||[]).every(q=>eq.includes(q));
 function adapt(id,eq,used){if(!eq||hasEq(id,eq))return id;const ok=(SUBS[id]||[]).filter(a=>hasEq(a,eq));return ok.find(a=>!used||!used.has(a))||ok[0]||id}
+/* ---------- V2.9 : curls au banc (avec leur dessin), poids du corps, corde, abdos ---------- */
+Object.assign(POSES,{
+ /* Pupitre (Larry Scott) : assis, bras posé sur le pupitre incliné */
+ preacher:{h:[47,25],s:[46,36],p:[42,63],e1:[66,54],w1:[64,36],e2:[64,54],w2:[62,37],k1:[62,64],f1:[62,90],k2:[60,65],f2:[59,90],eq:FL+bench(30,50,66)+'<line class="eq" x1="50" y1="44" x2="69" y2="61" stroke-width="5"/><line class="eq" x1="68" y1="61" x2="72" y2="92"/>',eqf:plate(63,36,6)},
+ /* Curl concentré : assis, penché, coude calé contre la cuisse */
+ conc:{h:[57,32],s:[50,40],p:[38,63],e1:[57,60],w1:[53,46],e2:[55,52],w2:[60,62],k1:[60,64],f1:[64,90],k2:[58,66],f2:[56,90],eq:FL+bench(26,48,66),eqf:dbl(53,46)},
+ /* Curl incliné : dos sur banc incliné, bras pendants derrière le buste */
+ inclinecurl:{h:[22,34],s:[28,41],p:[46,64],e1:[27,56],w1:[36,47],e2:[25,56],w2:[24,69],k1:[62,62],f1:[66,90],k2:[60,64],f2:[62,90],eq:FL+'<line class="eq" x1="19" y1="44" x2="42" y2="70" stroke-width="5"/>'+bench(42,62,69),eqf:dbl(36,47)+dbl(24,69)},
+ /* Spider curl : buste sur le banc incliné, bras qui pendent devant */
+ spider:{h:[61,30],s:[55,38],p:[36,60],e1:[56,56],w1:[63,48],e2:[54,56],w2:[54,70],k1:[30,76],f1:[24,90],k2:[32,76],f2:[28,90],eq:FL+'<line class="eq" x1="33" y1="66" x2="58" y2="41" stroke-width="5"/><line class="eq" x1="45" y1="54" x2="45" y2="92"/>',eqf:dbl(63,48)+dbl(54,70)},
+ /* Curl assis sur un banc, dos droit */
+ seatcurl:{h:[48,26],s:[48,37],p:[48,63],e1:[50,51],w1:[59,41],e2:[47,51],w2:[47,63],k1:[68,64],f1:[70,90],k2:[66,65],f2:[67,90],eq:FL+bench(34,60,66),eqf:dbl(59,41)+dbl(47,64)},
+ /* Flexion latérale avec haltère (vue de face) */
+ sidebend:{front:1,h:[44,15],s:[46,25],p:[50,50],e1:[36,39],w1:[34,53],e2:[62,36],w2:[66,49],k1:[46,70],f1:[44,90],k2:[54,70],f2:[56,90],eq:FL,eqf:dbl(34,55)}
+});
+/* Les curls existants reçoivent le dessin qui correspond vraiment au mouvement */
+POSES.preacher1={...POSES.preacher,eqf:dbl(63,36)};
+EXL.forEach(e=>{const np={preacher:'preacher',conccurl:'conc',inclinecurl:'inclinecurl',spidercurl:'spider'}[e[0]];if(np)e[2]=np});
+EXL.push(
+ ['seatcurl','Curl biceps assis sur banc (haltères)','seatcurl',['bras'],'weight'],
+ ['seathammer','Curl marteau assis sur banc','seatcurl',['bras'],'weight'],
+ ['preacherdb','Curl pupitre un bras (haltère)','preacher1',['bras'],'weight'],
+ ['preacherez','Curl pupitre barre EZ','preacher',['bras'],'weight'],
+ ['preachermac','Curl biceps à la machine (pupitre)','preacher',['bras'],'weight'],
+ ['inclinehammer','Curl marteau incliné (banc)','inclinecurl',['bras'],'weight'],
+ ['dragcurl','Drag curl (barre)','curl',['bras'],'weight'],
+ ['crosshammer','Curl marteau croisé','curl',['bras'],'weight'],
+ ['bayesian','Curl Bayesian (poulie basse, derrière soi)','curl',['bras'],'weight'],
+ ['tpush','Pompes en T (rotation)','pushup',['pecs','epaules','abdos'],'bw'],
+ ['splitjump','Fentes sautées','lunge',['jambes'],'bw'],
+ ['tuckjump','Sauts genoux-poitrine','airsquat',['jambes','abdos'],'bw'],
+ ['starjump','Sauts en étoile (star jumps)','lateral',['jambes','epaules'],'bw'],
+ ['squatthrust','Squat thrust (burpee sans pompe)','bbj',['jambes','abdos'],'bw'],
+ ['inchworm','Inchworm (chenille)','pike',['abdos','epaules'],'bw'],
+ ['sidelunge','Fentes latérales','lunge',['jambes'],'bw'],
+ ['jrsprint','Corde : sprint','rope',['mollets','jambes'],'time'],
+ ['mcgill','Curl-up McGill (dos protégé)','crunch',['abdos'],'bw'],
+ ['hundred','Le cent (Pilates)','hollow',['abdos'],'time'],
+ ['rollup','Roll-up (Pilates)','crunch',['abdos'],'bw'],
+ ['legcircle','Cercles de jambes (Pilates)','legfloor',['abdos'],'bw'],
+ ['wcrunch','Crunch lesté (disque / haltère)','crunch',['abdos'],'weight'],
+ ['sidebend','Flexion latérale (haltère)','sidebend',['abdos'],'weight'],
+ ['plankreach','Planche bras tendu alterné','plank',['abdos','epaules'],'time'],
+ ['archhold','Superman tenu (arch hold)','superman',['lombaires'],'time'],
+ ['jackknife','Jackknife (portefeuille)','vup',['abdos'],'bw'],
+ ['frogcrunch','Crunch papillon (butterfly sit-up)','crunch',['abdos'],'bw']
+);
+Object.assign(DESC,{
+ seatcurl:'Assis au bout du banc, dos droit, coudes collés au buste : monter les haltères en tournant les paumes vers le haut, descendre lentement sans balancer.',
+ seathammer:'Assis sur le banc, prise neutre (pouces vers le haut) : monter sans bouger les coudes. Travaille le brachial et l’avant-bras.',
+ preacherdb:'Un bras posé à plat sur le pupitre, aisselle calée en haut : monter l’haltère, descendre lentement jusqu’au bras presque tendu.',
+ preacherez:'Barre EZ, bras sur le pupitre : la prise inclinée soulage les poignets. Ne pas décoller les coudes du pupitre.',
+ preachermac:'Machine à pupitre : régler le siège pour que les aisselles touchent le haut du coussin. Mouvement lent et contrôlé.',
+ inclinehammer:'Dos sur banc incliné à 45–60°, bras pendants, prise neutre : monter sans avancer les coudes. Étirement maximal du biceps.',
+ dragcurl:'Barre en main, la faire glisser le long du buste en reculant les coudes : le biceps travaille sans les épaules.',
+ crosshammer:'Prise neutre, monter l’haltère en travers du buste vers l’épaule opposée. Alterner les bras.',
+ bayesian:'Dos à la poulie basse, bras tiré en arrière : curl en gardant le coude derrière le buste. Très bon étirement.',
+ tpush:'Une pompe, puis rotation du buste en levant un bras vers le plafond (corps en T). Alterner les côtés.',
+ splitjump:'En fente, sauter et inverser les jambes en l’air, réception amortie. Genou avant au-dessus du pied.',
+ tuckjump:'Sauter en ramenant les genoux vers la poitrine, réception souple, enchaîner.',
+ starjump:'Accroupi, sauter en ouvrant bras et jambes en étoile, retomber groupé.',
+ squatthrust:'Mains au sol, lancer les pieds en arrière en planche, les ramener, se relever. Burpee sans la pompe ni le saut.',
+ inchworm:'Debout, poser les mains au sol, avancer les mains jusqu’à la planche, puis ramener les pieds vers les mains.',
+ sidelunge:'Grand pas sur le côté, fesses en arrière, l’autre jambe tendue. Revenir et alterner.',
+ jrsprint:'Corde le plus vite possible, petits sauts sur l’avant du pied.',
+ mcgill:'Allongé, une jambe pliée, mains sous le bas du dos : décoller tête et épaules de quelques centimètres, sans enrouler le dos. Tenir 8–10 s.',
+ hundred:'Allongé, jambes tendues à 45°, épaules décollées : battre des bras 5 inspirations + 5 expirations, 10 fois (100 battements).',
+ rollup:'Allongé bras derrière la tête : s’enrouler vertèbre par vertèbre jusqu’à toucher les pieds, redescendre lentement.',
+ legcircle:'Allongé, une jambe tendue vers le plafond : dessiner des cercles sans bouger le bassin. 5 dans chaque sens, changer de jambe.',
+ wcrunch:'Crunch en tenant un disque ou un haltère contre la poitrine. Monter en expirant, sans tirer sur la nuque.',
+ sidebend:'Debout, haltère dans une main : s’incliner sur le côté puis remonter avec les obliques opposés. Faire les deux côtés.',
+ plankreach:'En planche, tendre un bras devant sans tourner le bassin, tenir 2 s, alterner.',
+ archhold:'Allongé sur le ventre, bras et jambes tendus décollés du sol : tenir la position en serrant fessiers et lombaires.',
+ jackknife:'Allongé, monter bras et jambes tendus en même temps pour se toucher au-dessus des hanches.',
+ frogcrunch:'Assis, plantes de pieds collées, genoux ouverts : s’allonger puis remonter en touchant les pieds.'
+});
+Object.assign(REQ,{seatcurl:['halteres','banc'],seathammer:['halteres','banc'],preacherdb:['halteres','banc'],preacherez:['barre','banc'],preachermac:['poulie'],inclinehammer:['halteres','banc'],dragcurl:['barre'],crosshammer:['halteres'],bayesian:['poulie'],jrsprint:['corde'],wcrunch:['halteres'],sidebend:['halteres']});
+Object.assign(SUBS,{seatcurl:['curl','australian'],seathammer:['hammer','australian'],preacherdb:['conccurl','curl'],preacherez:['preacher','curl'],preachermac:['preacher','conccurl'],inclinehammer:['hammer','australian'],dragcurl:['curl','australian'],crosshammer:['hammer','australian'],bayesian:['inclinecurl','curl'],jrsprint:['jrnone','highknees'],wcrunch:['crunch'],sidebend:['sidecrunch']});
 const BASE={};EXL.forEach(([id,n,pose,m,t])=>BASE[id]={id,n,pose,m,t});
 const POSE_BY_MUS={pecs:'bench',dos:'row',epaules:'ohp',bras:'curl',jambes:'squat',mollets:'calf',abdos:'crunch',lombaires:'superman'};
 function ex(id){return BASE[id]||S.custom.find(e=>e.id===id)||{id,n:'Exercice supprimé',pose:'stand',m:[],t:'weight'}}
@@ -1276,6 +1354,60 @@ function seedPrograms(){
   P('p-corde-abdo','corde','Corde + abdos 20 min','Alterner 1 min de corde et un exercice d’abdos : cardio et sangle en même temps.',[
    day('Corde & abdos',[it('jumprope',5,{time:60,rest:15}),it('crunch',5,{reps:20,rest:15}),it('jralt',3,{time:60,rest:15}),it('plank',3,{time:40,rest:15}),it('jrboxer',3,{time:60,rest:15}),it('russian',3,{reps:20,rest:30})]),
   ]),
+  /* ----- V2.9 : circuits poids du corps & corde ----- */
+  P('p-circ-7min','circuit','Circuit 7 minutes (HICT)','Le circuit scientifique de 12 exercices (publié par l’ACSM) : 30 s d’effort, 10 s pour changer. Un tour = 7 min. Faire 2 à 3 tours : une série de chaque exercice, dans l’ordre, puis recommencer.',[
+   day('Circuit 7 min',[it('jumpingjack',3,{time:30,rest:10}),it('wallsit',3,{time:30,rest:10}),it('pushup',3,{reps:12,rest:10,note:'≈ 30 s'}),it('crunch',3,{reps:20,rest:10,note:'≈ 30 s'}),it('stepup',3,{reps:12,rest:10,note:'Sur une chaise solide, sans charge'}),it('airsquat',3,{reps:20,rest:10}),it('benchdips',3,{reps:12,rest:10,note:'Sur une chaise'}),it('plank',3,{time:30,rest:10}),it('highknees',3,{time:30,rest:10}),it('bwlunge',3,{reps:14,rest:10}),it('tpush',3,{reps:10,rest:10}),it('sideplank',3,{time:30,rest:60,note:'15 s par côté'})]),
+  ]),
+  P('p-circ-wod','circuit','Benchmarks poids du corps','Les grands classiques du cross-training sans matériel lourd : on chronomètre et on essaie de battre son score d’une fois sur l’autre.',[
+   day('Cindy · AMRAP 20 min',[it('pullup',15,{reps:5,rest:0,note:'Un tour = 5 tractions, 10 pompes, 15 squats. Le plus de tours en 20 min (objectif 15+)'}),it('pushup',15,{reps:10,rest:0}),it('airsquat',15,{reps:15,rest:0})]),
+   day('Annie · 50-40-30-20-10',[it('jrdouble',5,{reps:50,rest:0,note:'50-40-30-20-10 : 50 double unders + 50 sit-ups, puis 40 + 40… (débutant : 2 sauts simples = 1)'}),it('situp',5,{reps:50,rest:0})]),
+   day('Murph adapté (partitionné)',[it('run',1,{dist:1600,rest:0}),it('pullup',20,{reps:5,rest:0,note:'20 tours de 5 tractions / 10 pompes / 15 squats'}),it('pushup',20,{reps:10,rest:0}),it('airsquat',20,{reps:15,rest:0}),it('run',1,{dist:1600,rest:0})]),
+   day('Mort par burpees (EMOM)',[it('burpee',15,{rest:0,note:'Minute 1 : 1 burpee, minute 2 : 2 burpees… jusqu’à ne plus finir dans la minute'})]),
+  ]),
+  P('p-circ-spartacus','circuit','Circuit Spartacus (haltères)','10 exercices de 60 s, 15 s pour changer, 2 min entre les tours. 3 tours. Une paire d’haltères légers suffit.',[
+   day('Spartacus',[it('goblet',3,{reps:15,rest:15}),it('mountain',3,{time:60,rest:15}),it('kbswing',3,{reps:15,rest:15,note:'Avec un haltère tenu à deux mains'}),it('tpush',3,{reps:12,rest:15}),it('splitjump',3,{reps:16,rest:15}),it('dbrow',3,{reps:12,rest:15}),it('sidelunge',3,{reps:16,rest:15}),it('pushup',3,{reps:12,rest:15,note:'Mains sur les haltères'}),it('bwlunge',3,{reps:16,rest:15}),it('thruster',3,{reps:12,rest:120})]),
+  ]),
+  P('p-circ-tabata','circuit','Tabata poids du corps 16 min','4 blocs Tabata : 8 × (20 s à fond / 10 s de repos). 1 min de récupération entre les blocs.',[
+   day('4 × Tabata',[it('jumpsquat',8,{reps:12,rest:10,note:'20 s à fond'}),it('pushup',8,{reps:10,rest:10,note:'20 s à fond'}),it('mountain',8,{time:20,rest:10}),it('burpee',8,{reps:6,rest:10,note:'20 s à fond'})]),
+  ]),
+  P('p-circ-echelle','circuit','Échelle poids du corps 1 → 10','Tour 1 : 1 répétition de chaque exercice, tour 2 : 2, … jusqu’à 10. Chronomètre le temps total et bats-le la fois suivante.',[
+   day('Échelle',[it('burpee',10,{rest:0,note:'1, 2, 3… 10 répétitions'}),it('pushup',10,{rest:0}),it('airsquat',10,{rest:0}),it('situp',10,{rest:0})]),
+   day('Échelle inversée 10 → 1',[it('squatthrust',10,{rest:0,note:'10, 9, 8… 1 répétition'}),it('tpush',10,{rest:0}),it('splitjump',10,{rest:0}),it('vups',10,{rest:0})]),
+  ]),
+  P('p-corde-boxe','corde','Corde · Entraînement du boxeur','Rounds de 3 min comme sur le ring, footwork et explosivité. Idéal en échauffement ou en séance complète.',[
+   day('Rounds',[it('jumprope',3,{time:180,rest:60,note:'Round de 3 min, rythme régulier'}),it('jrboxer',3,{time:180,rest:60}),it('pushup',3,{reps:15,rest:30}),it('situp',3,{reps:20,rest:30}),it('jrsprint',5,{time:30,rest:30})]),
+   day('Footwork & vitesse',[it('jralt',4,{time:60,rest:20}),it('jrside',4,{time:45,rest:20}),it('jrhigh',6,{time:30,rest:30}),it('jrcross',4,{time:30,rest:30}),it('plank',3,{time:45,rest:30})]),
+  ]),
+  P('p-corde-hiit','corde','Corde + poids du corps HIIT','30 s de corde, 30 s d’exercice au poids du corps, sans pause. 4 tours. Seulement une corde.',[
+   day('HIIT corde',[it('jumprope',4,{time:30,rest:0}),it('burpee',4,{reps:8,rest:0,note:'30 s'}),it('jrhigh',4,{time:30,rest:0}),it('airsquat',4,{reps:15,rest:0,note:'30 s'}),it('jrsprint',4,{time:30,rest:0}),it('pushup',4,{reps:12,rest:0,note:'30 s'}),it('mountain',4,{time:30,rest:60})]),
+  ]),
+  P('p-corde-prog','corde','Corde · Débutant jusqu’à 10 min sans arrêt','Progression sur 4 semaines : on allonge les intervalles jusqu’à tenir 10 minutes d’affilée.',[
+   day('Bases (semaines 1–2)',[it('jumprope',10,{time:30,rest:30,note:'Semaine 2 : 8 × 60 s'}),it('jrnone',3,{time:45,rest:15,note:'Si la corde accroche : sans corde'})]),
+   day('Endurance (semaines 3–4)',[it('jumprope',5,{time:120,rest:45,note:'Semaine 4 : 3 × 4 min puis test 10 min'}),it('jralt',2,{time:90,rest:45})]),
+  ]),
+  /* ----- V2.9 : abdos ----- */
+  P('p-abdo-mcgill','abdo','Abdos dos protégé (McGill « Big 3 »)','Les 3 exercices du Pr Stuart McGill pour une sangle solide sans abîmer le dos : pyramide 6-4-2 répétitions, chaque répétition tenue 8–10 s.',[
+   day('Big 3',[it('mcgill',3,{reps:6,rest:30,note:'Pyramide 6-4-2, tenir 10 s'}),it('sideplank',3,{time:10,rest:20,note:'6-4-2 maintiens de 10 s par côté'}),it('birddog',3,{reps:6,rest:30,note:'Tenir 10 s, changer de côté'}),it('deadbug',2,{reps:10,rest:30})]),
+  ]),
+  P('p-abdo-pilates','abdo','Abdos Pilates 20 min','Contrôle, respiration et centre solide : les classiques du Pilates au sol.',[
+   day('Pilates au sol',[it('hundred',2,{time:60,rest:20}),it('rollup',3,{reps:8,rest:20}),it('legcircle',2,{reps:10,rest:15,note:'5 dans chaque sens, par jambe'}),it('deadbug',3,{reps:12,rest:20}),it('bicycle',3,{reps:20,rest:20}),it('scissor',3,{time:40,rest:20}),it('hollow',3,{time:30,rest:20}),it('plank',2,{time:45,rest:20})]),
+  ]),
+  P('p-abdo-enchaine','abdo','Abdos enchaînés 15 min (11 exercices)','11 exercices à la suite, sans pause, au sol. Un vrai défi : réduire les répétitions au début si besoin.',[
+   day('Enchaînement',[it('frogcrunch',1,{reps:25,rest:0}),it('reversecrunch',1,{reps:25,rest:0}),it('bicycle',1,{reps:30,rest:0}),it('flutter',1,{time:40,rest:0}),it('windshield',1,{reps:20,rest:0}),it('legraisefloor',1,{reps:20,rest:0}),it('toetouch',1,{reps:25,rest:0}),it('vups',1,{reps:20,rest:0}),it('heeltouch',1,{reps:30,rest:0}),it('russian',1,{reps:30,rest:0}),it('plankshoulder',1,{reps:20,rest:0})]),
+  ]),
+  P('p-abdo-gym','abdo','Abdos gymnaste (hollow & arch)','La base des gymnastes : gainage creux et cambré, puis puissance. Excellent pour les tractions et la callisthénie.',[
+   day('Hollow & arch',[it('hollow',4,{time:30,rest:30}),it('archhold',4,{time:30,rest:30}),it('hollowrock',4,{time:30,rest:30}),it('vups',3,{reps:12,rest:45}),it('jackknife',3,{reps:12,rest:45}),it('rkcplank',3,{time:20,rest:40})]),
+  ]),
+  P('p-abdo-leste','abdo','Abdos lestés (haltère)','Pour progresser une fois le poids du corps trop facile : 8 à 15 répétitions avec charge.',[
+   day('Abdos lestés',[it('wcrunch',4,{reps:12,kg:10,rest:45}),it('russian',3,{reps:20,rest:45,note:'Haltère tenu à deux mains'}),it('sidebend',3,{reps:12,kg:12,rest:45,note:'Par côté'}),it('abwheel',3,{reps:10,rest:60}),it('plank',3,{time:45,rest:45,note:'Disque sur le dos'})]),
+  ]),
+  P('p-abdo-5min','abdo','Abdos express 5 min (tous les jours)','5 minutes chaque jour, sans matériel. Parfait le matin ou après une séance.',[
+   day('5 minutes',[it('crunch',1,{reps:20,rest:10}),it('plank',1,{time:60,rest:10}),it('bicycle',1,{reps:20,rest:10}),it('legraisefloor',1,{reps:15,rest:10}),it('sideplank',1,{time:60,rest:10,note:'30 s par côté'}),it('mountain',1,{time:40,rest:0})]),
+  ]),
+  /* ----- V2.9 : biceps au banc ----- */
+  P('p-biceps-banc','muscle','Biceps au banc (pupitre & incliné)','Tous les curls sur banc : pupitre pour isoler, incliné pour étirer, concentré pour le pic du biceps.',[
+   day('Biceps au banc',[it('preacherez',4,{reps:10,rest:90}),it('inclinecurl',3,{reps:12,rest:75}),it('seatcurl',3,{reps:12,rest:60}),it('conccurl',3,{reps:12,rest:60,note:'Par bras'}),it('seathammer',3,{reps:12,rest:60}),it('spidercurl',2,{reps:15,rest:60})]),
+  ]),
  ];
 }
 
@@ -1289,6 +1421,7 @@ if(S.seedV<4){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.p
 if(S.seedV<5){const sd=seedPrograms().find(p=>p.id==='p-corde'),old=S.programs.find(p=>p.id==='p-corde'),nd=sd&&sd.days.find(d=>d.name==='Technique & variété');if(old&&nd&&!old.days.some(d=>d.name===nd.name))old.days.push(nd);S.seedV=5;S.cfgAt=Date.now();}
 if(S.seedV<6){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=6;S.cfgAt=Date.now();}
 if(S.seedV<7){S.programs=S.programs.filter(p=>!(p.id==='p-lafay'&&p.builtin));S.seedV=7;S.cfgAt=Date.now();}
+if(S.seedV<8){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=8;S.cfgAt=Date.now();}
 S.lafay=S.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]};
 S.deleted=S.deleted||[];S.custom=S.custom||[];
 let W=LS.get(AKEY,null);
@@ -2120,7 +2253,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V2.8',APP_BUILD='16/11/2026 à 18:30';
+const APP_V='V2.9',APP_BUILD='16/11/2026 à 19:15';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
