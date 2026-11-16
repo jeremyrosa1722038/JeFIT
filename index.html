@@ -1408,8 +1408,8 @@ function histList(){
 VIEWS.programs=()=>{
  const f=view.cat||'all';
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
- return `<div class="top"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
- <div class="chips wrap"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip bike" href="${JERIDE_URL}" target="_blank" rel="noopener">🚴 Vélo · JeRIDE ↗</a></div>
+ return `<div class="top" style="justify-content:flex-start;gap:14px"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
+ <div class="chips wrap"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip" href="${JERIDE_URL}" target="_blank" rel="noopener">Vélo · JeRIDE</a></div>
  <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
 /* Carte « Sport en minutes » (ex-onglet Express) en tête des programmes */
@@ -1951,7 +1951,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V1.7',APP_BUILD='16/11/2026 à 14:20';
+const APP_V='V1.8',APP_BUILD='16/11/2026 à 14:35';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
