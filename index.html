@@ -1446,7 +1446,7 @@ function quickCard(){
 const avoidOf=id=>(ex(id).m||[]).filter(m=>(S.avoid||[]).includes(m)).map(m=>MUS[m]).join(', ');
 const avoidOk=id=>!(S.avoid||[]).length||!(ex(id).m||[]).some(m=>S.avoid.includes(m));
 function avoidBar(){const A=S.avoid||[];
- return `<button class="card" data-a="avoidSheet" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin-top:14px;padding:14px 16px;${A.length?'border:1px solid var(--warm)':''}"><span style="font-size:22px">🩹</span><span style="flex:1;min-width:0"><b style="display:block">Muscles à éviter</b><span class="mut" style="font-size:13px">${A.length?A.map(m=>MUS[m]).join(', ')+' : exercices retirés de tous les programmes':'Aucun · touchez pour exclure une zone (blessure, opération…)'}</span></span>${ic('edit')}</button>`}
+ return `<button class="card" data-a="avoidSheet" style="display:flex;align-items:center;gap:12px;width:100%;max-width:640px;text-align:left;margin-top:14px;padding:14px 16px;${A.length?'border:1px solid var(--warm)':''}"><span style="font-size:22px">🩹</span><span style="flex:1;min-width:0"><b style="display:block">Muscles à éviter</b><span class="mut" style="font-size:13px">${A.length?A.map(m=>MUS[m]).join(', ')+' : exercices retirés de tous les programmes':'Aucun · touchez pour exclure une zone (blessure, opération…)'}</span></span>${ic('edit').replace('<svg','<svg style="width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2"')}</button>`}
 function avoidBody(){const A=S.avoid||[];
  return `<h2>Muscles à éviter</h2><p class="mut" style="margin:0">Les exercices qui sollicitent ces zones sont retirés des programmes, de Lafay et de « Sport en minutes ». Pour un pied ou une jambe : choisissez <b>Jambes</b> et <b>Mollets</b>.</p>
  <div class="chips wrap" style="margin-top:14px">${Object.entries(MUS).map(([k,n])=>`<button class="chip ${A.includes(k)?'on':''}" data-a="avoidTog" data-v="${k}">${A.includes(k)?'✕ ':''}${n}</button>`).join('')}</div>
@@ -2048,7 +2048,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V2.1',APP_BUILD='16/11/2026 à 16:30';
+const APP_V='V2.2',APP_BUILD='16/11/2026 à 16:45';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
