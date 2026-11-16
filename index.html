@@ -1687,7 +1687,7 @@ VIEWS.workout=()=>{
   <div class="sec"><div class="hd"><h2>Vos programmes</h2></div><div class="grid">${S.programs.map(p=>`<div class="card"><div class="eyebrow">${(CATS[p.cat]||CATS.libre).n}</div><h2 style="margin:4px 0 12px">${esc(p.name)}</h2><div class="stack" style="gap:8px">${p.days.map(d=>`<button class="btn" style="justify-content:space-between" data-a="startDay" data-p="${p.id}" data-d="${d.id}"><span>${esc(d.name)}</span>${ic('play')}</button>`).join('')}</div></div>`).join('')}</div></div>`;
  return `<div class="wk-top"><div class="r1"><input class="nm" id="wkname" data-f="wkname" value="${esc(W.name)}" aria-label="Nom de la séance"><button class="btn pri" data-a="finish">Terminer</button></div>
   <div class="stats3"><div><div class="l">Durée</div><div class="clockb"><span class="v acc" data-clock>${fmtT(elapsed(W)/1000)}</span><button class="ib" data-a="pause" aria-label="${W.pausedAt?'Reprendre':'Pause'}">${ic(W.pausedAt?'play':'pause')}</button></div></div><div><div class="l">Volume</div><div class="v" id="wkvol">${fmtN(volOf(W.items))} kg</div></div><div><div class="l">Séries</div><div class="v" id="wksets">${setsOf(W.items)}</div></div></div></div>
- <div style="display:flex;justify-content:flex-end;margin:10px 0 -4px"><button class="restb" style="margin:0" data-a="sndPick">${icS('bell',16)}Son du repos : ${SNDS[sndCfg().k]}</button></div>
+ <div style="display:flex;justify-content:flex-end;margin:16px 0 0"><button class="restb" style="margin:0" data-a="sndPick">${icS('bell',16)}Son du repos : ${SNDS[sndCfg().k]}</button></div>
  <div class="wk-grid">${W.items.map((item,k)=>exCard(item,k)).join('')}</div>
  ${W.items.length?'':`<div class="card empty" style="margin-top:16px">${fig('stand',[])}<h3 style="color:var(--fg)">Séance vide</h3><p>Ajoutez vos mouvements, le chrono tourne déjà.</p></div>`}
  <div class="stack" style="margin-top:16px;max-width:640px;margin-inline:auto"><button class="btn pri blk" data-a="picker" data-m="wk">${ic('plus')}Ajouter un exercice</button><button class="btn dng blk" data-a="discard">Abandonner la séance</button></div>`;
@@ -1720,7 +1720,9 @@ function phOf(item,c,pv){const tv=c==='time'?item.target?.time:item.target?.[c];
 /* Suggestion grisée : d'abord la série d'avant dans cette séance, sinon la séance précédente, sinon l'objectif du programme */
 function sugOf(item,j,c,pv){for(let i=j-1;i>=0;i--){const p=item.sets[i];if(!p||p.w)continue;if(p[c]!=null)return p[c]}const tv=c==='time'?item.target?.time:item.target?.[c];return pv&&pv[c]!=null?pv[c]:tv}
 function phTxt(v,c){return v==null?'':(c==='time'?fmtT(v):String(v))}
-function refreshPh(k){const item=W&&W.items[k];if(!item)return;const e=ex(item.exId),last=lastFor(item.exId),done=last?last.sets.filter(x=>x.done):[];item.sets.forEach((s,j)=>TYPES[e.t].cols.forEach(c=>{const el=document.getElementById(`s${k}_${j}_${c}`);if(el&&s[c]==null)el.placeholder=phTxt(sugOf(item,j,c,done[j]),c)||(c==='kg'?'0':'–')}))}
+/* Série « précédente » : un échauffement est comparé aux échauffements, une série normale aux séries normales */
+function pvOf(item,last,j){if(!last)return null;const s=item.sets[j],idx=item.sets.slice(0,j).filter(x=>!!x.w===!!s.w).length;return last.sets.filter(x=>x.done&&!!x.w===!!s.w)[idx]||null}
+function refreshPh(k){const item=W&&W.items[k];if(!item)return;const e=ex(item.exId),last=lastFor(item.exId);item.sets.forEach((s,j)=>TYPES[e.t].cols.forEach(c=>{const el=document.getElementById(`s${k}_${j}_${c}`);if(el&&s[c]==null)el.placeholder=phTxt(sugOf(item,j,c,pvOf(item,last,j)),c)||(c==='kg'?'0':'–')}))}
 function inp(item,k,j,c,pv){const s=item.sets[j],v=s[c];const ph=phTxt(sugOf(item,j,c,pv),c);
  const im=c==='kg'?'decimal':'numeric';
  return `<input id="s${k}_${j}_${c}" inputmode="${im}" data-f="set" data-k="${k}" data-j="${j}" data-c="${c}" value="${v==null?'':(c==='time'?fmtT(v):v)}" placeholder="${esc(ph||(c==='kg'?'0':'–'))}" aria-label="${c}">`}
