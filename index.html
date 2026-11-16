@@ -1401,9 +1401,9 @@ function renderLive(){
 const VIEWS={};
 VIEWS.home=()=>{
  const now=Date.now(),ws=weekStart(now);
- const week=S.sessions.filter(s=>s.start>=ws);
+ const ALL=allSess(),week=ALL.filter(s=>s.start>=ws);
  const wTime=week.reduce((a,s)=>a+s.duration,0),wVol=week.reduce((a,s)=>a+(s.volume||0),0);
- const weeks=[];for(let i=9;i>=0;i--){const a=ws-i*7*864e5,b=a+7*864e5;weeks.push({a,c:S.sessions.filter(s=>s.start>=a&&s.start<b).length})}
+ const weeks=[];for(let i=9;i>=0;i--){const a=ws-i*7*864e5,b=a+7*864e5;weeks.push({a,c:ALL.filter(s=>s.start>=a&&s.start<b).length})}
  const mx=Math.max(3,...weeks.map(w=>w.c));
  const last=S.sessions[0];
  let next=null;if(last&&last.programId&&!cycActive().some(c=>c.p.id===last.programId)){const p=S.programs.find(p=>p.id===last.programId);if(p&&p.days.length){const i=p.days.findIndex(d=>d.id===last.dayId);next={p,d:p.days[(i+1)%p.days.length]}}}
@@ -1411,31 +1411,47 @@ VIEWS.home=()=>{
  <div class="top"><div class="hello mob-only" style="flex-direction:column;align-items:flex-start;gap:2px">${WM()}<div class="mut" style="font-size:13px;padding-left:4px;white-space:nowrap">${esc(DAY.format(now))}</div></div>
  <div class="hello" style="display:none"></div>
  <span class="mob-only">${sbChip(true)}</span></div>
- <h1>Prêt pour la salle ?</h1>
+ <h1>Où en sommes-nous ?</h1>
  ${W?`<button class="resume" style="margin-top:18px" data-a="tab" data-v="workout"><div style="flex:1"><div class="eyebrow" style="color:inherit;opacity:.8">Séance en cours</div><div style="font-weight:700;font-size:17px;margin-top:2px">${esc(W.name)}</div></div><div class="t" data-clock>${fmtT(elapsed(W)/1000)}</div></button>`:''}
- <div class="sec"><div class="quick">
-  <button class="btn" data-a="startEmpty">${ic('plus')}Séance vide</button>
-  ${next?`<button class="btn" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}" style="background:var(--acc);color:var(--acc-ink)">${ic('play')}<span style="text-align:left;line-height:1.2"><span style="font-size:12px;opacity:.8;display:block">Suivante</span>${esc(next.d.name)}</span></button>`:''}
- </div></div>
- ${cycActive().map(cycCard).join('')}
+ ${cycActive().map(cycCard).join('')||(next?`<div class="card sec"><span class="eyebrow">Dernier programme suivi</span><h2 style="margin:6px 0 10px">${esc(next.p.name)}</h2><button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px;width:100%" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(next.d.name)}</div></button></div>`
+  :`<div class="card sec" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap"><div><span class="eyebrow">Aucun programme en cours</span><div class="mut" style="font-size:14px;margin-top:4px">Lance un programme pour suivre tes semaines et ta prochaine séance ici.</div></div><button class="btn pri" data-a="tab" data-v="programs">${ic('list')}Programmes</button></div>`)}
  ${Object.keys(S.cycles||{}).map(cycOf).filter(c=>c&&c.ended).map(c=>`<div class="card sec" style="border:1px solid var(--ok)"><span class="eyebrow">Programme terminé</span><h2 style="margin:6px 0 4px">Bravo ! ${esc(c.p.name)}</h2><p class="mut" style="margin:0 0 12px">${c.done} séances en ${c.weeks} semaines. Change de programme pour continuer à progresser.</p><div class="quick"><button class="btn pri" data-a="tab" data-v="programs">Choisir un programme</button><button class="btn" data-a="cyStop" data-p="${c.p.id}">Masquer</button></div></div>`).join('')}
  <div class="sec card"><div class="hd" style="display:flex;justify-content:space-between;align-items:baseline"><span class="eyebrow">Cette semaine</span><span class="eyebrow">10 semaines</span></div>
   <div class="kpis" style="margin-top:12px"><div class="kpi"><div class="l">Séances</div><div class="v">${week.length}</div></div><div class="kpi"><div class="l">Temps</div><div class="v">${fmtDur(wTime)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v"><span style="color:var(--acc)">${fmtN(wVol)}</span> <small>kg</small></div></div></div>
   <div class="weeks">${weeks.map((w,i)=>`<div class="${i===9?'cur':''} ${view.hw===w.a?'sel':''}" data-a="wkPick" data-v="${w.a}" role="button" aria-label="Semaine du ${new Date(w.a).getDate()}/${new Date(w.a).getMonth()+1} : ${w.c} séance(s)"><i style="height:${Math.max(4,w.c/mx*64)}px" title="${w.c} séance(s)"></i><span>${i===9?'auj.':new Date(w.a).getDate()+'/'+(new Date(w.a).getMonth()+1)}</span></div>`).join('')}</div>
-  ${view.hw?`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:13px;font-weight:700"><span style="color:var(--acc)">Semaine du ${DSHORT.format(view.hw)} : ${S.sessions.filter(s=>s.start>=view.hw&&s.start<view.hw+7*864e5).length} séance(s) en surbrillance</span><button class="btn sm" data-a="wkPick" data-v="${view.hw}">Effacer</button></div>`:''}
+  ${view.hw?`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:13px;font-weight:700"><span style="color:var(--acc)">Semaine du ${DSHORT.format(view.hw)} : ${ALL.filter(s=>s.start>=view.hw&&s.start<view.hw+7*864e5).length} séance(s) en surbrillance</span><button class="btn sm" data-a="wkPick" data-v="${view.hw}">Effacer</button></div>`:''}
  </div>
  <div class="sec"><div class="hd"><h2>Historique des séances</h2></div>
-  ${S.sessions.length?histList():`<div class="card empty">${fig('bench',['pecs'])}<h3 style="color:var(--fg)">Aucune séance pour l’instant</h3><p>Lancez un programme ou une séance vide : le chrono démarre et tout est enregistré ici.</p></div>`}
+  ${ALL.length?histList(ALL):`<div class="card empty">${fig('bench',['pecs'])}<h3 style="color:var(--fg)">Aucune séance pour l’instant</h3><p>Lance un programme ou une sortie vélo : tout ce que tu fais est enregistré ici.</p></div>`}
  </div>`;
 };
 /* Historique complet, groupé par mois (affiché dans l'Accueil) */
-function histList(){
- const tot=S.sessions.reduce((a,s)=>a+s.duration,0),vol=S.sessions.reduce((a,s)=>a+(s.volume||0),0);
- let html=`<div class="card kpis"><div class="kpi"><div class="l">Séances</div><div class="v">${S.sessions.length}</div></div><div class="kpi"><div class="l">Temps total</div><div class="v">${fmtDur(tot)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(vol/1000)} <small>t</small></div></div></div>`;
+function histList(L=allSess()){
+ const tot=L.reduce((a,s)=>a+s.duration,0),vol=L.reduce((a,s)=>a+(s.volume||0),0);
+ let html=`<div class="card kpis"><div class="kpi"><div class="l">Séances</div><div class="v">${L.length}</div></div><div class="kpi"><div class="l">Temps total</div><div class="v">${fmtDur(tot)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(vol/1000)} <small>t</small></div></div></div>`;
  let cur='',buf=[];const flush=()=>{if(buf.length)html+=`<div class="month">${cur}</div><div class="grid">${buf.join('')}</div>`;buf=[]};
- S.sessions.forEach(s=>{const m=MONTH.format(s.start);if(m!==cur){flush();cur=m}buf.push(histCard(s))});flush();
+ L.forEach(s=>{const m=MONTH.format(s.start);if(m!==cur){flush();cur=m}buf.push(s.ride?rideCard(s):histCard(s))});flush();
  return html;
 }
+/* ----- Sorties vélo JeRIDE dans l'Accueil (lues sur l'appareil + compte en ligne) ----- */
+let RIDES=[];
+const allSess=()=>[...S.sessions,...RIDES].sort((a,b)=>b.start-a.start);
+function rideOf(x){const m=x.sum||{};return {id:'r'+x.id,rid:x.id,ride:true,name:x.name||'Sortie vélo',start:+new Date(x.start)||+x.id||0,duration:(m.dur||x.el||0)*1000,dist:m.dist||x.dist||0,kcal:m.kcal!=null?m.kcal:Math.round(x.kj||0),pAvg:m.pAvg||null,hrAvg:m.hrAvg||null,volume:0,sets:0}}
+function rideIDB(){return new Promise(res=>{let done=false;const fin=v=>{if(!done){done=true;res(v)}};setTimeout(()=>fin(null),3000);
+ try{const r=indexedDB.open('jeride',2);r.onupgradeneeded=()=>{const d=r.result;['sessions','routes'].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n,{keyPath:'id'})})};
+  r.onsuccess=()=>{const db=r.result;try{const q=db.transaction('sessions','readonly').objectStore('sessions').getAll();q.onsuccess=()=>{fin(q.result||[]);db.close()};q.onerror=()=>{fin(null);db.close()}}catch(e){fin(null);db.close()}};
+  r.onerror=r.onblocked=()=>fin(null)}catch(e){fin(null)}})}
+async function loadRides(){
+ let loc=await rideIDB();if(!loc){try{loc=JSON.parse(localStorage.getItem('jeride.sessions')||'[]')}catch(e){loc=[]}}
+ const map=new Map(loc.filter(x=>x&&x.id!=null).map(x=>[String(x.id),x]));
+ if(sbOn()&&sbLinked()){try{const rows=await sbFetch('/rest/v1/jeride_items?kind=eq.sessions&select=id,deleted,start:data->>start,name:data->>name,el:data->el,dist:data->dist,kj:data->kj,sum:data->sum',{method:'GET'})||[];
+  rows.forEach(r=>{if(r.deleted)map.delete(String(r.id));else if(!map.has(String(r.id)))map.set(String(r.id),r)})}catch(e){}}
+ const nv=[...map.values()].map(rideOf).filter(r=>r.start&&r.duration>=60000);
+ const sig=a=>a.map(r=>r.id+':'+r.duration).join();if(sig(nv)!==sig(RIDES)){RIDES=nv;soft()}}
+function rideCard(s){const hl=view.name==='home'&&view.hw&&s.start>=view.hw&&s.start<view.hw+7*864e5;
+ return `<button class="card hcard ${hl?'hl':''}" style="text-align:left;width:100%;display:block" data-a="openRide" data-r="${esc(String(s.rid))}">
+ <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2>${esc(s.name)}</h2><div class="mut" style="font-size:13px;margin-top:2px">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)}</div></div><span class="pill"><i class="dot" style="background:#FF8A1A"></i>Vélo · JeRIDE</span></div>
+ <div class="meta"><div><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div><div class="l">Distance</div><div class="v">${(s.dist/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})} km</div></div><div><div class="l">${s.pAvg?'Puissance':'Calories'}</div><div class="v">${s.pAvg?Math.round(s.pAvg)+' W':s.kcal+' kcal'}</div></div></div></button>`}
 
 VIEWS.programs=()=>{
  const f=view.cat||'all';
@@ -1784,8 +1800,9 @@ const A={
  editDay:el=>go('dayedit',{pid:el.dataset.p,did:el.dataset.d}),
  startDay:el=>startDay(el.dataset.p,el.dataset.d),
  jeride:()=>jrOpen(),
+ openRide:el=>jrOpen('hist',el.dataset.r),
  wkPick:el=>{const a=+el.dataset.v;if(view.hw===a){view.hw=null;render();return}
-  const n=S.sessions.filter(s=>s.start>=a&&s.start<a+7*864e5).length;if(!n){toast('Aucune séance cette semaine-là');return}
+  const n=allSess().filter(s=>s.start>=a&&s.start<a+7*864e5).length;if(!n){toast('Aucune séance cette semaine-là');return}
   const y=scrollY;view.hw=a;render();scrollTo(0,y);const f=document.querySelector('.hcard.hl');if(f)setTimeout(()=>f.scrollIntoView({behavior:'smooth',block:'center'}),60)},
  avoidSheet:()=>{avoidPrev=[...(S.avoid||[])];openSheet(avoidBody(),`<button class="btn" data-a="avoidBack">Retour</button><button class="btn pri" data-a="close">Terminé</button>`)},
  avoidBack:()=>{S.avoid=avoidPrev||[];touchCfg();closeSheet();render()},
@@ -2103,7 +2120,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V2.7',APP_BUILD='16/11/2026 à 18:00';
+const APP_V='V2.8',APP_BUILD='16/11/2026 à 18:30';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2180,7 +2197,7 @@ async function sbSync(loud){
   await sbFetch('/rest/v1/jefit_data?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:uid,data:sbSnap(),updated_at:new Date().toISOString()})});
   sbLast=Date.now();LS.set('jefit.sbLast',sbLast);
   setSb('ok','Dernière sauvegarde : '+HOUR.format(sbLast));if(loud)toast('Sauvegardé en ligne');
-  if(changed)soft();
+  if(changed)soft();loadRides();
  }catch(e){
   const tbl=e.code==='42P01'||e.code==='PGRST205'||e.status===404;
   setSb(e.code==='nolink'?'nolink':'err',tbl?'Table « jefit_data » introuvable : lancez le script SQL ci-dessous dans Supabase.':(e.message==='Failed to fetch'?'Hors ligne ou URL incorrecte.':e.message));
@@ -2394,7 +2411,7 @@ function jrSrc(){const t=document.getElementById('jeride-src');return t?t.textCo
 function jrLogo(src){if(jrLogoUrl)return jrLogoUrl;const m=/<img src="(data:image\/png;base64,[^"]+)" alt="JERIDE">/.exec(src||jrSrc());return jrLogoUrl=m?m[1]:''}
 function jrSplashHTML(){const lines=[18,27,36,64,73].map((t,i)=>`<i class="ln" style="top:${t}%;animation-delay:${i*.08}s;width:${30+i*7}vw"></i>`).join('');
  return `<div class="jrs">${lines}<img src="${jrLogo()}" alt="JeRIDE"><div class="tg">Mode vélo</div><div class="sub">Connecté au compte ${esc((ACC.get()||{}).name||'JeFIT')}</div><div class="bar"><i></i></div></div>`}
-function jrOpen(){
+function jrOpen(tab,rid){
  const src=jrFrame?'':jrSrc();if(!jrFrame&&!src){toast('JeRIDE n’est pas intégré à cette version');return}
  let d=$('#jr');if(!d){d=document.createElement('div');d.id='jr';document.body.appendChild(d)}
  const old=d.querySelector('.jrs');if(old)old.remove();d.insertAdjacentHTML('afterbegin',jrSplashHTML());
@@ -2404,11 +2421,14 @@ function jrOpen(){
   jrFrame.addEventListener('load',()=>{jrLoaded=true});
   jrFrame.srcdoc=src.replace(/<\/body>/i,LT+'script>('+jrBridge.toString()+')()'+LT+'/script></body>');d.appendChild(jrFrame)}
  const minT=reduceMotion()?300:first?2000:1100;
- const wait=()=>{if(!d.classList.contains('on'))return;if(jrLoaded&&Date.now()-t0>=minT){d.classList.add('ready');try{jrFrame.contentWindow.focus()}catch(e){}}else setTimeout(wait,120)};wait();
+ const wait=()=>{if(!d.classList.contains('on'))return;if(jrLoaded&&Date.now()-t0>=minT){d.classList.add('ready');try{const w=jrFrame.contentWindow;w.focus();if(tab){const b=w.document.querySelector('.tabs button[data-v="'+tab+'"]');if(b)b.click()}if(rid!=null&&w.showSess)setTimeout(()=>{try{w.showSess(isNaN(+rid)?rid:+rid)}catch(e){}},250)}catch(e){}}else setTimeout(wait,120)};wait();
 }
-function jrClose(){const d=$('#jr');if(d)d.classList.remove('on','ready');document.documentElement.classList.remove('jr-on');sbSync()}
+function jrClose(){const d=$('#jr');if(d)d.classList.remove('on','ready');document.documentElement.classList.remove('jr-on');sbSync();loadRides()}
 /* Ce qui est partagé avec JeRIDE (le cadre lit window.parent.JF) */
-window.JF={sbOn,sbLinked,sbCfg,sbToken,close:jrClose,uid:()=>(LS.get('jefit.sbs',{})||{}).uid,name:()=>(ACC.get()||{}).name||''};
+/* Petit logo JeFIT en image (dessiné avec la police de JeFIT) pour le bouton retour de JeRIDE */
+let jfLogoUrl=null;
+function jfLogoPng(){if(jfLogoUrl)return jfLogoUrl;try{const k=3,cv=document.createElement('canvas');cv.width=162*k;cv.height=48*k;const c=cv.getContext('2d'),g=c.createLinearGradient(0,0,cv.width,0);g.addColorStop(0,'#FFC21A');g.addColorStop(1,'#FF6A1A');cvLogo(c,0,0,k,g);jfLogoUrl=cv.toDataURL('image/png')}catch(e){jfLogoUrl=''}return jfLogoUrl}
+window.JF={sbOn,sbLinked,sbCfg,sbToken,close:jrClose,logo:jfLogoPng,uid:()=>(LS.get('jefit.sbs',{})||{}).uid,name:()=>(ACC.get()||{}).name||''};
 /* Exécuté DANS JeRIDE : bouton retour, synchro via le compte JeFIT, import des anciennes sorties */
 function jrBridge(){
  const P=window.parent&&window.parent!==window&&window.parent.JF;if(!P)return;
@@ -2416,7 +2436,9 @@ function jrBridge(){
  try{hideSplash()}catch(e){}
  /* Bouton « ← JeFIT » dans la barre du haut de JeRIDE */
  const top=document.querySelector('.app .top');
- if(top){const b=document.createElement('button');b.className='chip';b.style.cssText='font-weight:800;gap:6px';b.innerHTML='<span style="font-size:16px;line-height:1">←</span> JeFIT';b.title='Revenir à JeFIT';b.onclick=()=>P.close();top.insertBefore(b,top.firstChild)}
+ if(top){const b=document.createElement('button');b.className='chip';b.style.cssText='font-weight:800;gap:6px;display:inline-flex;align-items:center';const lg=P.logo&&P.logo();
+  b.innerHTML='<svg viewBox="0 0 24 24" style="width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M15 5l-7 7 7 7"/></svg>'+(lg?'<img src="'+lg+'" alt="JeFIT" style="height:17px;width:auto;display:block">':'JeFIT');
+  b.title='Revenir à JeFIT';b.setAttribute('aria-label','Revenir à JeFIT');b.onclick=()=>P.close();top.insertBefore(b,top.firstChild)}
  /* Synchronisation : table jeride_items du projet JeFIT, protégée par le compte */
  const api=async(path,opt={})=>{const c=P.sbCfg(),t=await P.sbToken();if(!t)throw new Error('Non connecté au compte JeFIT');
   const r=await fetch(c.url+path,Object.assign({},opt,{headers:Object.assign({apikey:c.key,Authorization:'Bearer '+t,'Content-Type':'application/json'},opt.headers||{})}));
@@ -2483,6 +2505,7 @@ applyTheme();render();if(W)wake();initSync();
 splash();
 if(!LS.get('jefit.remember',false))LS.del('jefit.logged');
 if(!ACC.logged())showAuth();else sbSync();
+loadRides();
 if(!sbOn())setSb('off');else if(!sbLinked())setSb('nolink');
 </script>
 <script type="text/plain" id="jeride-src"><!doctype html>
