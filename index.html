@@ -133,6 +133,9 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .weeks div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
 .weeks i{display:block;width:100%;max-width:64px;border-radius:6px 6px 2px 2px;background:var(--gradv);opacity:.55;min-height:3px}
 .weeks div.cur i{opacity:1}
+.weeks div[data-a]{cursor:pointer;border-radius:8px;padding:0 1px}.weeks div[data-a]:hover i{opacity:.85}
+.weeks div.sel i{opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc)}.weeks div.sel span{color:var(--acc)}
+.hcard.hl{outline:2px solid var(--acc);outline-offset:2px;box-shadow:0 0 0 6px color-mix(in srgb,var(--acc) 18%,transparent)}
 .weeks span{font:700 10px var(--f-disp);color:var(--mut)}
 .resume{display:flex;align-items:center;gap:14px;background:var(--grad);color:var(--acc-ink);border-radius:var(--r);padding:16px;width:100%;text-align:left}
 .resume .t{font:800 34px/1 var(--f-disp);font-variant-numeric:tabular-nums}
@@ -1403,7 +1406,7 @@ VIEWS.home=()=>{
  const weeks=[];for(let i=9;i>=0;i--){const a=ws-i*7*864e5,b=a+7*864e5;weeks.push({a,c:S.sessions.filter(s=>s.start>=a&&s.start<b).length})}
  const mx=Math.max(3,...weeks.map(w=>w.c));
  const last=S.sessions[0];
- let next=null;if(last&&last.programId){const p=S.programs.find(p=>p.id===last.programId);if(p&&p.days.length){const i=p.days.findIndex(d=>d.id===last.dayId);next={p,d:p.days[(i+1)%p.days.length]}}}
+ let next=null;if(last&&last.programId&&!cycActive().some(c=>c.p.id===last.programId)){const p=S.programs.find(p=>p.id===last.programId);if(p&&p.days.length){const i=p.days.findIndex(d=>d.id===last.dayId);next={p,d:p.days[(i+1)%p.days.length]}}}
  return `
  <div class="top"><div class="hello mob-only" style="flex-direction:column;align-items:flex-start;gap:2px">${WM()}<div class="mut" style="font-size:13px;padding-left:4px;white-space:nowrap">${esc(DAY.format(now))}</div></div>
  <div class="hello" style="display:none"></div>
@@ -1414,9 +1417,12 @@ VIEWS.home=()=>{
   <button class="btn" data-a="startEmpty">${ic('plus')}Séance vide</button>
   ${next?`<button class="btn" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}" style="background:var(--acc);color:var(--acc-ink)">${ic('play')}<span style="text-align:left;line-height:1.2"><span style="font-size:12px;opacity:.8;display:block">Suivante</span>${esc(next.d.name)}</span></button>`:''}
  </div></div>
+ ${cycActive().map(cycCard).join('')}
+ ${Object.keys(S.cycles||{}).map(cycOf).filter(c=>c&&c.ended).map(c=>`<div class="card sec" style="border:1px solid var(--ok)"><span class="eyebrow">Programme terminé</span><h2 style="margin:6px 0 4px">Bravo ! ${esc(c.p.name)}</h2><p class="mut" style="margin:0 0 12px">${c.done} séances en ${c.weeks} semaines. Change de programme pour continuer à progresser.</p><div class="quick"><button class="btn pri" data-a="tab" data-v="programs">Choisir un programme</button><button class="btn" data-a="cyStop" data-p="${c.p.id}">Masquer</button></div></div>`).join('')}
  <div class="sec card"><div class="hd" style="display:flex;justify-content:space-between;align-items:baseline"><span class="eyebrow">Cette semaine</span><span class="eyebrow">10 semaines</span></div>
   <div class="kpis" style="margin-top:12px"><div class="kpi"><div class="l">Séances</div><div class="v">${week.length}</div></div><div class="kpi"><div class="l">Temps</div><div class="v">${fmtDur(wTime)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v"><span style="color:var(--acc)">${fmtN(wVol)}</span> <small>kg</small></div></div></div>
-  <div class="weeks">${weeks.map((w,i)=>`<div class="${i===9?'cur':''}"><i style="height:${Math.max(4,w.c/mx*64)}px" title="${w.c} séance(s)"></i><span>${i===9?'auj.':new Date(w.a).getDate()+'/'+(new Date(w.a).getMonth()+1)}</span></div>`).join('')}</div>
+  <div class="weeks">${weeks.map((w,i)=>`<div class="${i===9?'cur':''} ${view.hw===w.a?'sel':''}" data-a="wkPick" data-v="${w.a}" role="button" aria-label="Semaine du ${new Date(w.a).getDate()}/${new Date(w.a).getMonth()+1} : ${w.c} séance(s)"><i style="height:${Math.max(4,w.c/mx*64)}px" title="${w.c} séance(s)"></i><span>${i===9?'auj.':new Date(w.a).getDate()+'/'+(new Date(w.a).getMonth()+1)}</span></div>`).join('')}</div>
+  ${view.hw?`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:13px;font-weight:700"><span style="color:var(--acc)">Semaine du ${DSHORT.format(view.hw)} : ${S.sessions.filter(s=>s.start>=view.hw&&s.start<view.hw+7*864e5).length} séance(s) en surbrillance</span><button class="btn sm" data-a="wkPick" data-v="${view.hw}">Effacer</button></div>`:''}
  </div>
  <div class="sec"><div class="hd"><h2>Historique des séances</h2></div>
   ${S.sessions.length?histList():`<div class="card empty">${fig('bench',['pecs'])}<h3 style="color:var(--fg)">Aucune séance pour l’instant</h3><p>Lancez un programme ou une séance vide : le chrono démarre et tout est enregistré ici.</p></div>`}
@@ -1446,6 +1452,7 @@ function quickCard(){
  <div class="row"><button class="btn pri" data-a="tab" data-v="quick">${ic('timer')}Composer ma séance</button></div></div>`;
 }
 /* ----- Muscles à éviter (blessure, opération…) : les exercices qui les sollicitent sont retirés ----- */
+let avoidPrev=null;
 const avoidOf=id=>(ex(id).m||[]).filter(m=>(S.avoid||[]).includes(m)).map(m=>MUS[m]).join(', ');
 const avoidOk=id=>!(S.avoid||[]).length||!(ex(id).m||[]).some(m=>S.avoid.includes(m));
 function avoidBar(){const A=S.avoid||[];
@@ -1471,6 +1478,9 @@ VIEWS.program=()=>{
  <span class="pill"><i class="dot" style="background:${c.c}"></i>${c.n}</span>
  <h1 style="margin-top:10px">${esc(p.name)}</h1>
  ${p.desc?`<p class="mut" style="max-width:68ch">${esc(p.desc)}</p>`:''}
+ ${(()=>{if(p.days.length<2)return '';const cy=cycOf(p.id),[a,b]=cycRec(p);
+  if(cy&&!cy.ended)return `<div class="card" style="margin:12px 0;max-width:640px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><b>Semaine ${cy.week} / ${cy.weeks}</b><span class="mut" style="font-size:13px">${cy.done} / ${cy.total} séances</span></div><div class="pbar" style="margin-top:8px"><i style="width:${Math.min(100,Math.round(100*cy.done/cy.total))}%"></i></div><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px"><span class="mut" style="font-size:13px">Prochaine : <b style="color:var(--fg)">${esc(cy.next.name)}</b></span><button class="btn sm" data-a="cyStop" data-p="${p.id}">Arrêter</button></div></div>`;
+  return `<p class="mut" style="margin:10px 0;font-size:14px">Durée conseillée : <b style="color:var(--fg)">${a} à ${b} semaines</b> · ${p.days.length} séances par semaine. Le choix se fait au premier « Démarrer ».</p>`})()}
  <button class="pill" style="padding:8px 12px;margin-top:4px" data-a="equip" data-p="${p.id}">${ic('gear').replace('<svg','<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"')}${p.equip?(p.equip.length?'Matériel : '+p.equip.map(k=>EQUIP[k]).join(', '):'Sans matériel'):'Matériel : à renseigner'} · modifier</button>
  <div class="grid sec">${p.days.map(d=>`<div class="card dcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>${esc(d.name)}</h2><button class="ib" data-a="editDay" data-p="${p.id}" data-d="${d.id}" aria-label="Modifier">${ic('edit')}</button></div>
   <div class="exl">${d.items.length?d.items.map(i=>`<div class="exrow" ${avoidOk(i.exId)?'':'style="opacity:.4"'}>${picto(i.exId)}<div style="min-width:0"><div class="nm" ${avoidOk(i.exId)?'':'style="text-decoration:line-through"'}>${esc(ex(i.exId).n)}</div><div class="sub">${avoidOk(i.exId)?targetTxt(i):'Retiré : '+avoidOf(i.exId)}</div></div></div>`).join(''):'<p class="mut" style="margin:0">Aucun mouvement. Touchez « Modifier » pour en ajouter.</p>'}</div>
@@ -1531,7 +1541,8 @@ function inp(item,k,j,c,pv){const s=item.sets[j],v=s[c];const ph=phTxt(sugOf(ite
 /* ----- Historique ----- */
 function histCard(s){
  const pr=(s.prs||[]).length;
- return `<button class="card hcard" style="text-align:left;width:100%;display:block" data-a="openSession" data-s="${s.id}">
+ const hl=view.name==='home'&&view.hw&&s.start>=view.hw&&s.start<view.hw+7*864e5;
+ return `<button class="card hcard ${hl?'hl':''}" style="text-align:left;width:100%;display:block" data-a="openSession" data-s="${s.id}">
  <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2>${esc(s.name)}</h2><div class="mut" style="font-size:13px;margin-top:2px">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)}</div></div>${pr?`<span class="pr">PR ×${pr}</span>`:''}</div>
  <div class="meta"><div><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div><div class="l">Volume</div><div class="v">${fmtN(s.volume)} kg</div></div><div><div class="l">Séries</div><div class="v">${s.sets}</div></div></div>
  <div class="exl">${s.items.slice(0,4).map(i=>`<div class="exrow">${picto(i.exId)}<span>${i.sets.length} × ${esc(ex(i.exId).n)}</span></div>`).join('')}${s.items.length>4?`<span class="mut" style="font-size:13px">+ ${s.items.length-4} exercice(s)</span>`:''}</div></button>`;
@@ -1614,8 +1625,40 @@ function startWorkout(w){
  const doIt=()=>{W=w;saveW();wake();go('workout')};
  if(W)confirmSheet('Remplacer la séance en cours ?',`« ${esc(W.name)} » n’est pas terminée. Elle sera abandonnée.`,'Remplacer',doIt);else doIt();
 }
-function startDay(pid,did,force){const p=S.programs.find(x=>x.id===pid),d=p&&p.days.find(x=>x.id===did);if(!d)return;
- if(!p.equip&&!force){openEquip(pid,did);return}
+/* ----- Cycle de programme : durée en semaines, suivi des séances, séance précédente / suivante ----- */
+const CYC_REC={split:[8,12],hyrox:[8,12],cali:[8,12],muscle:[6,10],libre:[6,8],circuit:[4,6],abdo:[4,6],corde:[4,6]};
+const cycRec=p=>CYC_REC[p.cat]||[6,8];
+function cycOf(pid){const c=(S.cycles||{})[pid];if(!c)return null;const p=S.programs.find(x=>x.id===pid);if(!p)return null;
+ const ss=S.sessions.filter(s=>s.programId===pid&&s.start>=c.start).sort((a,b)=>b.start-a.start);
+ const total=c.weeks*c.perWeek,now=Date.now(),week=Math.min(c.weeks,Math.floor((now-c.start)/(7*864e5))+1),ws=weekStart(now);
+ const last=ss[0]||null,i=last?p.days.findIndex(d=>d.id===last.dayId):-1;
+ let next=p.days[(i+1)%p.days.length]||p.days[0];for(let k=1;k<=p.days.length;k++){const d=p.days[(i+k)%p.days.length];if(d&&d.items.some(x=>avoidOk(x.exId))){next=d;break}}
+ return {...c,p,done:ss.length,total,week,thisWeek:ss.filter(s=>s.start>=ws).length,last,next,ended:ss.length>=total||now>c.start+(c.weeks*7+7)*864e5}}
+const cycActive=()=>Object.keys(S.cycles||{}).map(cycOf).filter(c=>c&&!c.ended).sort((a,b)=>((b.last&&b.last.start)||b.start)-((a.last&&a.last.start)||a.start));
+let CY={pid:null,did:null,w:8};
+function openWeeks(pid,did){const p=S.programs.find(x=>x.id===pid),[a,b]=cycRec(p);CY={pid,did,w:a};openSheet(weeksBody(),`<button class="btn" data-a="close">Retour</button><button class="btn pri" data-a="cyOk">Démarrer le programme</button>`)}
+function weeksBody(){const p=S.programs.find(x=>x.id===CY.pid),[a,b]=cycRec(p),n=p.days.length;
+ return `<div class="eyebrow">${esc(p.name)}</div><h2>Sur combien de semaines ?</h2><p class="mut" style="margin:0">Pour que ce programme soit efficace, suis-le <b>${a} à ${b} semaines</b>, à raison de <b>${n} séance${n>1?'s':''} par semaine</b>. Les charges progressent, puis on change de programme pour relancer les progrès.</p>
+ <div class="qdur" style="margin-top:14px">${[4,6,8,10,12].map(w=>`<button class="${CY.w===w?'on':''}" data-a="cyW" data-v="${w}"><b>${w}</b><span>${w>=a&&w<=b?'conseillé':'sem.'}</span></button>`).join('')}</div>
+ <div class="card" style="background:var(--soft);box-shadow:none;padding:12px;font-weight:600;margin-top:12px">${CY.w} semaines · ${CY.w*n} séances · fin prévue le ${DSHORT.format(Date.now()+CY.w*7*864e5)}</div>`}
+function openEqCheck(pid,did){const p=S.programs.find(x=>x.id===pid);
+ openSheet(`<div class="eyebrow">${esc(p.name)}</div><h2>Ton matériel a-t-il changé ?</h2><p class="mut" style="margin:0">Matériel enregistré : <b>${p.equip.length?p.equip.map(k=>EQUIP[k]).join(', '):'aucun · poids du corps'}</b>.</p>`,
+ `<button class="btn" data-a="eqChange" data-p="${pid}" data-d="${did}">Oui, le modifier</button><button class="btn pri" data-a="eqSame" data-p="${pid}" data-d="${did}">Non, continuer</button>`)}
+/* Carte « Programme en cours » de l'Accueil */
+function cycCard(c){const pct=Math.min(100,Math.round(100*c.done/c.total)),nd=c.next;
+ return `<div class="card sec"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span class="eyebrow">Programme en cours</span><span class="eyebrow">Semaine ${c.week} / ${c.weeks}</span></div>
+ <h2 style="margin:6px 0 2px">${esc(c.p.name)}</h2><div class="mut" style="font-size:13px">${c.done} / ${c.total} séances · cette semaine ${c.thisWeek} / ${c.perWeek}</div>
+ <div class="pbar" style="margin-top:10px"><i style="width:${pct}%"></i></div>
+ <div class="grid" style="margin-top:14px;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+  ${c.last?`<button class="card" style="background:var(--soft);box-shadow:none;text-align:left;padding:12px" data-a="openSession" data-s="${c.last.id}"><div class="eyebrow">Séance précédente</div><div style="font-weight:800;margin-top:4px">${esc(c.last.name)}</div><div class="mut" style="font-size:13px">${esc(DAY.format(c.last.start))} · ${fmtDur(c.last.duration)}</div></button>`:`<div class="card" style="background:var(--soft);box-shadow:none;padding:12px"><div class="eyebrow">Séance précédente</div><div class="mut" style="margin-top:4px">Aucune pour l’instant</div></div>`}
+  ${nd?`<button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px" data-a="startDay" data-p="${c.p.id}" data-d="${nd.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(nd.name)}</div><div style="font-size:13px;opacity:.8">${nd.items.filter(i=>avoidOk(i.exId)).length} exercices</div></button>`:''}
+ </div></div>`}
+function startDay(pid,did,stage){const p=S.programs.find(x=>x.id===pid),d=p&&p.days.find(x=>x.id===did);if(!d)return;
+ if(stage!=='go'){
+  if(!p.equip){openEquip(pid,did);return}
+  const c=cycOf(pid);
+  if(p.days.length>1&&!(c&&!c.ended)){if(stage!=='eq'){openEqCheck(pid,did);return}openWeeks(pid,did);return}
+ }
  const eq=p.equip;
  const its=d.items.filter(i=>avoidOk(i.exId));
  if(d.items.length&&!its.length){toast('Tous les exercices de cette séance sollicitent une zone à éviter.');return}
@@ -1741,7 +1784,11 @@ const A={
  editDay:el=>go('dayedit',{pid:el.dataset.p,did:el.dataset.d}),
  startDay:el=>startDay(el.dataset.p,el.dataset.d),
  jeride:()=>jrOpen(),
- avoidSheet:()=>openSheet(avoidBody(),`<button class="btn pri blk" data-a="close">Terminé</button>`),
+ wkPick:el=>{const a=+el.dataset.v;if(view.hw===a){view.hw=null;render();return}
+  const n=S.sessions.filter(s=>s.start>=a&&s.start<a+7*864e5).length;if(!n){toast('Aucune séance cette semaine-là');return}
+  const y=scrollY;view.hw=a;render();scrollTo(0,y);const f=document.querySelector('.hcard.hl');if(f)setTimeout(()=>f.scrollIntoView({behavior:'smooth',block:'center'}),60)},
+ avoidSheet:()=>{avoidPrev=[...(S.avoid||[])];openSheet(avoidBody(),`<button class="btn" data-a="avoidBack">Retour</button><button class="btn pri" data-a="close">Terminé</button>`)},
+ avoidBack:()=>{S.avoid=avoidPrev||[];touchCfg();closeSheet();render()},
  avoidTog:el=>{const k=el.dataset.v,A=new Set(S.avoid||[]);A.has(k)?A.delete(k):A.add(k);S.avoid=[...A];touchCfg();const b=$('#sheet .sb');if(b)b.innerHTML=avoidBody();render()},
  startEmpty:()=>startWorkout({id:uid(),name:'Séance libre',programId:null,dayId:null,start:Date.now(),pausedMs:0,pausedAt:null,items:[],rest:null}),
  newProgram:()=>openSheet(`<h2>Nouveau programme</h2><div class="form"><label>Nom<input id="np-n" placeholder="Ex. Force 5×5"></label><label>Catégorie<select id="np-c">${Object.entries(CATS).map(([k,c])=>`<option value="${k}" ${k===(view.cat&&view.cat!=='all'?view.cat:'libre')?'selected':''}>${c.n}</option>`).join('')}</select></label><label>Description<input id="np-d" placeholder="Optionnel"></label></div>`,`<button class="btn" data-a="close">Annuler</button><button class="btn pri" data-a="npOk">Créer</button>`),
@@ -1777,7 +1824,12 @@ const A={
  eqT:el=>{const k=el.dataset.v;EQ.sel.includes(k)?EQ.sel=EQ.sel.filter(x=>x!==k):EQ.sel.push(k);refreshEquip()},
  eqNone:()=>{EQ.sel=[];refreshEquip()},
  eqAll:()=>{EQ.sel=Object.keys(EQUIP);refreshEquip()},
- eqOk:()=>{const p=S.programs.find(x=>x.id===EQ.pid);p.equip=[...EQ.sel];S.equipDefault=[...EQ.sel];touchCfg();closeSheet();if(EQ.did)startDay(EQ.pid,EQ.did,true);else render()},
+ eqOk:()=>{const p=S.programs.find(x=>x.id===EQ.pid);p.equip=[...EQ.sel];S.equipDefault=[...EQ.sel];touchCfg();closeSheet();if(EQ.did)startDay(EQ.pid,EQ.did,'eq');else render()},
+ eqSame:el=>{closeSheet();startDay(el.dataset.p,el.dataset.d,'eq')},
+ eqChange:el=>openEquip(el.dataset.p,el.dataset.d),
+ cyW:el=>{CY.w=+el.dataset.v;$('#sheet .sb').innerHTML=weeksBody()},
+ cyOk:()=>{const p=S.programs.find(x=>x.id===CY.pid);S.cycles=S.cycles||{};S.cycles[p.id]={start:Date.now(),weeks:CY.w,perWeek:p.days.length};touchCfg();closeSheet();toast(`Programme lancé pour ${CY.w} semaines`);startDay(CY.pid,CY.did,'go')},
+ cyStop:el=>confirmSheet('Arrêter ce programme ?','Le suivi des semaines s’arrête. Tes séances restent dans l’historique.','Arrêter',()=>{delete S.cycles[el.dataset.p];touchCfg();render()}),
  equip:el=>openEquip(el.dataset.p,null),
  health:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);const min=Math.max(1,Math.round(s.duration/60000)),kcal=kcalOf(s);
   const url=`shortcuts://run-shortcut?name=${encodeURIComponent('JeFIT Santé')}&input=text&text=${encodeURIComponent(min+';'+kcal)}`;
@@ -2051,7 +2103,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V2.5',APP_BUILD='16/11/2026 à 17:15';
+const APP_V='V2.7',APP_BUILD='16/11/2026 à 18:00';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2098,11 +2150,11 @@ function sbWelcome(){if(!sbOn()||!sbLinked())return;sbFn('welcome').then(j=>{if(
 const sbTaken=e=>/already|registered|exists/i.test(e&&e.message||'')||(e&&e.code==='user_already_exists');
 /* Connexion au compte en ligne ; le crée s'il n'existe pas encore */
 async function sbConnect(name,pw){try{await sbLogin(name,pw)}catch(e){if(e.status!==400)throw e;try{await sbSignup(name,pw)}catch(e2){if(sbTaken(e2)){const x=new Error('Mot de passe incorrect pour ce compte en ligne.');x.code='badpw';throw x}throw e2}}}
-function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
+function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
 function sbMerge(r){
  if(!r||r.app!=='JeFIT')return false;let ch=false;
  const tomb=new Set([...(S.tomb||[]),...(r.tomb||[])]);if(tomb.size!==S.tomb.length){S.tomb=[...tomb];ch=true}
- if((r.cfgAt||0)>(S.cfgAt||0)){S.programs=clone(r.programs||S.programs);S.custom=clone(r.custom||[]);if(r.lafay)S.lafay=clone(r.lafay);if(Array.isArray(r.avoid))S.avoid=clone(r.avoid);S.cfgAt=r.cfgAt;ch=true;if(typeof queuePushCfg==='function')queuePushCfg()}
+ if((r.cfgAt||0)>(S.cfgAt||0)){S.programs=clone(r.programs||S.programs);S.custom=clone(r.custom||[]);if(r.lafay)S.lafay=clone(r.lafay);if(Array.isArray(r.avoid))S.avoid=clone(r.avoid);if(r.cycles&&typeof r.cycles==='object')S.cycles=clone(r.cycles);S.cfgAt=r.cfgAt;ch=true;if(typeof queuePushCfg==='function')queuePushCfg()}
  const have=new Set(S.sessions.map(s=>s.id));(r.sessions||[]).forEach(s=>{if(!have.has(s.id)&&!tomb.has(s.id)){S.sessions.push(clone(s));S.pending.push(s.id);ch=true}});
  const n=S.sessions.length;S.sessions=S.sessions.filter(s=>!tomb.has(s.id));if(S.sessions.length!==n)ch=true;
  if(ch){S.sessions.sort((a,b)=>b.start-a.start);LS.set(KEY,S);S.pending.forEach(pushSess)}
