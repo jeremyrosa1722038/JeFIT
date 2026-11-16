@@ -32,7 +32,7 @@ input,select,textarea{font:inherit;color:var(--fg)}
 
 /* ---------- Coquille ---------- */
 #nav{position:fixed;z-index:20;background:var(--bar);border-color:var(--line)}
-#main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 150px;max-width:1240px;margin:0 auto}
+#main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(14px + env(safe-area-inset-top,0px)) 150px;max-width:1240px;margin:0 auto}
 .nav-in{display:flex}
 .navb{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--mut);font-size:11px;font-weight:700;flex:1;padding:8px 0 6px}
 .navb svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -56,6 +56,15 @@ input,select,textarea{font:inherit;color:var(--fg)}
  .mob-only{display:none!important}
 }
 @media (min-width:820px) and (max-width:1279px){.navb span:not(.live){display:none}.navb.on span{display:inline}}
+/* Bulle avec le nom de l'onglet au survol de la souris */
+@media (min-width:820px) and (hover:hover){
+ .navb,.brand{position:relative}.brand{cursor:pointer}
+ .navb:hover:not(.on){color:var(--fg);background:var(--card)}
+ [data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:7px 11px;border-radius:9px;font:700 13px var(--f-body);white-space:nowrap;pointer-events:none;z-index:40;box-shadow:0 8px 22px -8px rgba(0,0,0,.45);animation:tipIn .15s ease-out}
+ [data-tip]:hover::before{content:"";position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:var(--fg);border-top:0;pointer-events:none;z-index:40;animation:tipIn .15s ease-out}
+}
+@media (min-width:1280px){.navb[data-tip]:hover::after,.navb[data-tip]:hover::before{display:none}}
+@keyframes tipIn{from{opacity:0;margin-top:-4px}to{opacity:1;margin-top:0}}
 @media (min-width:820px) and (max-width:1120px){.nav-r .sync{display:none}}
 .npill{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;background:var(--soft);font:700 15px var(--f-disp);color:var(--fg);white-space:nowrap}
 .npill.clock{font:800 22px var(--f-disp);font-variant-numeric:tabular-nums;padding:0 18px;height:48px;background:var(--card);border:1px solid var(--line)}
@@ -87,6 +96,7 @@ a.btn{text-decoration:none}
 .ib{width:42px;height:42px;display:inline-grid;place-items:center;border-radius:12px;color:var(--fg)}
 .ib:active,.btn:active{transform:scale(.97)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
 .chips::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:9px 16px;border-radius:12px;background:var(--soft);font:700 15px var(--f-disp);color:var(--mut)}
 .chip.on{background:var(--acc);color:#fff}
@@ -322,7 +332,7 @@ svg.wma{animation:wmGlow 2.6s ease}
 #auth.in .ac{opacity:1;transform:none}
 
 /* ---------- Écran de compte ---------- */
-#auth{position:fixed;inset:0;z-index:45;background:var(--bg);overflow:auto;display:flex;align-items:center;justify-content:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+#auth{position:fixed;inset:0;z-index:45;background:var(--bg);overflow:auto;display:flex;align-items:center;justify-content:center;padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
 #auth .ac{width:100%;max-width:400px;display:flex;flex-direction:column;gap:18px}
 #auth .ac .wm{height:52px;margin:0 auto}
 #auth h2{text-align:center;font-size:22px}
@@ -1339,7 +1349,7 @@ const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['quick',
 function navHTML(){
  const tabOf={program:'programs',dayedit:'programs',session:'history',exercise:'progress'};
  const cur=tabOf[view.name]||view.name;
- return `<div class="brand">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${syncChip().replace('class="sync','class="npill sync')}${themeBtn()}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
+ return `<div class="brand" data-a="tab" data-v="home" data-tip="Accueil" role="button" aria-label="Accueil">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}" data-tip="${l}" aria-label="${l}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${syncChip().replace('class="sync','class="npill sync')}${themeBtn()}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
 }
 function render(){
  const V=VIEWS[view.name]||VIEWS.home;
@@ -1382,7 +1392,7 @@ VIEWS.programs=()=>{
  const f=view.cat||'all';
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
- <div class="chips"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip bike" href="${JERIDE_URL}" target="_blank" rel="noopener">🚴 Vélo · JeRIDE ↗</a></div>
+ <div class="chips wrap"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip bike" href="${JERIDE_URL}" target="_blank" rel="noopener">🚴 Vélo · JeRIDE ↗</a></div>
  <div class="grid sec" style="margin-top:16px">${f==='all'||f==='lafay'?lafCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
 function progCard(p){
@@ -1923,7 +1933,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V1.3',APP_BUILD='16/11/2026 à 11:40';
+const APP_V='V1.6',APP_BUILD='16/11/2026 à 13:40';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
