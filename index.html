@@ -293,7 +293,10 @@ table.sets-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nu
 .qdur button.on{border-color:var(--acc);background:var(--acc-soft)}.qdur button.on b{color:var(--acc)}
 .qopt .chips{flex-wrap:wrap}
 @media (max-width:819px){.navb{font-size:10px}.navb svg{width:23px;height:23px}}
-@media (max-width:479px){.navb[data-v="history"]{display:none}}
+/* Barre « Séance en cours » visible sur les autres pages (mobile) */
+.livebar{position:fixed;z-index:24;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:0 max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
+.livebar .resume{box-shadow:0 10px 28px -10px rgba(0,0,0,.55);padding:12px 16px}
+@media (min-width:820px){.livebar{display:none}}
 @media (max-width:420px){.srow{grid-template-columns:38px minmax(0,1fr) repeat(var(--n),minmax(54px,72px)) 46px;gap:5px;padding-left:8px;padding-right:8px}.srow .ck{width:44px}.kpi .v{font-size:20px}}
 /* ---------- Intro : apparition du logo lettre par lettre ---------- */
 #splash{position:fixed;inset:0;z-index:60;background:radial-gradient(70% 50% at 50% 46%,#1A2340 0%,#0C1220 60%,#070B14 100%);display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,transform .6s ease;cursor:pointer;overflow:hidden}
@@ -339,9 +342,9 @@ svg.wma{animation:wmGlow 2.6s ease}
 #auth .lead{text-align:center;margin:-8px 0 0;color:var(--mut);font-size:14px}
 #auth .err{color:var(--danger);font-size:14px;min-height:20px;text-align:center}
 #auth .lnk{color:var(--acc);font-weight:700;font-size:14px;text-align:center;width:100%;padding:6px}
-#auth .seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
-#auth .seg button{flex:1;height:44px;border-radius:11px;font:700 15px var(--f-disp);color:var(--mut)}
-#auth .seg button.on{background:var(--grad);color:var(--acc-ink)}
+.seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;height:44px;border-radius:11px;font:700 15px var(--f-disp);color:var(--mut)}
+.seg button.on{background:var(--grad);color:var(--acc-ink)}
 #auth .rem{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mut);cursor:pointer}
 #auth .rem input{width:20px;height:20px;accent-color:var(--acc)}
 #auth .note{font-size:12px;color:var(--mut);text-align:center;margin:0}
@@ -1345,17 +1348,24 @@ function weekStart(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDat
 /* ---------- Navigation ---------- */
 let view={name:'home'},sheetOpen=false;
 function go(name,p={}){view={name,...p};render();window.scrollTo(0,0)}
-const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['quick','Express','timer'],['lafay','Lafay','stairs'],['workout','Séance','bolt'],['history','Historique','hist'],['progress','Progrès','chart'],['settings','Paramètres','gear']];
+const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['progress','Progrès','chart'],['settings','Paramètres','gear']];
 function navHTML(){
- const tabOf={program:'programs',dayedit:'programs',session:'history',exercise:'progress'};
+ const tabOf={program:'programs',dayedit:'programs',quick:'programs',lafay:'programs',session:'home',history:'home',exercise:'progress'};
  const cur=tabOf[view.name]||view.name;
- return `<div class="brand" data-a="tab" data-v="home" data-tip="Accueil" role="button" aria-label="Accueil">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}" data-tip="${l}" aria-label="${l}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${syncChip().replace('class="sync','class="npill sync')}${themeBtn()}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
+ return `<div class="brand" data-a="tab" data-v="home" data-tip="Accueil" role="button" aria-label="Accueil">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}" data-tip="${l}" aria-label="${l}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${syncChip().replace('class="sync','class="npill sync')}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
 }
 function render(){
  const V=VIEWS[view.name]||VIEWS.home;
  $('#main').innerHTML=V();
  $('#nav').innerHTML=navHTML();
- renderRest();
+ renderRest();renderLive();
+}
+/* Séance en cours : barre cliquable en bas des autres pages pour y revenir */
+function renderLive(){
+ let el=$('#livebar');const show=W&&!W.rest&&!['workout','home'].includes(view.name);
+ if(!show){if(el)el.remove();return}
+ if(!el){el=document.createElement('div');el.id='livebar';el.className='livebar';document.body.appendChild(el)}
+ el.innerHTML=`<button class="resume" data-a="tab" data-v="workout"><div style="flex:1;min-width:0"><div class="eyebrow" style="color:inherit;opacity:.8">Séance en cours · toucher pour revenir</div><div style="font-weight:700;font-size:16px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(W.name)}</div></div><div class="t" data-clock>${fmtT(elapsed(W)/1000)}</div></button>`;
 }
 
 /* ---------- Vues ---------- */
@@ -1371,30 +1381,44 @@ VIEWS.home=()=>{
  return `
  <div class="top"><div class="hello mob-only" style="flex-direction:column;align-items:flex-start;gap:2px">${WM()}<div class="mut" style="font-size:13px;padding-left:4px;white-space:nowrap">${esc(DAY.format(now))}</div></div>
  <div class="hello" style="display:none"></div>
- <div class="acts"><span class="mob-only">${themeBtn()}</span><button class="ib" data-a="settings" aria-label="Réglages">${ic('gear')}</button></div></div>
+</div>
  <h1>Prêt pour la salle ?</h1>
  ${W?`<button class="resume" style="margin-top:18px" data-a="tab" data-v="workout"><div style="flex:1"><div class="eyebrow" style="color:inherit;opacity:.8">Séance en cours</div><div style="font-weight:700;font-size:17px;margin-top:2px">${esc(W.name)}</div></div><div class="t" data-clock>${fmtT(elapsed(W)/1000)}</div></button>`:''}
  <div class="sec"><div class="quick">
   <button class="btn" data-a="startEmpty">${ic('plus')}Séance vide</button>
-  ${next?`<button class="btn" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}" style="background:var(--acc);color:var(--acc-ink)">${ic('play')}<span style="text-align:left;line-height:1.2"><span style="font-size:12px;opacity:.8;display:block">Suivante</span>${esc(next.d.name)}</span></button>`:`<button class="btn" data-a="tab" data-v="programs">${ic('list')}Choisir un programme</button>`}
+  ${next?`<button class="btn" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}" style="background:var(--acc);color:var(--acc-ink)">${ic('play')}<span style="text-align:left;line-height:1.2"><span style="font-size:12px;opacity:.8;display:block">Suivante</span>${esc(next.d.name)}</span></button>`:''}
  </div></div>
- <div class="sec quick"><button class="btn" data-a="tab" data-v="quick">${ic('timer')}<span style="text-align:left;line-height:1.2"><span style="font-size:12px;opacity:.7;display:block">15 · 30 · 45 · 60 min</span>Sport en minutes</span></button><button class="btn" data-a="tab" data-v="lafay">${ic('stairs')}<span style="text-align:left;line-height:1.2"><span style="font-size:12px;opacity:.7;display:block">Méthode Lafay</span>Niveau ${S.lafay.lvl} · ${esc(LAF[S.lafay.lvl-1].short)}</span></button></div>
  <div class="sec card"><div class="hd" style="display:flex;justify-content:space-between;align-items:baseline"><span class="eyebrow">Cette semaine</span><span class="eyebrow">10 semaines</span></div>
   <div class="kpis" style="margin-top:12px"><div class="kpi"><div class="l">Séances</div><div class="v">${week.length}</div></div><div class="kpi"><div class="l">Temps</div><div class="v">${fmtDur(wTime)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v"><span style="color:var(--acc)">${fmtN(wVol)}</span> <small>kg</small></div></div></div>
   <div class="weeks">${weeks.map((w,i)=>`<div class="${i===9?'cur':''}"><i style="height:${Math.max(4,w.c/mx*64)}px" title="${w.c} séance(s)"></i><span>${i===9?'auj.':new Date(w.a).getDate()+'/'+(new Date(w.a).getMonth()+1)}</span></div>`).join('')}</div>
  </div>
- <div class="sec"><div class="hd"><h2>Dernières séances</h2>${S.sessions.length?'<button class="btn sm" data-a="tab" data-v="history">Tout voir</button>':''}</div>
-  ${S.sessions.length?`<div class="grid">${S.sessions.slice(0,3).map(histCard).join('')}</div>`:`<div class="card empty">${fig('bench',['pecs'])}<h3 style="color:var(--fg)">Aucune séance pour l’instant</h3><p>Lancez un programme ou une séance vide : le chrono démarre et tout est enregistré ici.</p></div>`}
+ <div class="sec"><div class="hd"><h2>Historique des séances</h2></div>
+  ${S.sessions.length?histList():`<div class="card empty">${fig('bench',['pecs'])}<h3 style="color:var(--fg)">Aucune séance pour l’instant</h3><p>Lancez un programme ou une séance vide : le chrono démarre et tout est enregistré ici.</p></div>`}
  </div>`;
 };
+/* Historique complet, groupé par mois (affiché dans l'Accueil) */
+function histList(){
+ const tot=S.sessions.reduce((a,s)=>a+s.duration,0),vol=S.sessions.reduce((a,s)=>a+(s.volume||0),0);
+ let html=`<div class="card kpis"><div class="kpi"><div class="l">Séances</div><div class="v">${S.sessions.length}</div></div><div class="kpi"><div class="l">Temps total</div><div class="v">${fmtDur(tot)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(vol/1000)} <small>t</small></div></div></div>`;
+ let cur='',buf=[];const flush=()=>{if(buf.length)html+=`<div class="month">${cur}</div><div class="grid">${buf.join('')}</div>`;buf=[]};
+ S.sessions.forEach(s=>{const m=MONTH.format(s.start);if(m!==cur){flush();cur=m}buf.push(histCard(s))});flush();
+ return html;
+}
 
 VIEWS.programs=()=>{
  const f=view.cat||'all';
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
  <div class="chips wrap"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<a class="chip bike" href="${JERIDE_URL}" target="_blank" rel="noopener">🚴 Vélo · JeRIDE ↗</a></div>
- <div class="grid sec" style="margin-top:16px">${f==='all'||f==='lafay'?lafCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
+ <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
+/* Carte « Sport en minutes » (ex-onglet Express) en tête des programmes */
+function quickCard(){
+ return `<div class="card pcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:var(--acc)"></i>Express</span><span class="mut" style="font-size:13px">séance générée</span></div>
+ <h2 style="margin-top:10px">Sport en minutes</h2>
+ <div class="days">Choisis ton temps (15 · 30 · 45 · 60 min), ton focus et ton matériel : une séance prête à lancer, chronométrée, avec les repos.</div>
+ <div class="row"><button class="btn pri" data-a="tab" data-v="quick">${ic('timer')}Composer ma séance</button></div></div>`;
+}
 function progCard(p){
  const c=CATS[p.cat]||CATS.libre;const exs=[...new Set(p.days.flatMap(d=>d.items.map(i=>i.exId)))];
  return `<div class="card pcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:${c.c}"></i>${c.n}</span><span class="mut" style="font-size:13px">${p.days.length} séance${p.days.length>1?'s':''}</span></div>
@@ -1476,17 +1500,10 @@ function histCard(s){
  <div class="meta"><div><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div><div class="l">Volume</div><div class="v">${fmtN(s.volume)} kg</div></div><div><div class="l">Séries</div><div class="v">${s.sets}</div></div></div>
  <div class="exl">${s.items.slice(0,4).map(i=>`<div class="exrow">${picto(i.exId)}<span>${i.sets.length} × ${esc(ex(i.exId).n)}</span></div>`).join('')}${s.items.length>4?`<span class="mut" style="font-size:13px">+ ${s.items.length-4} exercice(s)</span>`:''}</div></button>`;
 }
-VIEWS.history=()=>{
- if(!S.sessions.length)return `<div class="top"><h1>Historique</h1></div><div class="card empty">${fig('run',['jambes'])}<h3 style="color:var(--fg)">Rien d’enregistré pour l’instant</h3><p>Chaque séance terminée apparaît ici avec sa durée, son volume et le détail de chaque série.</p><button class="btn pri" data-a="tab" data-v="programs">Choisir un programme</button></div>`;
- const tot=S.sessions.reduce((a,s)=>a+s.duration,0),vol=S.sessions.reduce((a,s)=>a+(s.volume||0),0);
- let html=`<div class="top"><h1>Historique</h1></div><div class="card kpis"><div class="kpi"><div class="l">Séances</div><div class="v">${S.sessions.length}</div></div><div class="kpi"><div class="l">Temps total</div><div class="v">${fmtDur(tot)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(vol/1000)} <small>t</small></div></div></div>`;
- let cur='',buf=[];const flush=()=>{if(buf.length)html+=`<div class="month">${cur}</div><div class="grid">${buf.join('')}</div>`;buf=[]};
- S.sessions.forEach(s=>{const m=MONTH.format(s.start);if(m!==cur){flush();cur=m}buf.push(histCard(s))});flush();
- return html;
-};
+VIEWS.history=()=>VIEWS.home(); // l'historique est maintenant dans l'Accueil
 VIEWS.session=()=>{
- const s=S.sessions.find(x=>x.id===view.sid);if(!s)return VIEWS.history();
- return `<div class="top"><button class="btn backb" data-a="tab" data-v="history">${ic('back')}Retour</button><div class="acts"><button class="btn sm" data-a="redo" data-s="${s.id}">${ic('play')}Refaire</button><button class="ib" style="color:var(--danger)" data-a="delSession" data-s="${s.id}" aria-label="Supprimer">${ic('trash')}</button></div></div>
+ const s=S.sessions.find(x=>x.id===view.sid);if(!s)return VIEWS.home();
+ return `<div class="top"><button class="btn backb" data-a="tab" data-v="home">${ic('back')}Retour</button><div class="acts"><button class="btn sm" data-a="redo" data-s="${s.id}">${ic('play')}Refaire</button><button class="ib" style="color:var(--danger)" data-a="delSession" data-s="${s.id}" aria-label="Supprimer">${ic('trash')}</button></div></div>
  ${view.fresh?`<div class="card" style="background:var(--ok-bg);color:var(--ok-ink);margin-bottom:16px;font-weight:600">Séance enregistrée. Bien joué !${view.laf?' '+esc(view.laf):''}${(s.prs||[]).length?` ${s.prs.length} record(s) battu(s).`:''}</div>`:''}
  <div class="eyebrow">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)} → ${HOUR.format(s.end)}</div><h1 style="margin-top:6px">${esc(s.name)}</h1>
  <div class="card kpis sec"><div class="kpi"><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(s.volume)} <small>kg</small></div></div><div class="kpi"><div class="l">Séries</div><div class="v">${s.sets}</div></div></div>
@@ -1597,7 +1614,7 @@ function stravaTxt(s){return `${s.name} · JeFIT\n${fmtDur(s.duration)} · ${s.s
 let AC=null;function audio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
 function beep(){try{audio();[0,.22,.44].forEach((d,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=i===2?1320:880;o.connect(g);g.connect(AC.destination);const t=AC.currentTime+d;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.start(t);o.stop(t+.2)})}catch(e){}}
 function renderRest(){
- let el=$('#restbar');
+ renderLive();let el=$('#restbar');
  if(!W||!W.rest){if(el)el.remove();return}
  const left=Math.max(0,Math.ceil((W.rest.end-Date.now())/1000));
  if(!el){el=document.createElement('div');el.id='restbar';el.className='restbar';document.body.appendChild(el)}
@@ -1667,7 +1684,7 @@ const A={
  metric:el=>{view.m=el.dataset.v;render()},
  openSession:el=>{backStack=[];go('session',{sid:el.dataset.s})},
  redo:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);if(s.lafLvl&&s.lafSess&&LAF[s.lafLvl-1]){lafStart(s.lafLvl,s.lafSess);return}startWorkout({id:uid(),name:s.name,cat:s.cat,programId:s.programId,dayId:s.dayId,start:Date.now(),pausedMs:0,pausedAt:null,rest:null,items:s.items.map(i=>({...mkItem(i.exId,{sets:i.sets.length}),note:i.note}))})},
- delSession:el=>{const id=el.dataset.s;confirmSheet('Supprimer cette séance ?','Elle sera retirée de l’historique et des courbes.','Supprimer',()=>{S.sessions=S.sessions.filter(x=>x.id!==id);S.tomb.push(id);S.pending=S.pending.filter(x=>x!==id);if(sessCol)sessCol.doc(id).delete().catch(()=>{S.deleted.push(id);save()});else S.deleted.push(id);save();go('history')})},
+ delSession:el=>{const id=el.dataset.s;confirmSheet('Supprimer cette séance ?','Elle sera retirée de l’historique et des courbes.','Supprimer',()=>{S.sessions=S.sessions.filter(x=>x.id!==id);S.tomb.push(id);S.pending=S.pending.filter(x=>x!==id);if(sessCol)sessCol.doc(id).delete().catch(()=>{S.deleted.push(id);save()});else S.deleted.push(id);save();go('home')})},
  eqT:el=>{const k=el.dataset.v;EQ.sel.includes(k)?EQ.sel=EQ.sel.filter(x=>x!==k):EQ.sel.push(k);refreshEquip()},
  eqNone:()=>{EQ.sel=[];refreshEquip()},
  eqAll:()=>{EQ.sel=Object.keys(EQUIP);refreshEquip()},
@@ -1725,6 +1742,7 @@ const A={
  impOk:async()=>{let txt=$('#imp').value.trim();const f=$('#impf').files[0];if(!txt&&f)txt=await f.text();try{const d=JSON.parse(txt);if(!Array.isArray(d.programs))throw 0;S.programs=d.programs;S.custom=d.custom||[];const have=new Set(S.sessions.map(s=>s.id));(d.sessions||[]).forEach(s=>{if(!have.has(s.id)){S.sessions.push(s);S.pending.push(s.id)}});S.sessions.sort((a,b)=>b.start-a.start);touchCfg();S.pending.forEach(pushSess);closeSheet();render();toast('Sauvegarde importée')}catch(e){toast('Ce texte n’est pas une sauvegarde JeFIT valide')}},
  restore:()=>confirmSheet('Réinstaller les programmes par défaut ?','Tous les programmes fournis avec JeFIT (HYROX, muscu, circuits, par muscle, Lafay, abdos, cardio…) sont rajoutés ou remis à zéro. Vos propres programmes sont conservés.','Réinstaller',()=>{const seed=seedPrograms();S.programs=[...seed,...S.programs.filter(p=>!seed.some(s=>s.id===p.id))];touchCfg();render();toast('Programmes réinstallés')},false),
  theme:()=>{A.themeQuick();A.settings()},
+ themeSet:el=>{LS.set('jelift.theme',el.dataset.v);applyTheme();render()},
  themeQuick:()=>{LS.set('jelift.theme',LS.get('jelift.theme','dark')==='light'?'dark':'light');applyTheme();if(!sheetOpen)render()},
 };
 function applyTheme(){document.documentElement.setAttribute('data-theme',LS.get('jelift.theme','dark')==='light'?'light':'dark')}
@@ -1777,7 +1795,7 @@ VIEWS.lafay=()=>{
    ${nv?`<div class="sug">✓ Objectif atteint (${x.up.n>1?x.up.n+' × ':''}${x.up.r}) <button class="btn sm" data-a="lafUp" data-c="${x.ch}" data-v="${nv.to}">Passer à ${nv.to}</button></div>`:''}
    ${cu?`<div class="sug">✓ 6 séries à ${lafCap(code)} <button class="btn sm" data-a="lafCap" data-e="${code}" data-v="${cu}">Palier suivant : ${cu}</button></div>`:''}
   </div></div>`}).join('');
- return `<div class="top"><h1>Méthode Lafay</h1><button class="btn sm" data-a="lafHelp">${ic('note')}Lexique</button></div>
+ return `<div class="top"><button class="btn backb" data-a="tab" data-v="programs">${ic('back')}Programmes</button><button class="btn sm" data-a="lafHelp">${ic('note')}Lexique</button></div><h1 style="margin-bottom:14px">Méthode Lafay</h1>
  <div class="card lhero"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><div class="eyebrow">Ton niveau</div><div class="lbig">${ROM[cur]} <span>${esc(C.t)}</span></div>
   <div class="mut" style="font-size:14px;margin-top:4px">Depuis le ${DSHORT.format(L.since)} · ${weeksAt()} sem. · ${sessAt(cur)} séance${sessAt(cur)>1?'s':''} · durée conseillée : ${esc(C.dur)}</div></div></div>
   <div style="margin-top:14px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>Pour passer au niveau ${cur<13?cur+1:'suivant'}</span><span>${okN}/${cc.length}</span></div><div class="pbar"><i style="width:${pct}%"></i></div></div>
@@ -1878,7 +1896,7 @@ const qState=()=>{const s=LS.get('jelift.quick',{});return {d:view.qd||s.d||30,f
 function qTxt(x){const e=ex(x.id);return x.time?`${x.sets} × ${fmtT(x.time)}`:x.dist?`${x.sets} × ${fmtN(x.dist)} m`:`${x.sets} × ${x.reps}${e.t==='weight'?' reps':''}`}
 VIEWS.quick=()=>{
  const q=qState(),G=genQuick(q.d,q.f,q.e,q.seed);
- return `<div class="top"><h1>Sport en minutes</h1></div>
+ return `<div class="top"><button class="btn backb" data-a="tab" data-v="programs">${ic('back')}Programmes</button></div><h1 style="margin-bottom:14px">Sport en minutes</h1>
  <p class="mut" style="margin:-6px 0 14px;max-width:62ch">Choisis ton temps, ton focus et ton matériel : une séance prête à lancer, chronométrée, avec les repos.</p>
  <div class="card qopt stack" style="gap:14px">
   <div><div class="eyebrow" style="margin-bottom:8px">J’ai</div><div class="qdur">${[15,30,45,60].map(m=>`<button class="${q.d===m?'on':''}" data-a="qSet" data-k="qd" data-v="${m}"><b>${m===60?'1 h':m}</b>${m===60?'':'<span>min</span>'}</button>`).join('')}</div></div>
@@ -1933,7 +1951,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V1.6',APP_BUILD='16/11/2026 à 13:40';
+const APP_V='V1.7',APP_BUILD='16/11/2026 à 14:20';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2051,7 +2069,7 @@ VIEWS.settings=()=>{
 
  <div class="sec"><div class="hd"><h2>Préférences</h2></div><div class="card set-card">
   <label class="form" style="flex-direction:row;align-items:center;gap:10px;padding-bottom:10px"><span style="font-weight:600;flex:1">Poids corporel (calcul des calories)</span><input id="bwi" data-f="bw" inputmode="decimal" style="width:90px;text-align:center" value="${LS.get('jelift.bw',80)}"> kg</label>
-  <button class="mi" data-a="theme">${ic('gear')}Thème : ${LS.get('jelift.theme','dark')==='light'?'clair':'sombre'}</button>
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span style="font-weight:600;flex:1">Affichage</span><div class="seg" style="margin:0;min-width:210px">${[['dark','🌙 Nuit'],['light','☀️ Jour']].map(([k,l])=>`<button class="${LS.get('jelift.theme','dark')===k?'on':''}" data-a="themeSet" data-v="${k}">${l}</button>`).join('')}</div></div>
   <button class="mi" data-a="export">${ic('copy')}Copier une sauvegarde (JSON)</button>
   <button class="mi" data-a="import">${ic('note')}Importer une sauvegarde</button>
   <button class="mi" data-a="restore">${ic('swap')}Réinstaller les programmes par défaut</button>
