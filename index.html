@@ -65,7 +65,7 @@ input,select,textarea{font:inherit;color:var(--fg)}
 }
 @media (min-width:1280px){.navb[data-tip]:hover::after,.navb[data-tip]:hover::before{display:none}}
 @keyframes tipIn{from{opacity:0;margin-top:-4px}to{opacity:1;margin-top:0}}
-@media (min-width:820px) and (max-width:1120px){.nav-r .sync{display:none}}
+@media (min-width:820px) and (max-width:1120px){.nav-r .sync{padding:0 13px;gap:0}.nav-r .sync b{display:none}}
 .npill{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;background:var(--soft);font:700 15px var(--f-disp);color:var(--fg);white-space:nowrap}
 .npill.clock{font:800 22px var(--f-disp);font-variant-numeric:tabular-nums;padding:0 18px;height:48px;background:var(--card);border:1px solid var(--line)}
 .wm{height:clamp(30px,8.5vw,40px);width:auto;display:block}
@@ -265,6 +265,11 @@ table.sets-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nu
 .sync{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);font-weight:600}
 .sync i{width:8px;height:8px;border-radius:50%;background:var(--mut)}
 .sync.ok i{background:var(--ok)} .sync.err i{background:var(--danger)} .sync.wait i{background:var(--warm)}
+.sync b{font-weight:inherit}.sync[data-a]{cursor:pointer}
+.sync.ok i{box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+.sync.err i{box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 25%,transparent)}
+.sync.wait i{animation:syncP 1s ease-in-out infinite}@keyframes syncP{50%{opacity:.35}}
+.sync.dot{padding:0 12px;gap:0}.sync.dot b{display:none}
 @media (min-width:1024px){body{font-size:16px}.srow{min-height:62px}.srow input{height:50px;font-size:27px}.srow .ck{height:50px;width:56px}.srow .sn{height:46px}.excard .thumb{width:62px;height:62px}.excard .thumb .fig{width:58px;height:58px}.kpi .v{font-size:32px}.npill.clock{font-size:24px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 /* Lafay + Sport en minutes */
@@ -1352,7 +1357,7 @@ const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['progres
 function navHTML(){
  const tabOf={program:'programs',dayedit:'programs',quick:'programs',lafay:'programs',session:'home',history:'home',exercise:'progress'};
  const cur=tabOf[view.name]||view.name;
- return `<div class="brand" data-a="tab" data-v="home" data-tip="Accueil" role="button" aria-label="Accueil">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}" data-tip="${l}" aria-label="${l}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${syncChip().replace('class="sync','class="npill sync')}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
+ return `<div class="brand" data-a="tab" data-v="home" data-tip="Accueil" role="button" aria-label="Accueil">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}" data-tip="${l}" aria-label="${l}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${sbChip(true)}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
 }
 function render(){
  const V=VIEWS[view.name]||VIEWS.home;
@@ -1381,7 +1386,7 @@ VIEWS.home=()=>{
  return `
  <div class="top"><div class="hello mob-only" style="flex-direction:column;align-items:flex-start;gap:2px">${WM()}<div class="mut" style="font-size:13px;padding-left:4px;white-space:nowrap">${esc(DAY.format(now))}</div></div>
  <div class="hello" style="display:none"></div>
-</div>
+ <span class="mob-only">${sbChip(true)}</span></div>
  <h1>Prêt pour la salle ?</h1>
  ${W?`<button class="resume" style="margin-top:18px" data-a="tab" data-v="workout"><div style="flex:1"><div class="eyebrow" style="color:inherit;opacity:.8">Séance en cours</div><div style="font-weight:700;font-size:17px;margin-top:2px">${esc(W.name)}</div></div><div class="t" data-clock>${fmtT(elapsed(W)/1000)}</div></button>`:''}
  <div class="sec"><div class="quick">
@@ -1951,7 +1956,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V1.8',APP_BUILD='16/11/2026 à 14:35';
+const APP_V='V1.9',APP_BUILD='16/11/2026 à 14:50';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2008,8 +2013,13 @@ function sbMerge(r){
  if(ch){S.sessions.sort((a,b)=>b.start-a.start);LS.set(KEY,S);S.pending.forEach(pushSess)}
  return ch;
 }
-function setSb(st,msg=''){sbSt=st;sbMsg=msg;document.querySelectorAll('[data-sbchip]').forEach(el=>el.outerHTML=sbChip());const m=$('#sbmsg');if(m)m.textContent=sbMsg}
-function sbChip(){const m={off:['','Non configurée'],nolink:['wait','Non connectée'],wait:['wait','Synchro…'],ok:['ok','À jour'],err:['err','Erreur']}[sbSt]||['',''];return `<span class="sync ${m[0]}" data-sbchip><i></i>${m[1]}</span>`}
+function setSb(st,msg=''){sbSt=st;sbMsg=msg;document.querySelectorAll('[data-sbchip]').forEach(el=>el.outerHTML=sbChip(el.classList.contains('npill')));const m=$('#sbmsg');if(m)m.textContent=sbMsg}
+/* Pastille d'état du serveur : vert = en ligne et à jour, orange = synchro en cours, rouge = hors ligne / erreur */
+function sbChip(pill){
+ const m=!navigator.onLine?['err','Hors ligne']:({off:['err','Serveur non configuré'],nolink:['err','Non connecté au serveur'],wait:['wait','Synchro…'],ok:['ok','En ligne · à jour'],err:['err','Serveur injoignable']}[sbSt]||['','']);
+ const tip=m[1]+(sbLast?' — dernière sauvegarde '+HOUR.format(sbLast):'')+' (toucher pour synchroniser)';
+ return `<span class="sync ${m[0]}${pill?' npill':''}" data-sbchip data-a="sbNow" role="button" title="${esc(tip)}" aria-label="${esc(m[1])}"><i></i><b>${m[1]}</b></span>`}
+addEventListener('online',()=>{setSb(sbSt);sbSync()});addEventListener('offline',()=>setSb(sbSt));
 function sbQueue(){if(!sbOn()||!sbLinked()||!ACC.logged())return;clearTimeout(sbTimer);sbTimer=setTimeout(()=>sbSync(),2500)}
 async function sbSync(loud){
  if(!sbOn()){setSb('off');return}
