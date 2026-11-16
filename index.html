@@ -1923,7 +1923,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V0.9',APP_BUILD='15/11/2026 à 17:41';
+const APP_V='V1.3',APP_BUILD='16/11/2026 à 11:40';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -1937,7 +1937,7 @@ const pwAlgo=()=>window.crypto&&crypto.subtle?'p':'f';
 
 /* ===================== Supabase (sauvegarde en ligne) ===================== */
 /* Option : collez ici l'URL et la clé « anon public » de votre projet Supabase pour ne pas avoir à les saisir dans Paramètres. */
-const SB_DEF={url:'https://ckaxyytbsyghjtlmmgum.supabase.co',key:''};
+const SB_DEF={url:'https://ckaxyytbsyghjtlmmgum.supabase.co',key:'sb_publishable_d4yJJDduTgEOkrsw0SYQDQ_HZvZoO3W'};
 var sbSt='off',sbMsg='',sbTimer=null,sbBusy=false,sbAgain=false,sbLast=LS.get('jefit.sbLast',0);
 function sbCfg(){const c=LS.get('jefit.sb',{})||{};return {url:String(c.url||SB_DEF.url||'').trim().replace(/\/+$/,''),key:String(c.key||SB_DEF.key||'').trim()}}
 const sbOn=()=>{const c=sbCfg();return !!(c.url&&c.key)};
@@ -1958,16 +1958,19 @@ async function sbToken(){
  catch(e){if(e.status===400||e.status===401)LS.del('jefit.sbs');return null}
 }
 async function sbLogin(name,pw){const j=await sbFetch('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:sbEmail(name),password:pw})},false);sbStore(j)}
-async function sbSignup(name,pw){
- const j=await sbFetch('/auth/v1/signup',{method:'POST',body:JSON.stringify({email:sbEmail(name),password:pw,data:{name}})},false);
+async function sbSignup(name,pw,email){
+ const j=await sbFetch('/auth/v1/signup',{method:'POST',body:JSON.stringify({email:sbEmail(name),password:pw,data:{name,contact_email:email||null}})},false);
  if(j&&j.access_token){sbStore(j);return}
  if(j&&j.session&&j.session.access_token){sbStore(j.session);return}
  const e=new Error('Dans Supabase, désactivez « Confirm email » (Authentication › Sign In / Providers › Email).');e.code='confirm';throw e;
 }
+/* Mail de bienvenue : envoyé par la fonction Supabase « welcome » (une seule fois par adresse) */
+const sbFn=(action,data={},auth=true)=>sbFetch('/functions/v1/welcome',{method:'POST',body:JSON.stringify({action,...data})},auth);
+function sbWelcome(){if(!sbOn()||!sbLinked())return;sbFn('welcome').then(j=>{if(j&&j.ok&&!j.already)setTimeout(()=>toast('Mail de bienvenue envoyé ✉️'),1800)}).catch(()=>{})}
 const sbTaken=e=>/already|registered|exists/i.test(e&&e.message||'')||(e&&e.code==='user_already_exists');
 /* Connexion au compte en ligne ; le crée s'il n'existe pas encore */
 async function sbConnect(name,pw){try{await sbLogin(name,pw)}catch(e){if(e.status!==400)throw e;try{await sbSignup(name,pw)}catch(e2){if(sbTaken(e2)){const x=new Error('Mot de passe incorrect pour ce compte en ligne.');x.code='badpw';throw x}throw e2}}}
-function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
+function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
 function sbMerge(r){
  if(!r||r.app!=='JeFIT')return false;let ch=false;
  const tomb=new Set([...(S.tomb||[]),...(r.tomb||[])]);if(tomb.size!==S.tomb.length){S.tomb=[...tomb];ch=true}
@@ -2018,6 +2021,7 @@ VIEWS.settings=()=>{
 
  <div class="sec"><div class="hd"><h2>Mon compte</h2></div><div class="card set-card">
   <div class="acc-row"><div class="avatar">${esc((a.name||'?').charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><b style="font-size:17px">${esc(a.name)}</b><div class="mut" style="font-size:13px">${a.created?'Compte créé le '+esc(DAY.format(a.created)):''} · ${S.sessions.length} séance(s) enregistrée(s)</div></div></div>
+  <button class="mi" data-a="accMail">${ic('note')}<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">${a.email?'E-mail : '+esc(a.email):'Ajouter mon e-mail'}</span></button>
   <button class="mi" data-a="accPw">${ic('edit')}Changer le mot de passe</button>
   <button class="mi" data-a="logout" style="color:var(--danger)">${ic('back')}Se déconnecter</button>
  </div><p class="mut" style="font-size:13px;margin:8px 4px 0">Vos programmes et séances sont gardés dans ce navigateur : en rouvrant JeFIT, tout est déjà là.</p></div>
@@ -2046,10 +2050,10 @@ VIEWS.settings=()=>{
 };
 
 /* ===================== Écran de connexion ===================== */
-let authMode='login';
+let authMode='login',authRst=null;
 function authHTML(){
  const a=ACC.get(),on=sbOn(),rem=!!LS.get('jefit.remember',false);
- const tabs=authMode==='forgot'?'':`<div class="seg" role="tablist"><button class="${authMode==='login'?'on':''}" data-a="authMode" data-v="login" role="tab">Se connecter</button><button class="${authMode==='create'?'on':''}" data-a="authMode" data-v="create" role="tab">Créer un compte</button></div>`;
+ const tabs=/^forgot/.test(authMode)?'':`<div class="seg" role="tablist"><button class="${authMode==='login'?'on':''}" data-a="authMode" data-v="login" role="tab">Se connecter</button><button class="${authMode==='create'?'on':''}" data-a="authMode" data-v="create" role="tab">Créer un compte</button></div>`;
  const remBox=`<label class="rem"><input type="checkbox" id="arem" ${rem?'checked':''}>Rester connecté sur cet appareil</label>`;
  let body='';
  const cloudLnk=`<button class="lnk" data-a="authMode" data-v="cloud" style="color:var(--mut);font-weight:600">☁️ Sauvegarde en ligne : ${on?'configurée · modifier':'à configurer'}</button>`;
@@ -2057,27 +2061,36 @@ function authHTML(){
   <div class="form"><label>URL du projet<input id="cu" placeholder="https://xxxx.supabase.co" value="${esc(c.url)}" autocomplete="off" autocapitalize="off" spellcheck="false"></label><label>Clé anon public<input id="ck" placeholder="eyJhbGciOi…" value="${esc(c.key)}" autocomplete="off" autocapitalize="off" spellcheck="false"></label></div>
   <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authCloud">Enregistrer</button>
   <button class="lnk" data-a="authMode" data-v="login">Retour</button>`;return `<div class="ac">${WM()}${body}</div>`}
- if(authMode==='forgot')body=`<h2>Mot de passe oublié</h2><p class="lead">Le compte de cet appareil sera remplacé par un nouveau. Vos programmes et séances restent dans ce navigateur.</p>
+ if(authMode==='forgot'&&on){const st=authRst;body=!st?`<h2>Mot de passe oublié</h2><p class="lead">Recevez un code par e-mail à l’adresse liée à votre compte.</p>
+  <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" value="${esc(a?a.name:'')}"></label></div>
+  <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authCode">Recevoir un code</button>
+  ${a?`<button class="lnk" data-a="authMode" data-v="forgotLocal" style="color:var(--mut);font-weight:600">Pas d’e-mail lié ? Remplacer le compte de cet appareil</button>`:''}
+  <button class="lnk" data-a="authMode" data-v="login">Retour</button>`
+  :`<h2>Nouveau mot de passe</h2><p class="lead">Code envoyé à <b>${esc(st.to)}</b> (pensez aux spams). Il est valable 15 minutes.</p>
+  <div class="form"><label>Code à 6 chiffres<input id="arc" inputmode="numeric" autocomplete="one-time-code" maxlength="6" style="letter-spacing:6px;font-weight:800;font-size:22px;text-align:center"></label><label>Nouveau mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer<input id="ap2" type="password" autocomplete="new-password"></label></div>
+  <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authCodeOk">Changer le mot de passe</button>
+  <button class="lnk" data-a="authCode">Renvoyer un code</button><button class="lnk" data-a="authMode" data-v="login">Retour</button>`}
+ else if(authMode==='forgot'||authMode==='forgotLocal')body=`<h2>Mot de passe oublié</h2><p class="lead">Le compte de cet appareil sera remplacé par un nouveau. Vos programmes et séances restent dans ce navigateur.</p>
   <div class="err" id="aerr"></div><button class="btn pri blk" data-a="authReset" style="background:var(--danger);color:#fff">Créer un nouveau compte</button>
   <button class="lnk" data-a="authMode" data-v="login">Retour</button>`;
  else if(authMode==='login')body=`<h2>${a?'Bon retour, '+esc(a.name)+' !':'Connexion'}</h2><p class="lead">${a?'Entrez votre mot de passe pour ouvrir JeFIT.':on?'Connectez-vous à votre compte en ligne.':'Aucun compte sur cet appareil pour l’instant.'}</p>
   <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" value="${a?esc(a.name):''}"></label><label>Mot de passe<input id="ap1" type="password" autocomplete="current-password"></label></div>
   ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Se connecter</button>
-  ${a?`<button class="lnk" data-a="authMode" data-v="forgot">Mot de passe oublié ?</button>`:''}`;
+  ${a||on?`<button class="lnk" data-a="authMode" data-v="forgot">Mot de passe oublié ?</button>`:''}`;
  else if(a)body=`<h2>Créer un compte</h2><p class="lead">Un compte existe déjà sur cet appareil : <b>${esc(a.name)}</b>. JeFIT n’autorise qu’un compte par appareil.</p>
   <button class="btn pri blk" data-a="authMode" data-v="login">Me connecter</button>
   <button class="lnk" data-a="authMode" data-v="forgot">Mot de passe oublié ? Remplacer ce compte</button>`;
  else body=`<h2>Créer un compte</h2><p class="lead">Un compte unique pour enregistrer vos entraînements.</p>
-  <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" maxlength="30"></label><label>Mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer le mot de passe<input id="ap2" type="password" autocomplete="new-password"></label></div>
+  <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" maxlength="30"></label><label>E-mail (facultatif, pour vous contacter)<input id="ae" type="email" autocomplete="email" inputmode="email" autocapitalize="off"></label><label>Mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer le mot de passe<input id="ap2" type="password" autocomplete="new-password"></label></div>
   ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Créer mon compte</button>
   <p class="note">${on?'Vos séances sont gardées dans ce navigateur et sauvegardées en ligne.':'Vos séances sont gardées dans ce navigateur : pas besoin de les retaper.'}</p>`;
- return `<div class="ac">${WM()}${tabs}${body}${authMode==='forgot'||(SB_DEF.url&&SB_DEF.key)?'':cloudLnk}</div>`;
+ return `<div class="ac">${WM()}${tabs}${body}${/^forgot/.test(authMode)||(SB_DEF.url&&SB_DEF.key)?'':cloudLnk}</div>`;
 }
-function showAuth(){authMode=ACC.get()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
+function showAuth(){authMode=ACC.get()||sbOn()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"],[data-a="authCodeOk"],.btn[data-a="authCode"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
 function authFocus(){if($('#splash'))return;const i=[...document.querySelectorAll('#auth input:not([type=checkbox])')].find(x=>!x.value)||document.querySelector('#auth input');if(i)i.focus()}
 function hideAuth(){const d=$('#auth');if(d)d.remove()}
 const aErr=t=>{const e=$('#aerr');if(e)e.textContent=t};
-async function makeAccount(name,pw){const salt=uid()+uid(),algo=pwAlgo();ACC.set({name,salt,algo,hash:await hashPw(pw,salt,algo),created:Date.now()});LS.set('jefit.logged',true)}
+async function makeAccount(name,pw,email){const salt=uid()+uid(),algo=pwAlgo();ACC.set({name,email:email||'',salt,algo,hash:await hashPw(pw,salt,algo),created:Date.now()});LS.set('jefit.logged',true)}
 async function authGo(btn){
  const v=id=>{const e=$('#'+id);return e?e.value:''};
  const remember=!!($('#arem')&&$('#arem').checked);
@@ -2088,12 +2101,16 @@ async function authGo(btn){
    if(!name||!pw){aErr('Nom et mot de passe requis.');return}
    if(a){
     if(slug(name)!==slug(a.name)){aErr('Ce nom ne correspond pas au compte de cet appareil ('+a.name+').');return}
-    if((await hashPw(pw,a.salt,a.algo))!==a.hash){aErr('Mot de passe incorrect.');return}
+    const okLocal=(await hashPw(pw,a.salt,a.algo))===a.hash;
+    if(sbOn()){let online=null;try{await sbConnect(a.name,pw);online=true}catch(e){if(e.code==='badpw'||e.status===400)online=false}
+     if(online===false&&okLocal){aErr('Ce mot de passe a été changé sur un autre appareil : utilisez le nouveau.');return}
+     if(online===true&&!okLocal){a.salt=uid()+uid();a.algo=pwAlgo();a.hash=await hashPw(pw,a.salt,a.algo);ACC.set(a)}
+     if(online!==true&&!okLocal){aErr('Mot de passe incorrect.');return}
+    }else if(!okLocal){aErr('Mot de passe incorrect.');return}
     LS.set('jefit.logged',true);
-    if(sbOn()&&!sbLinked())try{await sbConnect(a.name,pw)}catch(e){}
    }else if(sbOn()){
-    try{await sbLogin(name,pw)}catch(e){aErr(e.status===400?'Nom ou mot de passe incorrect.':'Connexion impossible : '+e.message);return}
-    await makeAccount(name,pw);
+    let j;try{j=await sbFetch('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:sbEmail(name),password:pw})},false);sbStore(j)}catch(e){aErr(e.status===400?'Nom ou mot de passe incorrect.':'Connexion impossible : '+e.message);return}
+    const md=(j.user&&j.user.user_metadata)||{};await makeAccount(md.name||name,pw,md.contact_email||'');
    }else{aErr('La sauvegarde en ligne n’est pas configurée sur cet appareil : impossible de retrouver le compte créé ailleurs. Configurez-la en bas de l’écran.');return}
   }else{
    if(ACC.get()){authMode='login';$('#auth').innerHTML=authHTML();return}
@@ -2101,9 +2118,10 @@ async function authGo(btn){
    if(name.length<2){aErr('Choisissez un nom (2 caractères min.).');return}
    if(p1.length<6){aErr('Le mot de passe doit faire au moins 6 caractères.');return}
    if(p1!==p2){aErr('Les deux mots de passe sont différents.');return}
+   const email=v('ae').trim();if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){aErr('Adresse e-mail invalide.');return}
    let note='';
-   if(sbOn()){try{await sbSignup(name,p1)}catch(e){if(sbTaken(e)){aErr('Ce nom est déjà pris : choisissez-en un autre ou connectez-vous.');return}note=e.code==='confirm'?e.message:'Sauvegarde en ligne indisponible pour l’instant : vous pourrez la connecter dans Paramètres.'}}
-   await makeAccount(name,p1);
+   if(sbOn()){try{await sbSignup(name,p1,email);if(email)sbWelcome()}catch(e){if(sbTaken(e)){aErr('Ce nom est déjà pris : choisissez-en un autre ou connectez-vous.');return}note=e.code==='confirm'?e.message:'Sauvegarde en ligne indisponible pour l’instant : vous pourrez la connecter dans Paramètres.'}}
+   await makeAccount(name,p1,email);
    if(note)setTimeout(()=>toast(note),2400);
   }
   LS.set('jefit.remember',remember);
@@ -2113,15 +2131,30 @@ async function authGo(btn){
 Object.assign(A,{
  authGo:el=>authGo(el),
  authCloud:()=>{const url=$('#cu').value.trim().replace(/\/+$/,''),key=$('#ck').value.trim();if(url&&!/^https:\/\/.+/.test(url)){aErr('L’adresse doit commencer par https://');return}LS.set('jefit.sb',{url,key});LS.del('jefit.sbs');setSb(url&&key?'nolink':'off');authMode=ACC.get()?'login':(url&&key?'login':'create');$('#auth').innerHTML=authHTML();authFocus();toast(url&&key?'Sauvegarde en ligne configurée':'Configuration effacée')},
- authMode:el=>{authMode=el.dataset.v;$('#auth').innerHTML=authHTML();authFocus()},
+ authMode:el=>{authMode=el.dataset.v;authRst=null;$('#auth').innerHTML=authHTML();authFocus()},
+ authCode:async el=>{const n=$('#an'),name=(n?n.value:authRst&&authRst.name||'').trim().replace(/\s+/g,' ');if(!name){aErr('Entrez votre nom.');return}
+  el.disabled=true;aErr('');
+  try{const j=await sbFn('reset-request',{email:sbEmail(name)},false);authRst={name,to:j.to};$('#auth').innerHTML=authHTML();authFocus();toast('Code envoyé par e-mail')}
+  catch(e){aErr(e.status===404&&!e.code?'Service e-mail pas encore installé dans Supabase.':e.code==='nomail'?'Aucun e-mail n’est lié à ce compte. Ajoutez-le dans Paramètres une fois connecté.':e.message==='Failed to fetch'?'Hors ligne : réessayez avec une connexion.':e.message)}
+  finally{el.disabled=false}},
+ authCodeOk:async el=>{const code=$('#arc').value.replace(/\D/g,''),p1=$('#ap1').value,p2=$('#ap2').value;
+  if(code.length!==6)return aErr('Le code fait 6 chiffres.');if(p1.length<6)return aErr('Le mot de passe doit faire au moins 6 caractères.');if(p1!==p2)return aErr('Les deux mots de passe sont différents.');
+  el.disabled=true;aErr('');
+  try{await sbFn('reset-confirm',{email:sbEmail(authRst.name),code,password:p1},false);
+   const name=authRst.name;authMode='login';authRst=null;$('#auth').innerHTML=authHTML();
+   $('#an').value=name;$('#ap1').value=p1;toast('Mot de passe changé ✔');$('#auth [data-a="authGo"]').click()}
+  catch(e){aErr(e.message==='Failed to fetch'?'Hors ligne : réessayez avec une connexion.':e.message);el.disabled=false}},
  authReset:()=>{LS.del('jefit.account');LS.del('jefit.logged');LS.del('jefit.sbs');authMode='create';$('#auth').innerHTML=authHTML();authFocus()},
  logout:()=>confirmSheet('Se déconnecter ?','Vos données restent sur cet appareil. Il faudra votre mot de passe pour revenir.','Se déconnecter',()=>{LS.del('jefit.logged');showAuth()}),
  accPw:()=>openSheet(`<h2>Changer le mot de passe</h2><div class="form"><label>Mot de passe actuel<input id="pw0" type="password" autocomplete="current-password"></label><label>Nouveau mot de passe (6 caractères min.)<input id="pw1" type="password" autocomplete="new-password"></label><label>Confirmer<input id="pw2" type="password" autocomplete="new-password"></label></div><div id="pwerr" style="color:var(--danger);font-size:14px;min-height:20px"></div>`,`<button class="btn" data-a="close">Annuler</button><button class="btn pri" data-a="accPwOk">Enregistrer</button>`),
+ accMail:()=>{const a=ACC.get();openSheet(`<h2>E-mail du compte</h2><p class="mut" style="margin:0">Pour vous contacter (bienvenue, récupération du compte). La connexion se fait toujours avec votre nom.</p><div class="form"><label>E-mail<input id="em1" type="email" inputmode="email" autocapitalize="off" autocomplete="email" value="${esc(a.email||'')}"></label></div><div id="emerr" style="color:var(--danger);font-size:14px;min-height:20px"></div>`,`<button class="btn" data-a="close">Annuler</button><button class="btn pri" data-a="accMailOk">Enregistrer</button>`)},
+ accMailOk:async el=>{const a=ACC.get(),m=$('#em1').value.trim(),e=t=>$('#emerr').textContent=t;if(m&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m))return e('Adresse e-mail invalide.');el.disabled=true;
+  try{if(sbLinked())await sbFetch('/auth/v1/user',{method:'PUT',body:JSON.stringify({data:{contact_email:m||null}})});a.email=m;ACC.set(a);closeSheet();render();sbQueue();toast(m?'E-mail enregistré':'E-mail retiré');if(m)sbWelcome()}catch(x){e('Impossible d’enregistrer en ligne : '+x.message)}finally{el.disabled=false}},
  accPwOk:async()=>{const a=ACC.get(),e=t=>$('#pwerr').textContent=t,p0=$('#pw0').value,p1=$('#pw1').value;
   if((await hashPw(p0,a.salt,a.algo))!==a.hash)return e('Mot de passe actuel incorrect.');
   if(p1.length<6)return e('6 caractères minimum.');if(p1!==$('#pw2').value)return e('Les deux mots de passe sont différents.');
   if(sbLinked()){try{await sbFetch('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:p1})})}catch(x){return e('Impossible de changer le mot de passe en ligne : '+x.message)}}
-  a.salt=uid()+uid();a.algo=pwAlgo();a.hash=await hashPw(p1,a.salt,a.algo);ACC.set(a);closeSheet();toast('Mot de passe changé')},
+  a.salt=uid()+uid();a.algo=pwAlgo();a.hash=await hashPw(p1,a.salt,a.algo);ACC.set(a);closeSheet();toast('Mot de passe changé');if(sbLinked()&&a.email)sbFn('changed').catch(()=>{})},
  sbSave:()=>{const url=$('#sbu').value.trim(),key=$('#sbk').value.trim();if(url&&!/^https:\/\/.+/.test(url)){toast('L’URL doit commencer par https://');return}LS.set('jefit.sb',{url,key});LS.del('jefit.sbs');setSb(url&&key?'nolink':'off');toast('Configuration enregistrée');render()},
  sbLink:()=>openSheet(`<h2>Connecter Supabase</h2><p class="mut" style="margin:0">Confirmez le mot de passe de <b>${esc(ACC.get().name)}</b>. Le compte en ligne est créé s’il n’existe pas.</p><div class="form"><label>Mot de passe<input id="sbp" type="password" autocomplete="current-password"></label></div><div id="sberr" style="color:var(--danger);font-size:14px;min-height:20px"></div>`,`<button class="btn" data-a="close">Annuler</button><button class="btn pri" data-a="sbLinkOk">Connecter</button>`),
  sbLinkOk:async el=>{const a=ACC.get(),pw=$('#sbp').value,e=t=>$('#sberr').textContent=t;
