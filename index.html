@@ -97,6 +97,10 @@ a.btn{text-decoration:none}
 .ib:active,.btn:active{transform:scale(.97)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .chips.wrap{flex-wrap:wrap;overflow:visible}
+.subchips{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}.subchips .chip{font-size:13px;padding:6px 12px}
+.exgh{display:flex;justify-content:space-between;align-items:baseline;margin:16px 2px 8px;font:800 13px var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);grid-column:1/-1}
+.exgh span{color:var(--mut);font-weight:700;letter-spacing:0}
+.libgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:4px}
 .chips::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:9px 16px;border-radius:12px;background:var(--soft);font:700 15px var(--f-disp);color:var(--mut)}
 .chip.on{background:var(--acc);color:#fff}
@@ -1056,10 +1060,311 @@ Object.assign(DESC,{
 });
 Object.assign(REQ,{seatcurl:['halteres','banc'],seathammer:['halteres','banc'],preacherdb:['halteres','banc'],preacherez:['barre','banc'],preachermac:['poulie'],inclinehammer:['halteres','banc'],dragcurl:['barre'],crosshammer:['halteres'],bayesian:['poulie'],jrsprint:['corde'],wcrunch:['halteres'],sidebend:['halteres']});
 Object.assign(SUBS,{seatcurl:['curl','australian'],seathammer:['hammer','australian'],preacherdb:['conccurl','curl'],preacherez:['preacher','curl'],preachermac:['preacher','conccurl'],inclinehammer:['hammer','australian'],dragcurl:['curl','australian'],crosshammer:['hammer','australian'],bayesian:['inclinecurl','curl'],jrsprint:['jrnone','highknees'],wcrunch:['crunch'],sidebend:['sidecrunch']});
+/* ---------- V3.3 : exercices de la base (classés groupe › muscle), sans doublon avec l'existant ---------- */
+EXL.push(
+ ['x-aerobie','Aérobie','run',['jambes'],'time'],
+ ['x-around-the-world','Around The World','front',['pecs'],'weight'],
+ ['x-squat-une-jambe-assiste','Squat Une Jambe Assisté','pistol',['jambes'],'bw'],
+ ['x-extension-dos-machine','Extension Dos (Machine)','superman',['lombaires'],'weight'],
+ ['x-extension-dos-hyperextension-lestee','Extension Dos (Hyperextension Lestée)','superman',['lombaires'],'bw'],
+ ['x-slam-ball','Slam Ball','bbj',['jambes','pecs'],'weight'],
+ ['x-corde-ondulatoire','Corde Ondulatoire','run',['jambes'],'time'],
+ ['x-curl-poignets-derriere-le-dos-barre','Curl Poignets derrière le Dos (Barre)','curl',['bras'],'weight'],
+ ['x-squat-a-la-ceinture-machine','Squat à la ceinture (machine)','legpress',['jambes'],'weight'],
+ ['x-developpe-couche-prise-large-barre','Développé Couché - Prise Large (Barre)','bench',['pecs'],'weight'],
+ ['x-developpe-couche-poulie','Développé Couché (Poulie)','bench',['pecs'],'weight'],
+ ['x-developpe-couche-machine-smith','Développé Couché (Machine Smith)','bench',['pecs'],'weight'],
+ ['x-rowing-penche-elastique','Rowing Penché (Élastique)','row',['dos'],'weight'],
+ ['x-rowing-penche-haltere','Rowing Penché (Haltère)','row',['dos'],'weight'],
+ ['x-rowing-penche-machine-smith','Rowing Penché (Machine Smith)','row',['dos'],'weight'],
+ ['x-curl-biceps-suspension','Curl Biceps (Suspension)','curl',['bras'],'bw'],
+ ['x-curl-biceps-barre-ez','Curl Biceps (Barre EZ)','curl',['bras'],'weight'],
+ ['x-crunchs-velo-jambes-surelevees','Crunchs Vélo Jambes Surélevées','crunch',['abdos'],'weight'],
+ ['x-box-squat-barre','Box Squat (Barre)','squat',['jambes'],'weight'],
+ ['x-boxe','Boxe','run',['jambes'],'time'],
+ ['x-split-squat-bulgare-barre','Split Squat Bulgare (Barre)','lunge',['jambes'],'weight'],
+ ['x-burpee-par-dessus-la-barre','Burpee par-dessus la Barre','bbj',['jambes','pecs'],'bw'],
+ ['x-pull-through-poulie','Pull Through (Poulie)','hipthrust',['jambes'],'weight'],
+ ['x-rotation-buste-poulie-bas-vers-haut','Rotation Buste Poulie (Bas vers Haut)','front',['abdos'],'weight'],
+ ['x-extension-mollets-machine','Extension Mollets (Machine)','calf',['mollets'],'weight'],
+ ['x-presse-mollets-machine','Presse Mollets (Machine)','legpress',['mollets'],'weight'],
+ ['x-dips-pectoraux-assiste','Dips Pectoraux (Assisté)','dips',['pecs'],'bw'],
+ ['x-dips-pectoraux-leste','Dips Pectoraux (Lesté)','dips',['pecs'],'bw'],
+ ['x-ecarte-elastique','Écarté (Élastique)','fly',['pecs'],'weight'],
+ ['x-ecarte-machine','Écarté (Machine)','fly',['pecs'],'weight'],
+ ['x-ecarte-suspension','Écarté (Suspension)','fly',['pecs'],'bw'],
+ ['x-developpe-pectoraux-elastique','Développé Pectoraux (Élastique)','bench',['pecs'],'weight'],
+ ['x-oiseau-buste-appuye-haltere','Oiseau Buste Appuyé (Haltère)','rearfly',['epaules'],'weight'],
+ ['x-rowing-barre-t-buste-appuye','Rowing Barre T Buste Appuyé','row',['dos'],'weight'],
+ ['x-elevation-en-y-sur-banc-incline-haltere','Élévation en Y sur Banc Incliné (Haltère)','incline',['epaules'],'weight'],
+ ['x-traction-supination-assiste','Traction Supination (Assisté)','pullup',['dos'],'bw'],
+ ['x-tractions-supination-leste','Tractions Supination (Lesté)','pullup',['dos'],'bw'],
+ ['x-clamshell','Clamshell','superman',['jambes'],'bw'],
+ ['x-epaule','Épaulé','deadlift',['jambes','pecs'],'weight'],
+ ['x-epaule-jete','Épaulé-jeté','ohp',['jambes','pecs'],'weight'],
+ ['x-epaule-developpe','Épaulé-développé','ohp',['jambes','pecs'],'weight'],
+ ['x-tirage-d-epaule','Tirage d\'Épaulé','deadlift',['jambes','pecs'],'weight'],
+ ['x-escalade','Escalade','run',['jambes'],'time'],
+ ['x-crunch-machine','Crunch (Machine)','crunch',['abdos'],'weight'],
+ ['x-fentes-croisees-haltere','Fentes Croisées (Haltère)','lunge',['jambes'],'weight'],
+ ['x-cyclisme','Cyclisme','run',['jambes'],'dist'],
+ ['x-dead-hang','Dead Hang','pullup',['dos'],'time'],
+ ['x-souleve-de-terre-elastique','Soulevé de Terre (Élastique)','deadlift',['jambes'],'weight'],
+ ['x-souleve-de-terre-haltere','Soulevé de Terre (Haltère)','deadlift',['jambes'],'weight'],
+ ['x-souleve-de-terre-machine-smith','Soulevé de Terre (Machine Smith)','deadlift',['jambes'],'weight'],
+ ['x-souleve-de-terre-barre-hex','Soulevé de Terre (Barre Hex)','deadlift',['jambes'],'weight'],
+ ['x-souleve-de-terre-tirage-haut','Soulevé de Terre Tirage Haut','deadlift',['jambes','pecs'],'weight'],
+ ['x-developpe-couche-decline-haltere','Développé Couché Décliné (Haltère)','bench',['pecs'],'weight'],
+ ['x-developpe-couche-decline-machine','Développé Couché Décliné (Machine)','bench',['pecs'],'weight'],
+ ['x-developpe-couche-decline-machine-smith','Développé Couché Décliné (Machine Smith)','bench',['pecs'],'weight'],
+ ['x-ecarte-decline-haltere','Écarté Décliné (Haltère)','fly',['pecs'],'weight'],
+ ['x-crunch-decline','Crunch Décliné','crunch',['abdos'],'bw'],
+ ['x-crunch-decline-leste','Crunch Décliné (Lesté)','crunch',['abdos'],'bw'],
+ ['x-chien-tete-en-bas','Chien Tête en Bas','pike',['jambes','pecs'],'bw'],
+ ['x-dragonfly','Dragonfly','legfloor',['abdos'],'bw'],
+ ['x-developpe-serre-haltere','Développé Serré Haltère','bench',['pecs'],'weight'],
+ ['x-coude-genou','Coude-Genou','crunch',['abdos'],'bw'],
+ ['x-velo-elliptique','Vélo Elliptique','run',['jambes'],'dist'],
+ ['x-developpe-couche-pieds-releves-barre','Développé couché pieds relevés (barre)','bench',['pecs'],'weight'],
+ ['x-fire-hydrants','Fire Hydrants','superman',['jambes'],'bw'],
+ ['x-developpe-au-sol-barre','Développé au Sol (Barre)','bench',['pecs'],'weight'],
+ ['x-developpe-au-sol-haltere','Développé au Sol (Haltère)','bench',['pecs'],'weight'],
+ ['x-dips-triceps-au-sol','Dips Triceps au Sol','dips',['bras'],'bw'],
+ ['x-sauts-de-grenouille','Sauts de Grenouille','bbj',['jambes'],'bw'],
+ ['x-frog-pumps-haltere','Frog Pumps (Haltère)','hipthrust',['jambes'],'weight'],
+ ['x-front-lever-raise','Front Lever Raise','frontlever',['jambes','pecs'],'bw'],
+ ['x-elevation-frontale-elastique','Élévation Frontale (Élastique)','front',['epaules'],'weight'],
+ ['x-elevation-frontale-barre','Élévation Frontale (Barre)','front',['epaules'],'weight'],
+ ['x-elevation-frontale-poulie','Élévation Frontale (Poulie)','front',['epaules'],'weight'],
+ ['x-elevation-frontale-suspension','Élévation Frontale (Suspension)','front',['epaules'],'bw'],
+ ['x-squat-complet','Squat Complet','squat',['jambes'],'weight'],
+ ['x-glute-ham-raise','Glute Ham Raise','legcurl',['jambes'],'bw'],
+ ['x-kickbacks-fessier-machine','Kickbacks Fessier (Machine)','superman',['jambes'],'weight'],
+ ['x-rowing-gorille-kettlebell','Rowing Gorille (Kettlebell)','row',['dos'],'weight'],
+ ['x-hack-squat','Hack Squat','legpress',['jambes'],'weight'],
+ ['x-curl-marteau-elastique','Curl Marteau (Élastique)','curl',['bras'],'weight'],
+ ['x-curl-marteau-poulie','Curl Marteau (Poulie)','curl',['bras'],'weight'],
+ ['x-epaule-en-suspension','Épaulé en Suspension','deadlift',['jambes','pecs'],'weight'],
+ ['x-arrache-en-suspension','Arraché en Suspension','deadlift',['jambes','pecs'],'weight'],
+ ['x-montees-de-genoux-sautees','Montées de Genoux Sautées','run',['jambes','pecs'],'time'],
+ ['x-hiit','HIIT','run',['jambes'],'time'],
+ ['x-randonnee','Randonnée','run',['jambes'],'dist'],
+ ['x-abduction-hanche-poulie','Abduction Hanche (Poulie)','legext',['jambes'],'weight'],
+ ['x-adduction-hanche-poulie','Adduction Hanche (Poulie)','legext',['jambes'],'weight'],
+ ['x-releve-de-bassin','Relevé de Bassin','hipthrust',['jambes'],'bw'],
+ ['x-releve-de-bassin-haltere','Relevé de Bassin (Haltère)','hipthrust',['jambes'],'weight'],
+ ['x-releve-de-bassin-machine','Relevé de Bassin (Machine)','hipthrust',['jambes'],'weight'],
+ ['x-releve-de-bassin-machine-smith','Relevé de Bassin (Machine Smith)','hipthrust',['jambes'],'weight'],
+ ['x-developpe-couche-incline-machine-smith','Développé Couché Incliné (Machine Smith)','incline',['pecs'],'weight'],
+ ['x-chest-press-incline-machine','Chest Press Incliné (Machine)','incline',['pecs'],'weight'],
+ ['x-pompes-inclinees','Pompes Inclinées','pushup',['pecs'],'bw'],
+ ['x-chest-press-convergent-machine','Chest Press Convergent (Machine)','bench',['pecs'],'weight'],
+ ['x-tirage-haut-machine-convergente','Tirage Haut Machine Convergente','pulldown',['dos'],'weight'],
+ ['x-tirage-bas-iso-lateral','Tirage bas iso-latéral','seatedrow',['dos'],'weight'],
+ ['x-tirage-machine-convergente','Tirage Machine Convergente','seatedrow',['dos'],'weight'],
+ ['x-jack-knife-suspension','Jack Knife (Suspension)','vup',['abdos'],'bw'],
+ ['x-developpe-jm-barre','Développé JM (barre)','skull',['bras'],'weight'],
+ ['x-jump-shrug','Jump Shrug','farmers',['jambes','pecs'],'weight'],
+ ['x-around-the-world-kettlebell','Around the World (Kettlebell)','front',['epaules'],'weight'],
+ ['x-epaule-kettlebell','Épaulé Kettlebell','deadlift',['jambes','pecs'],'weight'],
+ ['x-curl-kettlebell','Curl Kettlebell','curl',['bras'],'weight'],
+ ['x-goblet-squat-kettlebell','Goblet Squat Kettlebell','squat',['jambes'],'weight'],
+ ['x-halo-kettlebell','Halo (Kettlebell)','front',['epaules'],'weight'],
+ ['x-tirage-haut-kettlebell','Tirage Haut Kettlebell','deadlift',['jambes','pecs'],'weight'],
+ ['x-developpe-epaules-kettlebell','Développé Épaules Kettlebell','ohp',['epaules'],'weight'],
+ ['x-arrache-kettlebell','Arraché Kettlebell','deadlift',['jambes','pecs'],'weight'],
+ ['x-releve-turc-kettlebell','Relevé Turc Kettlebell','deadlift',['jambes','pecs'],'weight'],
+ ['x-kipping-pull-up','Kipping Pull Up','pullup',['dos'],'bw'],
+ ['x-releve-de-genoux-barres-paralleles','Relevé de Genoux Barres Parallèles','legraise',['abdos'],'weight'],
+ ['x-tirage-a-genoux-elastique','Tirage à Genoux (Élastique)','pulldown',['dos'],'weight'],
+ ['x-rotation-180-barre-t','Rotation 180° (Barre T)','russian',['abdos'],'weight'],
+ ['x-rowing-landmine-barre','Rowing Landmine (Barre)','row',['dos'],'weight'],
+ ['x-squat-developpe-barre-t','Squat Développé (Barre T)','ohp',['jambes','pecs'],'weight'],
+ ['x-tirage-poitrine-elastique','Tirage Poitrine (Élastique)','pulldown',['dos'],'weight'],
+ ['x-tirage-poitrine-machine','Tirage Poitrine (Machine)','pulldown',['dos'],'weight'],
+ ['x-marche-laterale-bande-elastique','Marche Latérale Bande Élastique','lunge',['jambes'],'weight'],
+ ['x-box-jump-lateral','Box Jump Latéral','bbj',['jambes'],'bw'],
+ ['x-releves-de-jambe-lateraux','Relevés de Jambe Latéraux','superman',['jambes'],'bw'],
+ ['x-elevation-laterale-elastique','Élévation Latérale (Élastique)','lateral',['epaules'],'weight'],
+ ['x-elevation-laterale-machine','Élévation Latérale (Machine)','lateral',['epaules'],'weight'],
+ ['x-squat-lateral','Squat Latéral','lunge',['jambes'],'bw'],
+ ['x-presse-a-cuisses-horizontale','Presse à Cuisses Horizontale','legpress',['jambes'],'weight'],
+ ['x-releve-de-jambe-barres-paralleles','Relevé de Jambe Barres Parallèles','legraise',['abdos'],'weight'],
+ ['x-rowing-bas-suspension','Rowing Bas (Suspension)','australian',['dos'],'bw'],
+ ['x-fentes-barre','Fentes (Barre)','lunge',['jambes'],'weight'],
+ ['x-releve-de-genoux-allonge','Relevé de Genoux Allongé','legfloor',['abdos'],'bw'],
+ ['x-flexions-du-cou-en-position-couchee','Flexions du cou en position couchée','stand',['epaules'],'bw'],
+ ['x-flexion-du-cou-en-position-couchee-leste','Flexion du Cou en Position Couchée (Lesté)','superman',['epaules'],'bw'],
+ ['x-extension-du-cou-en-position-couchee','Extension du cou en position couchée','superman',['epaules'],'bw'],
+ ['x-extension-du-cou-en-position-couchee-leste','Extension du Cou en Position Couchée (Lesté)','superman',['epaules'],'bw'],
+ ['x-meadow-rows-barre','Meadow Rows (Barre)','row',['dos'],'weight'],
+ ['x-pompes-a-une-main','Pompes à Une Main','pushup',['pecs'],'bw'],
+ ['x-curl-vis-a-vis-poulie','Curl Vis-à-vis (Poulie)','curl',['bras'],'weight'],
+ ['x-fentes-avec-haltere-au-dessus-de-la-tete','Fentes avec Haltère Au-dessus de la Tête','lunge',['jambes'],'weight'],
+ ['x-elevation-de-disque-au-dessus-de-la-tete','Élévation de disque au-dessus de la tête','front',['epaules'],'weight'],
+ ['x-developpe-militaire-machine-smith','Développé Militaire (Machine Smith)','ohp',['epaules'],'weight'],
+ ['x-overhead-squat','Overhead Squat','squat',['jambes','pecs'],'weight'],
+ ['x-pont-fessier-partiel-barre','Pont fessier partiel (barre)','hipthrust',['jambes'],'weight'],
+ ['x-squat-avec-pause-barre','Squat avec pause (barre)','squat',['jambes'],'weight'],
+ ['x-squat-pendulaire-machine','Squat pendulaire (machine)','legpress',['jambes'],'weight'],
+ ['x-pilates','Pilates','stand',['jambes','pecs'],'time'],
+ ['x-pompes-planche','Pompes Planche','pushup',['pecs'],'bw'],
+ ['x-curl-disque','Curl Disque','curl',['bras'],'weight'],
+ ['x-elevation-disque-frontale','Élévation Disque Frontale','front',['epaules'],'weight'],
+ ['x-developpe-debout-disque','Développé Debout Disque','bench',['pecs'],'weight'],
+ ['x-serrage-de-disques-svend-press','Serrage de Disques (Svend Press)','bench',['pecs'],'weight'],
+ ['x-power-clean','Power Clean','deadlift',['jambes','pecs'],'weight'],
+ ['x-arrache-en-puissance','Arraché en Puissance','deadlift',['jambes','pecs'],'weight'],
+ ['x-press-under','Press Under','ohp',['jambes','pecs'],'weight'],
+ ['x-traction-assistee','Traction (Assistée)','pullup',['dos'],'bw'],
+ ['x-tractions-leste','Tractions (Lesté)','pullup',['dos'],'bw'],
+ ['x-pull-over-machine','Pull-Over (Machine)','pulldown',['dos'],'weight'],
+ ['x-pompes-prise-serree','Pompes - Prise Serrée','pushup',['pecs'],'bw'],
+ ['x-pompes-leste','Pompes (Lesté)','pushup',['pecs'],'bw'],
+ ['x-oiseau-poulie','Oiseau (Poulie)','rearfly',['epaules'],'weight'],
+ ['x-coup-de-pied-arriere-machine','Coup de pied arrière (machine)','superman',['jambes'],'weight'],
+ ['x-velo-couche','Vélo Couché','run',['jambes'],'dist'],
+ ['x-renegade-row-haltere','Renegade Row (Haltère)','row',['dos'],'weight'],
+ ['x-curl-inverse-poulie','Curl Inversé (Poulie)','curl',['bras'],'weight'],
+ ['x-curl-inverse-haltere','Curl Inversé (Haltère)','curl',['bras'],'weight'],
+ ['x-oiseau-un-bras-poulie','Oiseau Un Bras (Poulie)','rearfly',['epaules'],'weight'],
+ ['x-curl-concentre-prise-inversee','Curl Concentré Prise Inversée','conc',['bras'],'weight'],
+ ['x-tirage-poitrine-prise-inversee-poulie','Tirage Poitrine Prise Inversée (Poulie)','pulldown',['dos'],'weight'],
+ ['x-hyperextension-inversee','Hyperextension Inversée','superman',['jambes'],'bw'],
+ ['x-fentes-inversees','Fentes Inversées','lunge',['jambes'],'bw'],
+ ['x-fentes-inversees-barre','Fentes Inversées (Barre)','lunge',['jambes'],'weight'],
+ ['x-planche-inversee','Planche Inversée','plank',['abdos'],'time'],
+ ['x-curl-poignets-inverse-haltere','Curl Poignets Inversé (Haltère)','curl',['bras'],'weight'],
+ ['x-dips-anneaux','Dips Anneaux','dips',['pecs'],'bw'],
+ ['x-traction-aux-anneaux','Traction aux anneaux','pullup',['dos'],'bw'],
+ ['x-pompes-aux-anneaux','Pompes aux Anneaux','pushup',['pecs'],'bw'],
+ ['x-souleve-de-terre-roumain-machine-smith','Soulevé de Terre Roumain (Machine Smith)','deadlift',['jambes'],'weight'],
+ ['x-curl-poulie-basse-corde','Curl Poulie Basse Corde','curl',['bras'],'weight'],
+ ['x-tirage-corde-bras-tendus','Tirage Corde Bras Tendus','pulldown',['dos'],'weight'],
+ ['x-rotation-russe-leste','Rotation Russe (Lesté)','russian',['abdos'],'bw'],
+ ['x-seal-row-barre','Seal Row (Barre)','row',['dos'],'weight'],
+ ['x-seal-row-haltere','Seal Row (Haltère)','row',['dos'],'weight'],
+ ['x-rowing-poulie-assis-prise-large','Rowing Poulie Assis - Prise Large','seatedrow',['dos'],'weight'],
+ ['x-rowing-poulie-assis-prise-en-v','Rowing Poulie Assis - Prise en V','seatedrow',['dos'],'weight'],
+ ['x-ecartes-a-la-poulie-assis','Écartés à la poulie assis','fly',['pecs'],'weight'],
+ ['x-dips-assis-machine','Dips Assis (Machine)','dips',['bras'],'weight'],
+ ['x-elevation-laterale-assis-haltere','Élévation Latérale Assis (Haltère)','lateral',['epaules'],'weight'],
+ ['x-developpe-militaire-assis-barre','Développé Militaire Assis (Barre)','ohp',['epaules'],'weight'],
+ ['x-developpe-militaire-assis-haltere','Développé Militaire Assis (Haltère)','ohp',['epaules'],'weight'],
+ ['x-rowing-assis-machine','Rowing Assis (Machine)','seatedrow',['dos'],'weight'],
+ ['x-extension-triceps-assis','Extension Triceps Assis','ohtri',['bras'],'weight'],
+ ['x-curl-poignets-assis-barre','Curl Poignets Assis (Barre)','seatcurl',['bras'],'weight'],
+ ['x-extension-poignets-assis-barre','Extension Poignets Assis (Barre)','curl',['bras'],'weight'],
+ ['x-developpe-epaules-machine-a-disques','Développé Épaules (Machine à Disques)','ohp',['epaules'],'weight'],
+ ['x-shrug-barre','Shrug (Barre)','farmers',['epaules'],'weight'],
+ ['x-shrug-poulie','Shrug (Poulie)','farmers',['epaules'],'weight'],
+ ['x-shrug-machine','Shrug (Machine)','farmers',['epaules'],'weight'],
+ ['x-shrug-machine-smith','Shrug (Machine Smith)','farmers',['epaules'],'weight'],
+ ['x-flexion-laterale','Flexion Latérale','sidebend',['abdos'],'bw'],
+ ['x-ecarte-poulie-un-bras','Écarté Poulie Un Bras','fly',['pecs'],'weight'],
+ ['x-rowing-un-bras-poulie','Rowing Un Bras Poulie','row',['dos'],'weight'],
+ ['x-curl-un-bras-poulie','Curl Un Bras (Poulie)','curl',['bras'],'weight'],
+ ['x-extension-barre-t-un-bras-barre','Extension Barre T Un Bras (Barre)','stand',['epaules'],'weight'],
+ ['x-tirage-poitrine-un-bras','Tirage Poitrine Un Bras','pulldown',['dos'],'weight'],
+ ['x-extension-triceps-un-bras-poulie','Extension Triceps Un Bras (Poulie)','pushdown',['bras'],'weight'],
+ ['x-extensions-une-jambe','Extensions Une Jambe','legext',['jambes'],'weight'],
+ ['x-releve-de-bassin-une-jambe','Relevé de Bassin Une Jambe','hipthrust',['jambes'],'bw'],
+ ['x-releve-de-bassin-une-jambe-haltere','Relevé de Bassin Une Jambe (Haltère)','hipthrust',['jambes'],'weight'],
+ ['x-presse-a-cuisses-une-jambe','Presse à Cuisses Une Jambe','legpress',['jambes'],'weight'],
+ ['x-souleve-de-terre-roumain-une-jambe-barre','Soulevé de Terre Roumain Une Jambe (Barre)','deadlift',['jambes'],'weight'],
+ ['x-extension-mollet-debout-une-jambe-barre','Extension Mollet Debout Une Jambe (Barre)','calf',['mollets'],'weight'],
+ ['x-extension-mollet-debout-une-jambe-haltere','Extension Mollet Debout Une Jambe (Haltère)','calf',['mollets'],'weight'],
+ ['x-extension-mollet-debout-une-jambe-machine','Extension Mollet Debout Une Jambe (Machine)','calf',['mollets'],'weight'],
+ ['x-sissy-squat-leste','Sissy Squat (Lesté)','airsquat',['jambes'],'bw'],
+ ['x-sit-up-leste','Sit Up (Lesté)','crunch',['abdos'],'bw'],
+ ['x-patinage','Patinage','run',['jambes'],'time'],
+ ['x-ski','Ski','run',['jambes'],'time'],
+ ['x-arrache','Arraché','deadlift',['jambes','pecs'],'weight'],
+ ['x-snowboard','Snowboard','run',['jambes'],'time'],
+ ['x-curl-araignee-barre','Curl Araignée (Barre)','spider',['bras'],'weight'],
+ ['x-spiderman','Spiderman','mountain',['abdos'],'time'],
+ ['x-spinning','Spinning','run',['jambes'],'dist'],
+ ['x-jete-fendu','Jeté Fendu','ohp',['jambes','pecs'],'weight'],
+ ['x-sprint','Sprint','run',['jambes'],'dist'],
+ ['x-squat-elastique','Squat (Élastique)','squat',['jambes'],'weight'],
+ ['x-squat-haltere','Squat (Haltère)','squat',['jambes'],'weight'],
+ ['x-squat-machine','Squat (Machine)','legpress',['jambes'],'weight'],
+ ['x-squat-machine-smith','Squat (Machine Smith)','legpress',['jambes'],'weight'],
+ ['x-squat-suspension','Squat (Suspension)','squat',['jambes'],'bw'],
+ ['x-squat-row','Squat Row','seatedrow',['jambes','pecs'],'weight'],
+ ['x-escaliers-etages','Escaliers (Étages)','run',['jambes'],'dist'],
+ ['x-escaliers-marches','Escaliers (Marches)','run',['jambes'],'dist'],
+ ['x-kickbacks-poulie','Kickbacks Poulie','superman',['jambes'],'weight'],
+ ['x-extension-mollets-debout-barre','Extension Mollets Debout (Barre)','calf',['mollets'],'weight'],
+ ['x-extension-mollets-debout-haltere','Extension Mollets Debout (Haltère)','calf',['mollets'],'weight'],
+ ['x-extension-mollets-debout-machine','Extension Mollets Debout (Machine)','calf',['mollets'],'weight'],
+ ['x-extension-mollets-debout-machine-smith','Extension Mollets Debout (Machine Smith)','calf',['mollets'],'weight'],
+ ['x-leg-curl-debout','Leg Curl Debout','legcurl',['jambes'],'weight'],
+ ['x-elevation-en-y-debout-poulie','Élévation en Y Debout (Poulie)','lateral',['epaules'],'weight'],
+ ['x-tractions-sternum-gironda','Tractions Sternum (Gironda)','pullup',['dos'],'bw'],
+ ['x-stretching','Stretching','stand',[],'time'],
+ ['x-marche-de-la-valise-haltere','Marche de la Valise (Haltère)','farmers',['jambes','pecs'],'distw'],
+ ['x-souleve-de-terre-sumo','Soulevé de Terre Sumo','deadlift',['jambes'],'weight'],
+ ['x-squat-sumo','Squat Sumo','squat',['jambes'],'bw'],
+ ['x-squat-sumo-barre','Squat Sumo (Barre)','squat',['jambes'],'weight'],
+ ['x-squat-sumo-kettlebell','Squat Sumo (Kettlebell)','squat',['jambes'],'weight'],
+ ['x-natation','Natation','run',['jambes'],'dist'],
+ ['x-thruster-barre','Thruster (Barre)','ohp',['jambes','pecs'],'weight'],
+ ['x-thruster-kettlebell','Thruster (Kettlebell)','ohp',['jambes','pecs'],'weight'],
+ ['x-rotation-buste','Rotation Buste','russian',['abdos'],'bw'],
+ ['x-tapis-de-course','Tapis de Course','run',['jambes'],'dist'],
+ ['x-dips-triceps','Dips Triceps','dips',['bras'],'bw'],
+ ['x-dips-triceps-assiste','Dips Triceps (Assisté)','dips',['bras'],'bw'],
+ ['x-dips-triceps-leste','Dips Triceps (Lesté)','dips',['bras'],'bw'],
+ ['x-extension-triceps-barre','Extension Triceps (Barre)','skull',['bras'],'weight'],
+ ['x-extension-triceps-machine','Extension Triceps (Machine)','pushdown',['bras'],'weight'],
+ ['x-extension-triceps-suspension','Extension Triceps (Suspension)','pushdown',['bras'],'bw'],
+ ['x-kickback-triceps-poulie','Kickback Triceps (Poulie)','rearfly',['bras'],'weight'],
+ ['x-rowing-debout-barre','Rowing Debout (Barre)','front',['epaules'],'weight'],
+ ['x-rowing-debout-poulie','Rowing Debout (Poulie)','front',['epaules'],'weight'],
+ ['x-traction-verticale-machine','Traction verticale (machine)','pullup',['dos'],'weight'],
+ ['x-curl-du-serveur-haltere','Curl du serveur (haltère)','curl',['bras'],'weight'],
+ ['x-marche','Marche','run',['jambes'],'dist'],
+ ['x-fentes-marchees','Fentes Marchées','lunge',['jambes'],'bw'],
+ ['x-echauffement','Échauffement','stand',['jambes','pecs'],'time'],
+ ['x-tractions-larges','Tractions Larges','pullup',['dos'],'bw'],
+ ['x-extension-triceps-coudes-ecartes-haltere','Extension triceps coudes écartés (haltère)','ohtri',['bras'],'weight'],
+ ['x-rouleau-de-poignet','Rouleau de Poignet','curl',['bras'],'weight'],
+ ['x-yoga','Yoga','stand',['jambes','pecs'],'time'],
+ ['x-zercher-squat','Zercher Squat','squat',['jambes'],'weight']
+);
+Object.assign(REQ,{'x-around-the-world':['halteres'],'x-extension-dos-machine':['poulie'],'x-extension-dos-hyperextension-lestee':['banc'],'x-slam-ball':['wallball'],'x-curl-poignets-derriere-le-dos-barre':['barre'],'x-squat-a-la-ceinture-machine':['poulie'],'x-developpe-couche-prise-large-barre':['barre'],'x-developpe-couche-poulie':['poulie'],'x-developpe-couche-machine-smith':['poulie'],'x-rowing-penche-haltere':['halteres'],'x-rowing-penche-machine-smith':['poulie'],'x-curl-biceps-barre-ez':['barre'],'x-box-squat-barre':['barre'],'x-split-squat-bulgare-barre':['barre'],'x-pull-through-poulie':['poulie'],'x-rotation-buste-poulie-bas-vers-haut':['poulie'],'x-extension-mollets-machine':['poulie'],'x-presse-mollets-machine':['poulie'],'x-dips-pectoraux-assiste':['dips'],'x-dips-pectoraux-leste':['dips'],'x-ecarte-machine':['poulie'],'x-oiseau-buste-appuye-haltere':['halteres'],'x-rowing-barre-t-buste-appuye':['barre'],'x-elevation-en-y-sur-banc-incline-haltere':['halteres'],'x-traction-supination-assiste':['traction'],'x-tractions-supination-leste':['traction'],'x-epaule':['barre'],'x-epaule-jete':['barre'],'x-epaule-developpe':['barre'],'x-tirage-d-epaule':['barre'],'x-crunch-machine':['poulie'],'x-fentes-croisees-haltere':['halteres'],'x-dead-hang':['traction'],'x-souleve-de-terre-haltere':['halteres'],'x-souleve-de-terre-machine-smith':['poulie'],'x-souleve-de-terre-barre-hex':['barre'],'x-souleve-de-terre-tirage-haut':['barre'],'x-developpe-couche-decline-haltere':['halteres'],'x-developpe-couche-decline-machine':['poulie'],'x-developpe-couche-decline-machine-smith':['poulie'],'x-ecarte-decline-haltere':['halteres'],'x-crunch-decline':['banc'],'x-crunch-decline-leste':['banc'],'x-developpe-serre-haltere':['halteres'],'x-developpe-couche-pieds-releves-barre':['barre'],'x-developpe-au-sol-barre':['barre'],'x-developpe-au-sol-haltere':['halteres'],'x-frog-pumps-haltere':['halteres'],'x-front-lever-raise':['traction'],'x-elevation-frontale-barre':['barre'],'x-elevation-frontale-poulie':['poulie'],'x-squat-complet':['barre'],'x-glute-ham-raise':['banc'],'x-kickbacks-fessier-machine':['poulie'],'x-rowing-gorille-kettlebell':['kb'],'x-hack-squat':['barre'],'x-curl-marteau-poulie':['poulie'],'x-epaule-en-suspension':['barre'],'x-arrache-en-suspension':['barre'],'x-abduction-hanche-poulie':['poulie'],'x-adduction-hanche-poulie':['poulie'],'x-releve-de-bassin-haltere':['halteres'],'x-releve-de-bassin-machine':['poulie'],'x-releve-de-bassin-machine-smith':['poulie'],'x-developpe-couche-incline-machine-smith':['poulie'],'x-chest-press-incline-machine':['poulie'],'x-pompes-inclinees':['banc'],'x-chest-press-convergent-machine':['poulie'],'x-tirage-haut-machine-convergente':['poulie'],'x-tirage-bas-iso-lateral':['poulie'],'x-tirage-machine-convergente':['poulie'],'x-developpe-jm-barre':['barre'],'x-jump-shrug':['barre'],'x-around-the-world-kettlebell':['kb'],'x-epaule-kettlebell':['kb'],'x-curl-kettlebell':['kb'],'x-goblet-squat-kettlebell':['kb'],'x-halo-kettlebell':['kb'],'x-tirage-haut-kettlebell':['kb'],'x-developpe-epaules-kettlebell':['kb'],'x-arrache-kettlebell':['kb'],'x-releve-turc-kettlebell':['kb'],'x-kipping-pull-up':['traction'],'x-releve-de-genoux-barres-paralleles':['barre'],'x-rotation-180-barre-t':['barre'],'x-rowing-landmine-barre':['barre'],'x-squat-developpe-barre-t':['barre'],'x-tirage-poitrine-machine':['poulie'],'x-box-jump-lateral':['banc'],'x-elevation-laterale-machine':['poulie'],'x-presse-a-cuisses-horizontale':['poulie'],'x-releve-de-jambe-barres-paralleles':['barre'],'x-fentes-barre':['barre'],'x-meadow-rows-barre':['barre'],'x-curl-vis-a-vis-poulie':['poulie'],'x-fentes-avec-haltere-au-dessus-de-la-tete':['halteres'],'x-elevation-de-disque-au-dessus-de-la-tete':['barre'],'x-developpe-militaire-machine-smith':['poulie'],'x-overhead-squat':['barre'],'x-pont-fessier-partiel-barre':['barre'],'x-squat-avec-pause-barre':['barre'],'x-squat-pendulaire-machine':['poulie'],'x-curl-disque':['barre'],'x-elevation-disque-frontale':['barre'],'x-developpe-debout-disque':['barre'],'x-serrage-de-disques-svend-press':['barre'],'x-power-clean':['barre'],'x-arrache-en-puissance':['barre'],'x-press-under':['barre'],'x-traction-assistee':['traction'],'x-tractions-leste':['traction'],'x-pull-over-machine':['poulie'],'x-oiseau-poulie':['poulie'],'x-coup-de-pied-arriere-machine':['poulie'],'x-renegade-row-haltere':['halteres'],'x-curl-inverse-poulie':['poulie'],'x-curl-inverse-haltere':['halteres'],'x-oiseau-un-bras-poulie':['poulie'],'x-curl-concentre-prise-inversee':['halteres'],'x-tirage-poitrine-prise-inversee-poulie':['poulie'],'x-hyperextension-inversee':['banc'],'x-fentes-inversees-barre':['barre'],'x-curl-poignets-inverse-haltere':['halteres'],'x-souleve-de-terre-roumain-machine-smith':['poulie'],'x-curl-poulie-basse-corde':['poulie'],'x-tirage-corde-bras-tendus':['poulie'],'x-seal-row-barre':['barre'],'x-seal-row-haltere':['halteres'],'x-rowing-poulie-assis-prise-large':['poulie'],'x-rowing-poulie-assis-prise-en-v':['poulie'],'x-ecartes-a-la-poulie-assis':['poulie'],'x-dips-assis-machine':['poulie'],'x-elevation-laterale-assis-haltere':['halteres'],'x-developpe-militaire-assis-barre':['barre'],'x-developpe-militaire-assis-haltere':['halteres'],'x-rowing-assis-machine':['poulie'],'x-extension-triceps-assis':['poulie'],'x-curl-poignets-assis-barre':['barre'],'x-extension-poignets-assis-barre':['barre'],'x-developpe-epaules-machine-a-disques':['barre'],'x-shrug-barre':['barre'],'x-shrug-poulie':['poulie'],'x-shrug-machine':['poulie'],'x-shrug-machine-smith':['poulie'],'x-ecarte-poulie-un-bras':['poulie'],'x-rowing-un-bras-poulie':['poulie'],'x-curl-un-bras-poulie':['poulie'],'x-extension-barre-t-un-bras-barre':['barre'],'x-tirage-poitrine-un-bras':['poulie'],'x-extension-triceps-un-bras-poulie':['poulie'],'x-extensions-une-jambe':['poulie'],'x-releve-de-bassin-une-jambe-haltere':['halteres'],'x-presse-a-cuisses-une-jambe':['poulie'],'x-souleve-de-terre-roumain-une-jambe-barre':['barre'],'x-extension-mollet-debout-une-jambe-barre':['barre'],'x-extension-mollet-debout-une-jambe-haltere':['halteres'],'x-extension-mollet-debout-une-jambe-machine':['poulie'],'x-arrache':['barre'],'x-curl-araignee-barre':['barre'],'x-jete-fendu':['barre'],'x-squat-haltere':['halteres'],'x-squat-machine':['poulie'],'x-squat-machine-smith':['poulie'],'x-squat-row':['poulie'],'x-kickbacks-poulie':['poulie'],'x-extension-mollets-debout-barre':['barre'],'x-extension-mollets-debout-haltere':['halteres'],'x-extension-mollets-debout-machine':['poulie'],'x-extension-mollets-debout-machine-smith':['poulie'],'x-leg-curl-debout':['poulie'],'x-elevation-en-y-debout-poulie':['poulie'],'x-tractions-sternum-gironda':['traction'],'x-marche-de-la-valise-haltere':['halteres'],'x-souleve-de-terre-sumo':['barre'],'x-squat-sumo-barre':['barre'],'x-squat-sumo-kettlebell':['kb'],'x-thruster-barre':['barre'],'x-thruster-kettlebell':['kb'],'x-dips-triceps':['dips'],'x-dips-triceps-assiste':['dips'],'x-dips-triceps-leste':['dips'],'x-extension-triceps-barre':['barre'],'x-extension-triceps-machine':['poulie'],'x-kickback-triceps-poulie':['poulie'],'x-rowing-debout-barre':['barre'],'x-rowing-debout-poulie':['poulie'],'x-traction-verticale-machine':['poulie'],'x-curl-du-serveur-haltere':['halteres'],'x-tractions-larges':['traction'],'x-extension-triceps-coudes-ecartes-haltere':['halteres'],'x-zercher-squat':['barre']});
+const CLS={curl21:['Bras','Biceps'],scissor:['Abdos & gainage','Abdominaux'],abwheel:['Abdos & gainage','Abdominaux'],'x-aerobie':['Cardio','Cardio'],assault:['Cardio','Cardio'],arnold:['Épaules & trapèzes','Épaules'],'x-around-the-world':['Pectoraux','Torse'],'x-squat-une-jambe-assiste':['Jambes & fessiers','Quadriceps'],backext:['Dos','Bas du Dos'],'x-extension-dos-machine':['Dos','Bas du Dos'],'x-extension-dos-hyperextension-lestee':['Dos','Bas du Dos'],'x-slam-ball':['Corps entier & HYROX','Corps Entier'],bandapart:['Épaules & trapèzes','Épaules'],'x-corde-ondulatoire':['Cardio','Cardio'],bearcrawl:['Corps entier & HYROX','Corps Entier'],bayesian:['Bras','Biceps'],'x-curl-poignets-derriere-le-dos-barre':['Bras','Avant-bras'],'x-squat-a-la-ceinture-machine':['Jambes & fessiers','Quadriceps'],benchdips:['Bras','Triceps'],closebench:['Bras','Triceps'],'x-developpe-couche-prise-large-barre':['Pectoraux','Torse'],bench:['Pectoraux','Torse'],'x-developpe-couche-poulie':['Pectoraux','Torse'],dbbench:['Pectoraux','Torse'],'x-developpe-couche-machine-smith':['Pectoraux','Torse'],'x-rowing-penche-elastique':['Dos','Haut du Dos'],row:['Dos','Haut du Dos'],'x-rowing-penche-haltere':['Dos','Haut du Dos'],'x-rowing-penche-machine-smith':['Dos','Haut du Dos'],barcurl:['Bras','Biceps'],cablecurl:['Bras','Biceps'],curl:['Bras','Biceps'],preachermac:['Bras','Biceps'],'x-curl-biceps-suspension':['Bras','Biceps'],'x-curl-biceps-barre-ez':['Bras','Biceps'],bicycle:['Abdos & gainage','Abdominaux'],'x-crunchs-velo-jambes-surelevees':['Abdos & gainage','Abdominaux'],birddog:['Jambes & fessiers','Fessiers'],boxjump:['Jambes & fessiers','Quadriceps'],'x-box-squat-barre':['Jambes & fessiers','Quadriceps'],'x-boxe':['Cardio','Cardio'],'x-split-squat-bulgare-barre':['Jambes & fessiers','Quadriceps'],bulgarian:['Jambes & fessiers','Quadriceps'],burpee:['Corps entier & HYROX','Corps Entier'],bbj:['Corps entier & HYROX','Corps Entier'],'x-burpee-par-dessus-la-barre':['Corps entier & HYROX','Corps Entier'],pecdeck:['Pectoraux','Torse'],pallof:['Abdos & gainage','Abdominaux'],cablecrunch:['Abdos & gainage','Abdominaux'],fly:['Pectoraux','Torse'],'x-pull-through-poulie':['Jambes & fessiers','Fessiers'],'x-rotation-buste-poulie-bas-vers-haut':['Abdos & gainage','Abdominaux'],woodchop:['Abdos & gainage','Abdominaux'],'x-extension-mollets-machine':['Mollets','Mollets'],'x-presse-mollets-machine':['Mollets','Mollets'],dips:['Pectoraux','Torse'],'x-dips-pectoraux-assiste':['Pectoraux','Torse'],'x-dips-pectoraux-leste':['Pectoraux','Torse'],'x-ecarte-elastique':['Pectoraux','Torse'],dbfly:['Pectoraux','Torse'],'x-ecarte-machine':['Pectoraux','Torse'],'x-ecarte-suspension':['Pectoraux','Torse'],'x-developpe-pectoraux-elastique':['Pectoraux','Torse'],chestpress:['Pectoraux','Torse'],chestrow:['Dos','Haut du Dos'],'x-oiseau-buste-appuye-haltere':['Épaules & trapèzes','Épaules'],'x-rowing-barre-t-buste-appuye':['Dos','Haut du Dos'],'x-elevation-en-y-sur-banc-incline-haltere':['Épaules & trapèzes','Épaules'],chinup:['Dos','Grand Dorsal'],'x-traction-supination-assiste':['Dos','Grand Dorsal'],'x-tractions-supination-leste':['Dos','Grand Dorsal'],'x-clamshell':['Jambes & fessiers','Fessiers'],clappush:['Pectoraux','Torse'],'x-epaule':['Corps entier & HYROX','Corps Entier'],'x-epaule-jete':['Corps entier & HYROX','Corps Entier'],'x-epaule-developpe':['Corps entier & HYROX','Corps Entier'],'x-tirage-d-epaule':['Corps entier & HYROX','Corps Entier'],'x-escalade':['Cardio','Cardio'],conccurl:['Bras','Biceps'],crosshammer:['Bras','Biceps'],crunch:['Abdos & gainage','Abdominaux'],'x-crunch-machine':['Abdos & gainage','Abdominaux'],wcrunch:['Abdos & gainage','Abdominaux'],'x-fentes-croisees-haltere':['Jambes & fessiers','Quadriceps'],'x-cyclisme':['Cardio','Cardio'],deadbug:['Abdos & gainage','Abdominaux'],'x-dead-hang':['Dos','Haut du Dos'],'x-souleve-de-terre-elastique':['Jambes & fessiers','Fessiers'],deadlift:['Jambes & fessiers','Fessiers'],'x-souleve-de-terre-haltere':['Jambes & fessiers','Fessiers'],'x-souleve-de-terre-machine-smith':['Jambes & fessiers','Fessiers'],'x-souleve-de-terre-barre-hex':['Jambes & fessiers','Fessiers'],'x-souleve-de-terre-tirage-haut':['Corps entier & HYROX','Corps Entier'],declinebench:['Pectoraux','Torse'],'x-developpe-couche-decline-haltere':['Pectoraux','Torse'],'x-developpe-couche-decline-machine':['Pectoraux','Torse'],'x-developpe-couche-decline-machine-smith':['Pectoraux','Torse'],'x-ecarte-decline-haltere':['Pectoraux','Torse'],'x-crunch-decline':['Abdos & gainage','Abdominaux'],'x-crunch-decline-leste':['Abdos & gainage','Abdominaux'],declinepush:['Pectoraux','Torse'],diamond:['Bras','Triceps'],'x-chien-tete-en-bas':['Corps entier & HYROX','Corps Entier'],dragcurl:['Bras','Biceps'],dragonflag:['Abdos & gainage','Abdominaux'],'x-dragonfly':['Abdos & gainage','Abdominaux'],dbrow:['Dos','Grand Dorsal'],dbsnatch:['Corps entier & HYROX','Corps Entier'],'x-developpe-serre-haltere':['Pectoraux','Torse'],stepup:['Jambes & fessiers','Quadriceps'],'x-coude-genou':['Abdos & gainage','Abdominaux'],'x-velo-elliptique':['Cardio','Cardio'],facepull:['Épaules & trapèzes','Épaules'],farmers:['Corps entier & HYROX','Corps Entier'],'x-developpe-couche-pieds-releves-barre':['Pectoraux','Torse'],'x-fire-hydrants':['Jambes & fessiers','Fessiers'],'x-developpe-au-sol-barre':['Pectoraux','Torse'],'x-developpe-au-sol-haltere':['Pectoraux','Torse'],'x-dips-triceps-au-sol':['Bras','Triceps'],flutter:['Abdos & gainage','Abdominaux'],'x-sauts-de-grenouille':['Jambes & fessiers','Quadriceps'],'x-frog-pumps-haltere':['Jambes & fessiers','Fessiers'],frontlever:['Corps entier & HYROX','Corps Entier'],'x-front-lever-raise':['Corps entier & HYROX','Corps Entier'],'x-elevation-frontale-elastique':['Épaules & trapèzes','Épaules'],'x-elevation-frontale-barre':['Épaules & trapèzes','Épaules'],'x-elevation-frontale-poulie':['Épaules & trapèzes','Épaules'],frontraise:['Épaules & trapèzes','Épaules'],'x-elevation-frontale-suspension':['Épaules & trapèzes','Épaules'],frontsquat:['Jambes & fessiers','Quadriceps'],'x-squat-complet':['Jambes & fessiers','Quadriceps'],hipbridge:['Jambes & fessiers','Fessiers'],hipthrust:['Jambes & fessiers','Fessiers'],'x-glute-ham-raise':['Jambes & fessiers','Ischio-Jambiers'],'x-kickbacks-fessier-machine':['Jambes & fessiers','Fessiers'],glutekick:['Jambes & fessiers','Fessiers'],goblet:['Jambes & fessiers','Quadriceps'],goodmorning:['Jambes & fessiers','Ischio-Jambiers'],'x-rowing-gorille-kettlebell':['Dos','Haut du Dos'],'x-hack-squat':['Jambes & fessiers','Quadriceps'],hacksquat:['Jambes & fessiers','Quadriceps'],'x-curl-marteau-elastique':['Bras','Biceps'],'x-curl-marteau-poulie':['Bras','Biceps'],hammer:['Bras','Biceps'],handstand:['Corps entier & HYROX','Corps Entier'],hspu:['Épaules & trapèzes','Épaules'],'x-epaule-en-suspension':['Corps entier & HYROX','Corps Entier'],'x-arrache-en-suspension':['Corps entier & HYROX','Corps Entier'],kneeraise:['Abdos & gainage','Abdominaux'],legraise:['Abdos & gainage','Abdominaux'],heeltouch:['Abdos & gainage','Abdominaux'],squeeze:['Pectoraux','Torse'],'x-montees-de-genoux-sautees':['Corps entier & HYROX','Corps Entier'],highknees:['Corps entier & HYROX','Corps Entier'],'x-hiit':['Cardio','Cardio'],'x-randonnee':['Cardio','Cardio'],'x-abduction-hanche-poulie':['Jambes & fessiers','Abducteurs'],abductor:['Jambes & fessiers','Abducteurs'],'x-adduction-hanche-poulie':['Jambes & fessiers','Adducteurs'],adductor:['Jambes & fessiers','Adducteurs'],'x-releve-de-bassin':['Jambes & fessiers','Fessiers'],hipthrust:['Jambes & fessiers','Fessiers'],'x-releve-de-bassin-haltere':['Jambes & fessiers','Fessiers'],'x-releve-de-bassin-machine':['Jambes & fessiers','Fessiers'],'x-releve-de-bassin-machine-smith':['Jambes & fessiers','Fessiers'],hollowrock:['Abdos & gainage','Abdominaux'],inclinebb:['Pectoraux','Torse'],incline:['Pectoraux','Torse'],'x-developpe-couche-incline-machine-smith':['Pectoraux','Torse'],inclinefly:['Pectoraux','Torse'],'x-chest-press-incline-machine':['Pectoraux','Torse'],'x-pompes-inclinees':['Pectoraux','Torse'],australian:['Dos','Haut du Dos'],'x-chest-press-convergent-machine':['Pectoraux','Torse'],'x-tirage-haut-machine-convergente':['Dos','Grand Dorsal'],'x-tirage-bas-iso-lateral':['Dos','Haut du Dos'],'x-tirage-machine-convergente':['Dos','Haut du Dos'],'x-jack-knife-suspension':['Abdos & gainage','Abdominaux'],jackknife:['Abdos & gainage','Abdominaux'],'x-developpe-jm-barre':['Bras','Triceps'],jumprope:['Cardio','Cardio'],'x-jump-shrug':['Corps entier & HYROX','Corps Entier'],jumpsquat:['Jambes & fessiers','Quadriceps'],jumpingjack:['Corps entier & HYROX','Corps Entier'],splitjump:['Jambes & fessiers','Quadriceps'],'x-around-the-world-kettlebell':['Épaules & trapèzes','Épaules'],'x-epaule-kettlebell':['Corps entier & HYROX','Corps Entier'],'x-curl-kettlebell':['Bras','Biceps'],'x-goblet-squat-kettlebell':['Jambes & fessiers','Quadriceps'],'x-halo-kettlebell':['Épaules & trapèzes','Épaules'],'x-tirage-haut-kettlebell':['Corps entier & HYROX','Corps Entier'],'x-developpe-epaules-kettlebell':['Épaules & trapèzes','Épaules'],'x-arrache-kettlebell':['Corps entier & HYROX','Corps Entier'],kbswing:['Corps entier & HYROX','Corps Entier'],'x-releve-turc-kettlebell':['Corps entier & HYROX','Corps Entier'],'x-kipping-pull-up':['Dos','Grand Dorsal'],'x-releve-de-genoux-barres-paralleles':['Abdos & gainage','Abdominaux'],'x-tirage-a-genoux-elastique':['Dos','Grand Dorsal'],kneepush:['Pectoraux','Torse'],lsit:['Abdos & gainage','Abdominaux'],'x-rotation-180-barre-t':['Abdos & gainage','Abdominaux'],'x-rowing-landmine-barre':['Dos','Haut du Dos'],'x-squat-developpe-barre-t':['Corps entier & HYROX','Corps Entier'],closepull:['Dos','Grand Dorsal'],'x-tirage-poitrine-elastique':['Dos','Grand Dorsal'],pulldown:['Dos','Grand Dorsal'],'x-tirage-poitrine-machine':['Dos','Grand Dorsal'],'x-marche-laterale-bande-elastique':['Jambes & fessiers','Fessiers'],'x-box-jump-lateral':['Jambes & fessiers','Quadriceps'],'x-releves-de-jambe-lateraux':['Jambes & fessiers','Fessiers'],sidelunge:['Jambes & fessiers','Quadriceps'],'x-elevation-laterale-elastique':['Épaules & trapèzes','Épaules'],cablelat:['Épaules & trapèzes','Épaules'],latraise:['Épaules & trapèzes','Épaules'],'x-elevation-laterale-machine':['Épaules & trapèzes','Épaules'],'x-squat-lateral':['Jambes & fessiers','Quadriceps'],legext:['Jambes & fessiers','Quadriceps'],legpress:['Jambes & fessiers','Quadriceps'],'x-presse-a-cuisses-horizontale':['Jambes & fessiers','Quadriceps'],'x-releve-de-jambe-barres-paralleles':['Abdos & gainage','Abdominaux'],lowfly:['Pectoraux','Torse'],'x-rowing-bas-suspension':['Dos','Haut du Dos'],bwlunge:['Jambes & fessiers','Quadriceps'],'x-fentes-barre':['Jambes & fessiers','Quadriceps'],lunge:['Jambes & fessiers','Quadriceps'],'x-releve-de-genoux-allonge':['Abdos & gainage','Abdominaux'],legcurl:['Jambes & fessiers','Ischio-Jambiers'],legraisefloor:['Abdos & gainage','Abdominaux'],'x-flexions-du-cou-en-position-couchee':['Cou & mobilité','Cou'],'x-flexion-du-cou-en-position-couchee-leste':['Cou & mobilité','Cou'],'x-extension-du-cou-en-position-couchee':['Cou & mobilité','Cou'],'x-extension-du-cou-en-position-couchee-leste':['Cou & mobilité','Cou'],'x-meadow-rows-barre':['Dos','Haut du Dos'],mountain:['Corps entier & HYROX','Corps Entier'],muscleup:['Corps entier & HYROX','Corps Entier'],negpull:['Dos','Grand Dorsal'],nordic:['Jambes & fessiers','Ischio-Jambiers'],sidecrunch:['Abdos & gainage','Abdominaux'],'x-pompes-a-une-main':['Pectoraux','Torse'],'x-curl-vis-a-vis-poulie':['Bras','Biceps'],'x-fentes-avec-haltere-au-dessus-de-la-tete':['Jambes & fessiers','Quadriceps'],'x-elevation-de-disque-au-dessus-de-la-tete':['Épaules & trapèzes','Épaules'],ohp:['Épaules & trapèzes','Épaules'],dbpress:['Épaules & trapèzes','Épaules'],'x-developpe-militaire-machine-smith':['Épaules & trapèzes','Épaules'],'x-overhead-squat':['Corps entier & HYROX','Corps Entier'],ohcable:['Bras','Triceps'],'x-pont-fessier-partiel-barre':['Jambes & fessiers','Fessiers'],'x-squat-avec-pause-barre':['Jambes & fessiers','Quadriceps'],pendlay:['Dos','Haut du Dos'],'x-squat-pendulaire-machine':['Jambes & fessiers','Quadriceps'],pike:['Épaules & trapèzes','Épaules'],'x-pilates':['Corps entier & HYROX','Corps Entier'],crosshammer:['Bras','Biceps'],pistol:['Jambes & fessiers','Quadriceps'],plank:['Abdos & gainage','Abdominaux'],'x-pompes-planche':['Pectoraux','Torse'],'x-curl-disque':['Bras','Biceps'],'x-elevation-disque-frontale':['Épaules & trapèzes','Épaules'],'x-developpe-debout-disque':['Pectoraux','Torse'],'x-serrage-de-disques-svend-press':['Pectoraux','Torse'],'x-power-clean':['Corps entier & HYROX','Corps Entier'],'x-arrache-en-puissance':['Corps entier & HYROX','Corps Entier'],preacher:['Bras','Biceps'],preacherdb:['Bras','Biceps'],preachermac:['Bras','Biceps'],'x-press-under':['Corps entier & HYROX','Corps Entier'],pullup:['Dos','Grand Dorsal'],'x-traction-assistee':['Dos','Grand Dorsal'],bandpull:['Dos','Grand Dorsal'],'x-tractions-leste':['Dos','Grand Dorsal'],pullover:['Dos','Grand Dorsal'],'x-pull-over-machine':['Dos','Grand Dorsal'],pushpress:['Épaules & trapèzes','Épaules'],pushup:['Pectoraux','Torse'],'x-pompes-prise-serree':['Pectoraux','Torse'],'x-pompes-leste':['Pectoraux','Torse'],rackpull:['Dos','Haut du Dos'],'x-oiseau-poulie':['Épaules & trapèzes','Épaules'],reardelt:['Épaules & trapèzes','Épaules'],revpecdeck:['Épaules & trapèzes','Épaules'],'x-coup-de-pied-arriere-machine':['Jambes & fessiers','Fessiers'],'x-velo-couche':['Cardio','Cardio'],'x-renegade-row-haltere':['Dos','Haut du Dos'],reversecrunch:['Abdos & gainage','Abdominaux'],revcurl:['Bras','Biceps'],'x-curl-inverse-poulie':['Bras','Biceps'],'x-curl-inverse-haltere':['Bras','Biceps'],'x-oiseau-un-bras-poulie':['Épaules & trapèzes','Épaules'],'x-curl-concentre-prise-inversee':['Bras','Biceps'],'x-tirage-poitrine-prise-inversee-poulie':['Dos','Grand Dorsal'],revpush:['Bras','Triceps'],'x-hyperextension-inversee':['Jambes & fessiers','Fessiers'],'x-fentes-inversees':['Jambes & fessiers','Quadriceps'],'x-fentes-inversees-barre':['Jambes & fessiers','Quadriceps'],revlunge:['Jambes & fessiers','Quadriceps'],'x-planche-inversee':['Abdos & gainage','Abdominaux'],'x-curl-poignets-inverse-haltere':['Bras','Avant-bras'],'x-dips-anneaux':['Pectoraux','Torse'],'x-traction-aux-anneaux':['Dos','Grand Dorsal'],'x-pompes-aux-anneaux':['Pectoraux','Torse'],rdl:['Jambes & fessiers','Ischio-Jambiers'],dbrdl:['Jambes & fessiers','Ischio-Jambiers'],'x-souleve-de-terre-roumain-machine-smith':['Jambes & fessiers','Ischio-Jambiers'],'x-curl-poulie-basse-corde':['Bras','Biceps'],'x-tirage-corde-bras-tendus':['Dos','Grand Dorsal'],rowerg:['Cardio','Cardio'],run:['Cardio','Cardio'],russian:['Abdos & gainage','Abdominaux'],'x-rotation-russe-leste':['Abdos & gainage','Abdominaux'],scappull:['Dos','Haut du Dos'],'x-seal-row-barre':['Dos','Haut du Dos'],'x-seal-row-haltere':['Dos','Haut du Dos'],seatedrow:['Dos','Haut du Dos'],'x-rowing-poulie-assis-prise-large':['Dos','Haut du Dos'],'x-rowing-poulie-assis-prise-en-v':['Dos','Haut du Dos'],seatedcalf:['Mollets','Mollets'],'x-ecartes-a-la-poulie-assis':['Pectoraux','Torse'],'x-dips-assis-machine':['Bras','Triceps'],inclinecurl:['Bras','Biceps'],inclinehammer:['Bras','Biceps'],'x-elevation-laterale-assis-haltere':['Épaules & trapèzes','Épaules'],seatedlegcurl:['Jambes & fessiers','Ischio-Jambiers'],'x-developpe-militaire-assis-barre':['Épaules & trapèzes','Épaules'],'x-developpe-militaire-assis-haltere':['Épaules & trapèzes','Épaules'],wristcurl:['Bras','Avant-bras'],'x-rowing-assis-machine':['Dos','Haut du Dos'],shoulderpress:['Épaules & trapèzes','Épaules'],'x-extension-triceps-assis':['Bras','Triceps'],'x-curl-poignets-assis-barre':['Bras','Avant-bras'],'x-extension-poignets-assis-barre':['Bras','Avant-bras'],dbpress:['Épaules & trapèzes','Épaules'],'x-developpe-epaules-machine-a-disques':['Épaules & trapèzes','Épaules'],plankshoulder:['Épaules & trapèzes','Épaules'],'x-shrug-barre':['Épaules & trapèzes','Trapèzes'],'x-shrug-poulie':['Épaules & trapèzes','Trapèzes'],shrug:['Épaules & trapèzes','Trapèzes'],'x-shrug-machine':['Épaules & trapèzes','Trapèzes'],'x-shrug-machine-smith':['Épaules & trapèzes','Trapèzes'],'x-flexion-laterale':['Abdos & gainage','Abdominaux'],sidebend:['Abdos & gainage','Abdominaux'],sideplank:['Abdos & gainage','Abdominaux'],'x-ecarte-poulie-un-bras':['Pectoraux','Torse'],'x-rowing-un-bras-poulie':['Dos','Haut du Dos'],'x-curl-un-bras-poulie':['Bras','Biceps'],'x-extension-barre-t-un-bras-barre':['Épaules & trapèzes','Épaules'],'x-tirage-poitrine-un-bras':['Dos','Grand Dorsal'],cablelat:['Épaules & trapèzes','Épaules'],ohtri1:['Bras','Triceps'],'x-extension-triceps-un-bras-poulie':['Bras','Triceps'],'x-extensions-une-jambe':['Jambes & fessiers','Quadriceps'],singlebridge:['Jambes & fessiers','Fessiers'],'x-releve-de-bassin-une-jambe':['Jambes & fessiers','Fessiers'],'x-releve-de-bassin-une-jambe-haltere':['Jambes & fessiers','Fessiers'],'x-presse-a-cuisses-une-jambe':['Jambes & fessiers','Quadriceps'],'x-souleve-de-terre-roumain-une-jambe-barre':['Jambes & fessiers','Ischio-Jambiers'],singlerdl:['Jambes & fessiers','Ischio-Jambiers'],singlecalf:['Mollets','Mollets'],'x-extension-mollet-debout-une-jambe-barre':['Mollets','Mollets'],'x-extension-mollet-debout-une-jambe-haltere':['Mollets','Mollets'],'x-extension-mollet-debout-une-jambe-machine':['Mollets','Mollets'],'x-sissy-squat-leste':['Jambes & fessiers','Quadriceps'],situp:['Abdos & gainage','Abdominaux'],'x-sit-up-leste':['Abdos & gainage','Abdominaux'],'x-patinage':['Cardio','Cardio'],ski:['Cardio','Cardio'],'x-ski':['Cardio','Cardio'],skull:['Bras','Triceps'],dbskull:['Bras','Triceps'],sledpull:['Corps entier & HYROX','Corps Entier'],sledpush:['Corps entier & HYROX','Corps Entier'],'x-arrache':['Corps entier & HYROX','Corps Entier'],'x-snowboard':['Cardio','Cardio'],'x-curl-araignee-barre':['Bras','Biceps'],spidercurl:['Bras','Biceps'],'x-spiderman':['Abdos & gainage','Abdominaux'],'x-spinning':['Cardio','Cardio'],'x-jete-fendu':['Corps entier & HYROX','Corps Entier'],splitsquat:['Jambes & fessiers','Quadriceps'],'x-sprint':['Cardio','Cardio'],'x-squat-elastique':['Jambes & fessiers','Quadriceps'],squat:['Jambes & fessiers','Quadriceps'],airsquat:['Jambes & fessiers','Quadriceps'],'x-squat-haltere':['Jambes & fessiers','Quadriceps'],'x-squat-machine':['Jambes & fessiers','Quadriceps'],'x-squat-machine-smith':['Jambes & fessiers','Quadriceps'],'x-squat-suspension':['Jambes & fessiers','Quadriceps'],'x-squat-row':['Corps entier & HYROX','Corps Entier'],'x-escaliers-etages':['Cardio','Cardio'],'x-escaliers-marches':['Cardio','Cardio'],'x-kickbacks-poulie':['Jambes & fessiers','Fessiers'],calf:['Mollets','Mollets'],'x-extension-mollets-debout-barre':['Mollets','Mollets'],'x-extension-mollets-debout-haltere':['Mollets','Mollets'],'x-extension-mollets-debout-machine':['Mollets','Mollets'],'x-extension-mollets-debout-machine-smith':['Mollets','Mollets'],'x-leg-curl-debout':['Jambes & fessiers','Ischio-Jambiers'],ohp:['Épaules & trapèzes','Épaules'],'x-elevation-en-y-debout-poulie':['Épaules & trapèzes','Épaules'],stepup:['Jambes & fessiers','Quadriceps'],'x-tractions-sternum-gironda':['Dos','Grand Dorsal'],straightarm:['Dos','Grand Dorsal'],rdl:['Jambes & fessiers','Ischio-Jambiers'],'x-stretching':['Cou & mobilité','Autre'],'x-marche-de-la-valise-haltere':['Corps entier & HYROX','Corps Entier'],'x-souleve-de-terre-sumo':['Jambes & fessiers','Fessiers'],'x-squat-sumo':['Jambes & fessiers','Quadriceps'],'x-squat-sumo-barre':['Jambes & fessiers','Quadriceps'],sumo:['Jambes & fessiers','Quadriceps'],'x-squat-sumo-kettlebell':['Jambes & fessiers','Quadriceps'],superman:['Dos','Bas du Dos'],'x-natation':['Cardio','Cardio'],tbarrow:['Dos','Haut du Dos'],'x-thruster-barre':['Corps entier & HYROX','Corps Entier'],'x-thruster-kettlebell':['Corps entier & HYROX','Corps Entier'],toetouch:['Abdos & gainage','Abdominaux'],toesbar:['Abdos & gainage','Abdominaux'],'x-rotation-buste':['Abdos & gainage','Abdominaux'],'x-tapis-de-course':['Cardio','Cardio'],'x-dips-triceps':['Bras','Triceps'],'x-dips-triceps-assiste':['Bras','Triceps'],'x-dips-triceps-leste':['Bras','Triceps'],'x-extension-triceps-barre':['Bras','Triceps'],pushdown:['Bras','Triceps'],ohtricep:['Bras','Triceps'],'x-extension-triceps-machine':['Bras','Triceps'],'x-extension-triceps-suspension':['Bras','Triceps'],'x-kickback-triceps-poulie':['Bras','Triceps'],kickback:['Bras','Triceps'],pushdown:['Bras','Triceps'],ropepush:['Bras','Triceps'],'x-rowing-debout-barre':['Épaules & trapèzes','Épaules'],'x-rowing-debout-poulie':['Épaules & trapèzes','Épaules'],uprow:['Épaules & trapèzes','Épaules'],vups:['Abdos & gainage','Abdominaux'],'x-traction-verticale-machine':['Dos','Grand Dorsal'],'x-curl-du-serveur-haltere':['Bras','Biceps'],'x-marche':['Cardio','Cardio'],'x-fentes-marchees':['Jambes & fessiers','Quadriceps'],walklunge:['Jambes & fessiers','Quadriceps'],sbl:['Jambes & fessiers','Quadriceps'],wallball:['Corps entier & HYROX','Corps Entier'],wallsit:['Jambes & fessiers','Quadriceps'],'x-echauffement':['Corps entier & HYROX','Corps Entier'],'x-tractions-larges':['Dos','Grand Dorsal'],'x-extension-triceps-coudes-ecartes-haltere':['Bras','Triceps'],'x-rouleau-de-poignet':['Bras','Avant-bras'],'x-yoga':['Corps entier & HYROX','Corps Entier'],'x-zercher-squat':['Jambes & fessiers','Quadriceps'],zottman:['Bras','Biceps']};
 const BASE={};EXL.forEach(([id,n,pose,m,t])=>BASE[id]={id,n,pose,m,t});
 const POSE_BY_MUS={pecs:'bench',dos:'row',epaules:'ohp',bras:'curl',jambes:'squat',mollets:'calf',abdos:'crunch',lombaires:'superman'};
 function ex(id){return BASE[id]||S.custom.find(e=>e.id===id)||{id,n:'Exercice supprimé',pose:'stand',m:[],t:'weight'}}
 function allEx(){return [...Object.values(BASE),...S.custom]}
+/* ----- Classement des exercices : groupe › muscle (Bras › Biceps, Triceps, Avant-bras…) ----- */
+const GRP=['Pectoraux','Dos','Épaules & trapèzes','Bras','Jambes & fessiers','Mollets','Abdos & gainage','Corps entier & HYROX','Cardio','Cou & mobilité'];
+const CARDIO_IDS=new Set(['run','ski','rowerg','assault','jumprope','jrdouble','jrhigh','jrnone','jralt','jrboxer','jrside','jrcross','jrsingle','jrsprint','shuttle','highknees','buttkick','rowsprint','skisprint','jumpingjack','starjump']);
+const HYROX_IDS=new Set(['sledpush','sledpull','bbj','farmers','sbl','wallball','burpee','devilpress','sbclean','sprawl','boxover','burpeebox','wbhold','sledpushh','dbsnatch','kbswing','thruster','squatthrust','muscleup','frontlever','handstand','wallwalk']);
+function exCls(e){if(!e)return ['Cou & mobilité','Autre'];if(CLS[e.id])return CLS[e.id];
+ const n=(e.n||'').toLowerCase(),m=e.m||[],m0=m[0];
+ if(CARDIO_IDS.has(e.id))return ['Cardio','Cardio'];
+ if(HYROX_IDS.has(e.id))return ['Corps entier & HYROX','Corps Entier'];
+ if(/\bcou\b/.test(n))return ['Cou & mobilité','Cou'];
+ if(/étirement|souplesse/.test(n))return ['Cou & mobilité','Autre'];
+ if(m0==='bras'||(m.includes('bras')&&!m.includes('pecs')&&!m.includes('dos')&&!m.includes('epaules')))return ['Bras',/poignet|avant-bras/.test(n)?'Avant-bras':/triceps|dips|kickback|barre au front|extension|skull|diamant/.test(n)?'Triceps':'Biceps'];
+ if(m0==='pecs')return ['Pectoraux','Torse'];
+ if(m0==='dos')return ['Dos',/traction|tirage vertical|pull-over|tirage prise|scapulaire/.test(n)?'Grand Dorsal':'Haut du Dos'];
+ if(m0==='lombaires')return ['Dos','Bas du Dos'];
+ if(m0==='epaules')return ['Épaules & trapèzes',/shrug|haussement/.test(n)?'Trapèzes':'Épaules'];
+ if(m0==='jambes')return ['Jambes & fessiers',/abduct/.test(n)?'Abducteurs':/adduct/.test(n)?'Adducteurs':/fess|hip|pont|glute|kickback/.test(n)?'Fessiers':/leg curl|ischio|nordic|jambes tendues|good morning|roumain|une jambe \(haltère\)/.test(n)?'Ischio-Jambiers':'Quadriceps'];
+ if(m0==='mollets')return ['Mollets','Mollets'];
+ if(m0==='abdos')return ['Abdos & gainage','Abdominaux'];
+ return ['Corps entier & HYROX','Corps Entier']}
+const clsTxt=e=>{const [g,mu]=exCls(e);return g===mu||mu==='Cardio'||mu==='Mollets'?g:g+' › '+mu};
+/* Trie et regroupe une liste d'exercices : par groupe (ou par muscle dans un groupe) */
+function exGrouped(list,byMuscle,row){
+ const gi=g=>{const i=GRP.indexOf(g);return i<0?99:i};
+ const L=list.map(e=>({e,c:exCls(e)})).sort((a,b)=>gi(a.c[0])-gi(b.c[0])||a.c[1].localeCompare(b.c[1],'fr')||a.e.n.localeCompare(b.e.n,'fr'));
+ let cur=null,html='';L.forEach(({e,c})=>{const h=byMuscle?c[1]:c[0];if(h!==cur){cur=h;html+=`<div class="exgh">${esc(h)}<span>${L.filter(x=>(byMuscle?x.c[1]:x.c[0])===h).length}</span></div>`}html+=row(e)});return html}
+const grpMuscles=(list,g)=>[...new Set(list.filter(e=>exCls(e)[0]===g).map(e=>exCls(e)[1]))].sort((a,b)=>a.localeCompare(b,'fr'));
 const picto=(id,cls='')=>{const e=ex(id);return `<span class="thumb ${cls}">${fig(e.pose,e.m)}</span>`};
 
 /* ---------- Méthode Lafay : 13 niveaux ---------- */
@@ -1760,15 +2065,18 @@ const METRICS={
 };
 const fmtM=(v,u)=>v==null?'–':u==='s'?fmtT(v):`${fmtN(v)} ${u}`;
 VIEWS.progress=()=>{
- const q=(view.q||'').toLowerCase();
+ const q=nrm(view.q||''),lg=view.lg||'all',lm=view.lm||'all';
  const used=new Map();S.sessions.forEach(s=>s.items.forEach(i=>{if(!used.has(i.exId))used.set(i.exId,{last:s.start,n:0});used.get(i.exId).n++}));
- const doneL=[...used.keys()].map(ex).filter(e=>!q||e.n.toLowerCase().includes(q));
- const rest=allEx().filter(e=>!used.has(e.id)&&(!q||e.n.toLowerCase().includes(q)));
+ const doneL=[...used.keys()].map(ex).filter(e=>exMatch(e,q));
+ const inG=e=>{const c=exCls(e);return (lg==='all'||c[0]===lg)&&(lm==='all'||c[1]===lm)};
+ const rest=allEx().filter(e=>!used.has(e.id)&&exMatch(e,q)&&inG(e));
  return `<div class="top"><h1>Progrès</h1></div>
  <input class="search" id="pq" data-f="pq" value="${esc(view.q||'')}" placeholder="Rechercher un exercice (ex. développé couché)">
  <div class="sec"><div class="hd"><h2>Vos exercices</h2><span class="mut" style="font-size:13px">${doneL.length} suivi(s)</span></div>
  ${doneL.length?`<div class="grid">${doneL.map(e=>{const u=used.get(e.id),en=entries(e.id),m=METRICS[e.t][0],v=en.length?Math.max(...en.map(x=>m[2](x.sets)??0)):null;return `<button class="card exrow" style="text-align:left" data-a="exInfo" data-e="${e.id}">${picto(e.id,'lg')}<div style="min-width:0;flex:1"><div class="nm">${esc(e.n)}</div><div class="sub">${u.n} séance(s) · dernière le ${DSHORT.format(u.last)}</div></div><div style="text-align:right"><div class="mut" style="font-size:11px">${m[1]}</div><div style="font:800 18px var(--f-disp)">${fmtM(m[4]?Math.min(...en.map(x=>m[2](x.sets)).filter(x=>x!=null)):v,m[3])}</div></div></button>`}).join('')}</div>`:`<div class="card empty"><p>Les courbes apparaissent dès votre première séance terminée.</p></div>`}</div>
- <div class="sec"><div class="hd"><h2>Bibliothèque</h2><button class="btn sm" data-a="newEx">${ic('plus')}Créer</button></div><div class="grid">${rest.map(e=>`<button class="card exrow" style="text-align:left;padding:12px" data-a="exInfo" data-e="${e.id}">${picto(e.id)}<div style="min-width:0"><div class="nm">${esc(e.n)}</div><div class="sub">${e.m.map(m=>MUS[m]).join(' · ')}</div></div></button>`).join('')}</div></div>`;
+ <div class="sec"><div class="hd"><h2>Bibliothèque <span class="mut" style="font-size:14px;font-weight:600">${rest.length} exercices</span></h2><button class="btn sm" data-a="newEx">${ic('plus')}Créer</button></div>
+ ${grpChips(lg,lm,'libg',allEx())}
+ <div class="libgrid">${exGrouped(rest,lg!=='all',e=>`<button class="card exrow" style="text-align:left;padding:12px" data-a="exInfo" data-e="${e.id}">${picto(e.id)}<div style="min-width:0"><div class="nm">${esc(e.n)}</div><div class="sub">${esc(clsTxt(e))}</div></div></button>`)}</div></div>`;
 };
 VIEWS.exercise=()=>{
  const e=ex(view.eid),en=entries(e.id),ms=METRICS[e.t],mk=view.m||ms[0][0],M=ms.find(m=>m[0]===mk)||ms[0];
@@ -1977,14 +2285,20 @@ setInterval(tick,500);
 function updWkStats(){const v=$('#wkvol');if(v)v.textContent=fmtN(volOf(W.items))+' kg';const s=$('#wksets');if(s)s.textContent=setsOf(W.items)}
 
 /* ---------- Picker d'exercices ---------- */
-let PK={sel:[],q:'',m:'all',mode:'wk',replace:null};
-function openPicker(mode,replace=null){PK={sel:[],q:'',m:'all',mode,replace};openSheet(pickerBody(),pickerFoot())}
-function pickerList(){const q=PK.q.toLowerCase();return allEx().filter(e=>(PK.m==='all'||e.m.includes(PK.m))&&(!q||e.n.toLowerCase().includes(q)))}
+let PK={sel:[],q:'',g:'all',mu:'all',mode:'wk',replace:null};
+const nrm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const exMatch=(e,q)=>!q||nrm(e.n).includes(q)||nrm(clsTxt(e)).includes(q);
+function openPicker(mode,replace=null){PK={sel:[],q:'',g:'all',mu:'all',mode,replace};openSheet(pickerBody(),pickerFoot())}
+function pickerList(){const q=nrm(PK.q);return allEx().filter(e=>{const c=exCls(e);return (PK.g==='all'||c[0]===PK.g)&&(PK.mu==='all'||c[1]===PK.mu)&&exMatch(e,q)})}
+function grpChips(g,mu,act,list){const ms=g==='all'?[]:grpMuscles(list,g);
+ return `<div class="chips wrap"><button class="chip ${g==='all'?'on':''}" data-a="${act}" data-g="all">Tous</button>${GRP.map(x=>`<button class="chip ${g===x?'on':''}" data-a="${act}" data-g="${x}">${x}</button>`).join('')}</div>
+ ${ms.length>1?`<div class="chips wrap subchips"><button class="chip ${mu==='all'?'on':''}" data-a="${act}" data-g="${g}" data-mu="all">Tout ${esc(g.split(' ')[0].toLowerCase())}</button>${ms.map(x=>`<button class="chip ${mu===x?'on':''}" data-a="${act}" data-g="${g}" data-mu="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:''}`}
 function pickerBody(){return `<div style="display:flex;justify-content:space-between;align-items:center"><h2>${PK.replace!=null?'Remplacer l’exercice':'Ajouter des exercices'}</h2><button class="btn sm" data-a="newEx">${ic('plus')}Créer</button></div>
- <input class="search" id="pkq" data-f="pkq" placeholder="Rechercher…" value="${esc(PK.q)}" autocomplete="off">
- <div class="chips"><button class="chip ${PK.m==='all'?'on':''}" data-a="pkm" data-v="all">Tous</button>${Object.entries(MUS).map(([k,n])=>`<button class="chip ${PK.m===k?'on':''}" data-a="pkm" data-v="${k}">${n}</button>`).join('')}</div>
+ <input class="search" id="pkq" data-f="pkq" placeholder="Rechercher (ex. curl, triceps, poulie)…" value="${esc(PK.q)}" autocomplete="off">
+ <div id="pkchips">${grpChips(PK.g,PK.mu,'pkg',allEx())}</div>
  <div id="pklist">${pickerItems()}</div>`}
-function pickerItems(){const l=pickerList();return l.map(e=>`<button class="pick ${PK.sel.includes(e.id)?'on':''}" data-a="pk" data-e="${e.id}">${picto(e.id)}<div style="min-width:0"><div style="font-weight:600">${esc(e.n)}</div><div class="mut" style="font-size:13px">${e.m.map(m=>MUS[m]).join(' · ')}</div></div><span class="cbx">${PK.sel.includes(e.id)?ic('check'):''}</span></button>`).join('')||'<p class="mut">Aucun exercice trouvé. Créez-le avec le bouton « Créer ».</p>'}
+function pickerItems(){const l=pickerList();if(!l.length)return '<p class="mut">Aucun exercice trouvé. Créez-le avec le bouton « Créer ».</p>';
+ return exGrouped(l,PK.g!=='all',e=>`<button class="pick ${PK.sel.includes(e.id)?'on':''}" data-a="pk" data-e="${e.id}">${picto(e.id)}<div style="min-width:0"><div style="font-weight:600">${esc(e.n)}</div><div class="mut" style="font-size:13px">${esc(clsTxt(e))}</div></div><span class="cbx">${PK.sel.includes(e.id)?ic('check'):''}</span></button>`)}
 function pickerFoot(){return `<button class="btn" data-a="close">Annuler</button><button class="btn pri" data-a="pkAdd" ${PK.sel.length?'':'disabled style="opacity:.5"'}>${PK.replace!=null?'Remplacer':`Ajouter${PK.sel.length?' ('+PK.sel.length+')':''}`}</button>`}
 function refreshPicker(){const l=$('#pklist');if(l)l.innerHTML=pickerItems();const f=$('#sheet .sf');if(f)f.innerHTML=pickerFoot()}
 
@@ -2023,7 +2337,8 @@ const A={
  idel:el=>{const d=curDay();d.items.splice(+el.dataset.k,1);touchCfg();render()},
  picker:el=>openPicker(el.dataset.m),
  pk:el=>{const id=el.dataset.e;if(PK.replace!=null)PK.sel=[id];else PK.sel.includes(id)?PK.sel=PK.sel.filter(x=>x!==id):PK.sel.push(id);refreshPicker()},
- pkm:el=>{PK.m=el.dataset.v;$('#sheet .chips').querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v===PK.m));refreshPicker()},
+ pkg:el=>{PK.g=el.dataset.g;PK.mu=el.dataset.mu||'all';$('#pkchips').innerHTML=grpChips(PK.g,PK.mu,'pkg',allEx());refreshPicker();const l=$('#pklist');if(l)l.scrollIntoView({block:'nearest'})},
+ libg:el=>{view.lg=el.dataset.g;view.lm=el.dataset.mu||'all';const y=scrollY;render();scrollTo(0,y)},
  pkAdd:()=>{if(!PK.sel.length)return;
   if(PK.mode==='day'){const d=curDay();PK.sel.forEach(id=>{const e=ex(id);d.items.push(it(id,3,{reps:e.t==='weight'||e.t==='bw'?10:null,time:e.t==='time'?30:null,dist:e.t.startsWith('dist')?100:null,rest:e.t==='time'?60:90}))});touchCfg()}
   else if(PK.replace!=null){const i=W.items[PK.replace];i.exId=PK.sel[0];i.target={};i.sets.forEach(s=>{s.kg=s.reps=s.time=s.dist=null;s.done=false});saveW()}
@@ -2341,7 +2656,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V3.2',APP_BUILD='16/11/2026 à 21:15';
+const APP_V='V3.3',APP_BUILD='16/11/2026 à 22:00';
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
