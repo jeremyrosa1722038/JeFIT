@@ -1937,7 +1937,7 @@ const pwAlgo=()=>window.crypto&&crypto.subtle?'p':'f';
 
 /* ===================== Supabase (sauvegarde en ligne) ===================== */
 /* Option : collez ici l'URL et la clé « anon public » de votre projet Supabase pour ne pas avoir à les saisir dans Paramètres. */
-const SB_DEF={url:'',key:''};
+const SB_DEF={url:'https://ckaxyytbsyghjtlmmgum.supabase.co',key:''};
 var sbSt='off',sbMsg='',sbTimer=null,sbBusy=false,sbAgain=false,sbLast=LS.get('jefit.sbLast',0);
 function sbCfg(){const c=LS.get('jefit.sb',{})||{};return {url:String(c.url||SB_DEF.url||'').trim().replace(/\/+$/,''),key:String(c.key||SB_DEF.key||'').trim()}}
 const sbOn=()=>{const c=sbCfg();return !!(c.url&&c.key)};
@@ -2071,7 +2071,7 @@ function authHTML(){
   <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" maxlength="30"></label><label>Mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer le mot de passe<input id="ap2" type="password" autocomplete="new-password"></label></div>
   ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Créer mon compte</button>
   <p class="note">${on?'Vos séances sont gardées dans ce navigateur et sauvegardées en ligne.':'Vos séances sont gardées dans ce navigateur : pas besoin de les retaper.'}</p>`;
- return `<div class="ac">${WM()}${tabs}${body}${authMode==='forgot'||SB_DEF.url?'':cloudLnk}</div>`;
+ return `<div class="ac">${WM()}${tabs}${body}${authMode==='forgot'||(SB_DEF.url&&SB_DEF.key)?'':cloudLnk}</div>`;
 }
 function showAuth(){authMode=ACC.get()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
 function authFocus(){if($('#splash'))return;const i=[...document.querySelectorAll('#auth input:not([type=checkbox])')].find(x=>!x.value)||document.querySelector('#auth input');if(i)i.focus()}
