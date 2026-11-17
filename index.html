@@ -188,6 +188,8 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .excard .exhead{display:flex;align-items:center;gap:12px;padding:0 16px}
 .excard .exname{flex:1;min-width:0;text-align:left;font:700 18px/1.25 var(--f-body);color:var(--acc)}
 .excard .note{margin:10px 16px 0;padding:10px 12px;background:var(--soft);border-radius:10px;font-size:14px;width:calc(100% - 32px);border:0;resize:none;min-height:40px}
+.notew{position:relative;margin:10px 16px 0}.notew .note{margin:0;width:100%;padding-right:44px;display:block}
+.notex{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;color:var(--mut);border-radius:8px}.notex:hover{color:var(--danger)}
 .restb{display:inline-flex;gap:6px;align-items:center;color:var(--acc);font-weight:500;margin:10px 16px 0}
 .restb svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
 .sets{margin-top:8px}
@@ -261,6 +263,9 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .hcard .exl{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .hcard .exl .exrow .thumb{width:40px;height:40px}.hcard .exl .exrow .thumb .fig{width:36px;height:36px}
 .month{font:800 14px var(--f-disp);text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:24px 0 10px}
+/* Tout l'affichage 5 % plus petit… sauf les dates de l'historique, qui gardent leur taille */
+body{zoom:.95}
+.hdate,.month{zoom:1.0527}
 .pr{display:inline-flex;align-items:center;gap:4px;background:var(--gold);color:#3A2C00;font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px}
 table.sets-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .sets-t td,.sets-t th{padding:8px 6px;text-align:left;border-top:1px solid var(--line);font-size:14px}
@@ -1938,7 +1943,7 @@ async function loadRides(){
  const sig=a=>a.map(r=>r.id+':'+r.duration).join();if(sig(nv)!==sig(RIDES)){RIDES=nv;soft()}}
 function rideCard(s){const hl=view.name==='home'&&view.hw&&s.start>=view.hw&&s.start<view.hw+7*864e5;
  return `<button class="card hcard ${hl?'hl':''}" style="text-align:left;width:100%;display:block" data-a="openRide" data-r="${esc(String(s.rid))}">
- <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2>${esc(s.name)}</h2><div class="mut" style="font-size:13px;margin-top:2px">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)}</div></div><span class="pill"><i class="dot" style="background:#FF8A1A"></i>Vélo · JeRIDE</span></div>
+ <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2>${esc(s.name)}</h2><div class="mut hdate" style="font-size:13px;margin-top:2px">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)}</div></div><span class="pill"><i class="dot" style="background:#FF8A1A"></i>Vélo · JeRIDE</span></div>
  <div class="meta"><div><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div><div class="l">Distance</div><div class="v">${(s.dist/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})} km</div></div><div><div class="l">${s.pAvg?'Puissance':'Calories'}</div><div class="v">${s.pAvg?Math.round(s.pAvg)+' W':s.kcal+' kcal'}</div></div></div></button>`}
 
 VIEWS.programs=()=>{
@@ -2019,7 +2024,7 @@ VIEWS.workout=()=>{
   <div class="sec"><div class="hd"><h2>Vos programmes</h2></div><div class="grid">${S.programs.map(p=>`<div class="card"><div class="eyebrow">${(CATS[p.cat]||CATS.libre).n}</div><h2 style="margin:4px 0 12px">${esc(p.name)}</h2><div class="stack" style="gap:8px">${p.days.map(d=>`<button class="btn" style="justify-content:space-between" data-a="startDay" data-p="${p.id}" data-d="${d.id}"><span>${esc(d.name)}</span>${ic('play')}</button>`).join('')}</div></div>`).join('')}</div></div>`;
  return `<div class="wk-top"><div class="r1"><input class="nm" id="wkname" data-f="wkname" value="${esc(W.name)}" aria-label="Nom de la séance"><button class="btn pri" data-a="finish">Terminer</button></div>
   <div class="stats3"><div><div class="l">Durée</div><div class="clockb"><span class="v acc" data-clock>${fmtT(elapsed(W)/1000)}</span><button class="ib" data-a="pause" aria-label="${W.pausedAt?'Reprendre':'Pause'}">${ic(W.pausedAt?'play':'pause')}</button></div></div><div><div class="l">Volume</div><div class="v" id="wkvol">${fmtN(volOf(W.items))} kg</div></div><div><div class="l">Séries</div><div class="v" id="wksets">${setsOf(W.items)}</div></div></div></div>
- <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:16px 0 0">${W.items.length>1?`<button class="restb" style="margin:0" data-a="exOrder">${icS('list',16)}Réorganiser</button>`:'<span></span>'}<button class="restb" style="margin:0" data-a="sndPick">${icS('bell',16)}Son du repos : ${SNDS[sndCfg().k]}</button></div>
+ <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:16px 0 0">${W.items.length>1?`<button class="restb" style="margin:0" data-a="exOrder">${icS('list',16)}Réorganiser</button>`:'<span></span>'}</div>
  <div class="wk-grid">${W.items.map((item,k)=>exCard(item,k)).join('')}</div>
  ${W.items.length?'':`<div class="card empty" style="margin-top:16px">${fig('stand',[])}<h3 style="color:var(--fg)">Séance vide</h3><p>Ajoutez vos mouvements, le chrono tourne déjà.</p></div>`}
  <div class="stack" style="margin-top:16px;max-width:640px;margin-inline:auto"><button class="btn pri blk" data-a="picker" data-m="wk">${ic('plus')}Ajouter un exercice</button><button class="btn dng blk" data-a="discard">Abandonner la séance</button></div>`;
@@ -2060,7 +2065,7 @@ function exCard(item,k){
  const nextEx=g&&!ssLast?ex(W.items[g[g.indexOf(k)+1]].exId).n:'';
  return `<div class="card excard${item.ss?' ss':''}" id="ex${k}" ${item.ss?`style="--ssc:${col}"`:''}><div class="exhead">${picto(item.exId)}<button class="exname" data-a="exInfo" data-e="${item.exId}">${esc(e.n)}</button><button class="ib" data-a="exMenu" data-k="${k}" aria-label="Options">${ic('dots')}</button></div>
  ${item.ss?`<div class="ssb"><span style="background:${col}">Superset</span><small>${ssLast?'Repos après cet exercice':'Puis : '+esc(nextEx)+' (sans repos)'}</small></div>`:''}
- ${item.note||item.showNote?`<textarea class="note" rows="${Math.max(1,Math.ceil((item.note||'').length/34))}" id="nt${k}" data-f="wnote" data-k="${k}" placeholder="Note…">${esc(item.note)}</textarea>`:''}
+ ${item.note||item.showNote?`<div class="notew"><textarea class="note" rows="${Math.max(1,Math.ceil((item.note||'').length/34))}" id="nt${k}" data-f="wnote" data-k="${k}" placeholder="Note…">${esc(item.note)}</textarea><button class="notex" data-a="noteDel" data-k="${k}" aria-label="Supprimer la note" title="Supprimer la note">${icS('cross',20)}</button></div>`:''}
  <div class="exbtns"><button class="pillb" data-a="setRest" data-k="${k}">${ic('timer')}Repos : ${ssLast?fmtRest(item.rest):'enchaîner'}</button><button class="pillb" data-a="exNote" data-k="${k}">${ic('note')}Note</button></div>
  <div class="sets" style="--n:${t.cols.length}"><div class="srow h"><span>SÉRIE</span><span>PRÉCÉDENT</span>${t.lab.map(l=>`<span>${l}</span>`).join('')}<span>${ic('check').replace('<svg','<svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:3"')}</span></div>
  ${item.sets.map((s,j)=>{const pv=pvOf(item,last,j);let n=0;item.sets.slice(0,j+1).forEach(x=>{if(!x.w&&!x.d&&!x.f)n++});
@@ -2084,7 +2089,7 @@ function histCard(s){
  const pr=(s.prs||[]).length;
  const hl=view.name==='home'&&view.hw&&s.start>=view.hw&&s.start<view.hw+7*864e5;
  return `<button class="card hcard ${hl?'hl':''}" style="text-align:left;width:100%;display:block" data-a="openSession" data-s="${s.id}">
- <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2>${esc(s.name)}</h2><div class="mut" style="font-size:13px;margin-top:2px">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)}</div></div>${pr?`<span class="pr">PR ×${pr}</span>`:''}</div>
+ <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h2>${esc(s.name)}</h2><div class="mut hdate" style="font-size:13px;margin-top:2px">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)}</div></div>${pr?`<span class="pr">PR ×${pr}</span>`:''}</div>
  <div class="meta"><div><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div><div class="l">Volume</div><div class="v">${fmtN(s.volume)} kg</div></div><div><div class="l">Séries</div><div class="v">${s.sets}</div></div></div>
  <div class="exl">${s.items.slice(0,4).map(i=>`<div class="exrow">${picto(i.exId)}<span>${i.sets.length} × ${esc(ex(i.exId).n)}</span></div>`).join('')}${s.items.length>4?`<span class="mut" style="font-size:13px">+ ${s.items.length-4} exercice(s)</span>`:''}</div></button>`;
 }
@@ -2192,7 +2197,7 @@ function toast(t){const d=document.createElement('div');d.className='toast';d.te
 function mkItem(exId,src){const e=ex(exId);const n=src?.sets||3;const sets=[];for(let i=0;i<n;i++)sets.push({kg:null,reps:null,time:null,dist:null,done:false,w:false});
  return {id:uid(),exId,rest:src?.rest??(e.t==='time'?60:90),note:src?.note||'',target:src?{reps:src.reps,kg:src.kg,time:src.time,dist:src.dist}:{},sets}}
 function startWorkout(w){
- const doIt=()=>{W=w;saveW();wake();go('workout');if(sndCfg().ask)setTimeout(()=>openSnd(true),250)};
+ const doIt=()=>{W=w;saveW();wake();go('workout')};
  if(W)confirmSheet('Remplacer la séance en cours ?',`« ${esc(W.name)} » n’est pas terminée. Elle sera abandonnée.`,'Remplacer',doIt);else doIt();
 }
 /* ----- Cycle de programme : durée en semaines, suivi des séances, séance précédente / suivante ----- */
@@ -2313,7 +2318,8 @@ function stravaTxt(s){return `${s.name} · JeFIT\n${fmtDur(s.duration)} · ${s.s
 let AC=null;function audio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
 /* ----- Fin de repos : son à 3, 2 et 1 seconde, puis la cloche. Le son se choisit en début de séance ----- */
 const SNDS={cloche:'Cloche',boxe:'Cloche de boxe',bip:'Bips',douce:'Douce',gong:'Gong',aucun:'Aucun son'};
-const sndCfg=()=>Object.assign({k:'cloche',ask:true},LS.get('jefit.snd',{})||{});
+/* Son unique, toujours le même : 3 · 2 · 1 puis le son final « Douce » */
+const sndCfg=()=>({k:'douce',ask:false});
 function tone(f,t,dur,vol,type='sine'){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.start(t);o.stop(t+dur+.05);return o}
 const bell=(f,t,dur,vol)=>[1,2.01,2.76,4.07,5.4].map((m,i)=>tone(f*m,t,dur*(1-i*.15),vol/(1+i*1.4)));
 function sndPlay(k,final,t){try{audio();if(!AC)return [];t=t==null?AC.currentTime+.02:t;
@@ -2476,18 +2482,18 @@ const A={
    /* Record : la série bat tout l'historique et les autres séries du jour */
    const tt=ex(item.exId).t,sc=setScore(tt,s),hist=bestScore(item.exId);
    const today=Math.max(0,...W.items.filter(x=>x.exId===item.exId).flatMap(x=>x.sets).filter(x=>x!==s&&x.done).map(x=>setScore(tt,x)));
-   s.pr=hist>0&&sc>Math.max(hist,today);if(s.pr){W.items.forEach(x=>x.exId===item.exId&&x.sets.forEach(y=>{if(y!==s)y.pr=false}));toast('🏆 Nouveau record : '+ex(item.exId).n)}
+   s.pr=sc>0&&sc>Math.max(hist,today);if(s.pr){W.items.forEach(x=>x.exId===item.exId&&x.sets.forEach(y=>{if(y!==s)y.pr=false}));toast('🏆 Nouveau record : '+ex(item.exId).n)}
    /* Superset : on enchaîne l'exercice suivant du groupe, le repos part après le dernier */
    const g=item.ss?ssGroup(W.items,item.ss):null;
-   if(g&&g[g.length-1]!==k&&!s.w){const nk=g[g.indexOf(k)+1];if(!s.pr)toast('Enchaîne : '+ex(W.items[nk].exId).n);setTimeout(()=>{const c=$('#ex'+nk);if(c)c.scrollIntoView({behavior:'smooth',block:'start'})},200)}
-   else if(item.sets[j+1]&&item.sets[j+1].d&&!item.sets[j+1].done&&!s.w){if(!s.pr)toast('Drop set : enchaîne sans repos, charge plus légère')}
-   else if(item.rest>0&&!s.w)W.rest={end:Date.now()+item.rest*1000,total:item.rest,name:g?'Superset':ex(item.exId).n}}
+   if(g&&g[g.length-1]!==k){const nk=g[g.indexOf(k)+1];if(!s.pr)toast('Enchaîne : '+ex(W.items[nk].exId).n);setTimeout(()=>{const c=$('#ex'+nk);if(c)c.scrollIntoView({behavior:'smooth',block:'start'})},200)}
+   else if(item.sets[j+1]&&item.sets[j+1].d&&!item.sets[j+1].done){if(!s.pr)toast('Drop set : enchaîne sans repos, charge plus légère')}
+   else if(item.rest>0)W.rest={end:Date.now()+item.rest*1000,total:item.rest,name:g?'Superset':ex(item.exId).n}}
   else{s.done=false;s.pr=false}
   saveW();const card=$('#ex'+k);if(card){const tmp=document.createElement('div');tmp.innerHTML=exCard(item,k);card.replaceWith(tmp.firstElementChild)}updWkStats();renderRest();restCue()},
  addSet:el=>{const item=W.items[+el.dataset.k];const l=item.sets[item.sets.length-1];item.sets.push({kg:null,reps:null,time:null,dist:null,done:false,w:false});saveW();render()},
  setMenu:el=>{const k=+el.dataset.k,j=+el.dataset.j,s=W.items[k].sets[j],cur=s.w?'w':s.f?'f':s.d?'d':'n';
   const opt=(v,l,c,t,d)=>`<button class="mi stype ${cur===v?'on':''}" data-a="setType" data-k="${k}" data-j="${j}" data-v="${v}"><b style="color:${c}">${l}</b><span style="flex:1;text-align:left"><span style="display:block">${t}</span><small class="mut" style="font-weight:600">${d}</small></span>${cur===v?ic('check'):''}</button>`;
-  openSheet(`<h2>Type de série</h2><div>${opt('w','W','var(--warm)','Série d’échauffement','Ne compte ni dans le volume, ni dans les records, ni dans le repos.')}${opt('n','1','var(--fg)','Série normale','Série de travail classique.')}${opt('f','F','var(--danger)','Série ratée','Poussée jusqu’à l’échec : la dernière répétition n’est pas passée.')}${opt('d','D','#3B82F6','Drop set','Enchaînée juste après la série d’avant avec une charge plus légère, sans repos.')}<button class="mi dng" data-a="setDel" data-k="${k}" data-j="${j}"><b style="color:var(--danger)">✕</b>Retirer la série</button></div>`)},
+  openSheet(`<h2>Type de série</h2><div>${opt('w','W','var(--warm)','Série d’échauffement','Ne compte ni dans le volume, ni dans les records.')}${opt('n','1','var(--fg)','Série normale','Série de travail classique.')}${opt('f','F','var(--danger)','Série ratée','Poussée jusqu’à l’échec : la dernière répétition n’est pas passée.')}${opt('d','D','#3B82F6','Drop set','Enchaînée juste après la série d’avant avec une charge plus légère, sans repos.')}<button class="mi dng" data-a="setDel" data-k="${k}" data-j="${j}"><b style="color:var(--danger)">✕</b>Retirer la série</button></div>`)},
  setType:el=>{const s=W.items[+el.dataset.k].sets[+el.dataset.j],v=el.dataset.v;s.w=v==='w';s.f=v==='f';s.d=v==='d';if(s.w)s.pr=false;saveW();closeSheet();render()},
  setW:el=>{const s=W.items[+el.dataset.k].sets[+el.dataset.j];s.w=!s.w;saveW();closeSheet();render()},
  setDel:el=>{W.items[+el.dataset.k].sets.splice(+el.dataset.j,1);saveW();closeSheet();render()},
@@ -2504,6 +2510,7 @@ const A={
  exReplace:el=>{closeSheet();setTimeout(()=>openPicker('wk',+el.dataset.k),260)},
  exMove:el=>{const k=+el.dataset.k,t=k+ +el.dataset.v;if(t>=0&&t<W.items.length){[W.items[k],W.items[t]]=[W.items[t],W.items[k]];saveW()}closeSheet();render()},
  exDel:el=>{W.items.splice(+el.dataset.k,1);ssClean();saveW();closeSheet();render()},
+ noteDel:el=>{const it=W.items[+el.dataset.k];it.note='';it.showNote=false;saveW();render()},
  addWarm:el=>{const item=W.items[+el.dataset.k],n=item.sets.filter(x=>x.w).length;item.sets.splice(n,0,{kg:null,reps:null,time:null,dist:null,done:false,w:true});saveW();render()},
  ssPick:el=>{const k=+el.dataset.k,it=W.items[k];openSheet(`<h2>Superset avec…</h2><p class="mut" style="margin:0">Les exercices du superset s’enchaînent sans repos ; le chrono de repos ne démarre qu’après le dernier.</p><div style="margin-top:10px">${W.items.map((x,i)=>i===k||(it.ss&&x.ss===it.ss)?'':`<button class="mi" data-a="ssLink" data-k="${k}" data-m="${i}">${picto(x.exId)}<span style="flex:1;text-align:left">${esc(ex(x.exId).n)}</span>${x.ss?'<small class="mut">déjà en superset</small>':''}</button>`).join('')}</div>`,`<button class="btn blk" data-a="close">Retour</button>`)},
  ssLink:el=>{const k=+el.dataset.k,m=+el.dataset.m,a=W.items[k],b=W.items[m],g=a.ss||b.ss||uid();a.ss=g;b.ss=g;
@@ -2735,7 +2742,9 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V3.4',APP_BUILD='17/11/2026 à 10:00';
+const APP_V='V3.8',APP_BUILD='17/11/2026 à 11:05';
+/* Une note laissée vide se referme d'elle-même quand on quitte la case */
+document.addEventListener('focusout',e=>{const t=e.target;if(!t||t.dataset?.f!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
 /* ===================== Compte (unique, sur cet appareil) ===================== */
 const ACC={get:()=>LS.get('jefit.account',null),set:a=>LS.set('jefit.account',a),logged:()=>!!LS.get('jefit.logged',false)&&!!LS.get('jefit.account',null)};
@@ -2859,7 +2868,6 @@ VIEWS.settings=()=>{
  <div class="sec"><div class="hd"><h2>Préférences</h2></div><div class="card set-card">
   <label class="form" style="flex-direction:row;align-items:center;gap:10px;padding-bottom:10px"><span style="font-weight:600;flex:1">Poids corporel (calcul des calories)</span><input id="bwi" data-f="bw" inputmode="decimal" style="width:90px;text-align:center" value="${LS.get('jelift.bw',80)}"> kg</label>
   <div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span style="font-weight:600;flex:1">Affichage</span><div class="seg" style="margin:0;min-width:210px">${[['dark','🌙 Nuit'],['light','☀️ Jour']].map(([k,l])=>`<button class="${LS.get('jelift.theme','dark')===k?'on':''}" data-a="themeSet" data-v="${k}">${l}</button>`).join('')}</div></div>
-  <button class="mi" data-a="sndPick">${ic('bell')}Son de fin de repos : ${SNDS[sndCfg().k]}</button>
   <button class="mi" data-a="export">${ic('copy')}Copier une sauvegarde (JSON)</button>
   <button class="mi" data-a="import">${ic('note')}Importer une sauvegarde</button>
   <button class="mi" data-a="restore">${ic('swap')}Réinstaller les programmes par défaut</button>
