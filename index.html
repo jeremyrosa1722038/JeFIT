@@ -231,6 +231,7 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .mi.stype b{width:28px;text-align:center;font:900 20px var(--f-disp)}.mi.stype.on{background:var(--soft)}
 .cyx{width:34px;height:34px;color:var(--mut)}.cyx:hover{color:var(--danger)}
 .cymini{padding-top:12px;padding-bottom:12px}.cyminib{display:block;width:100%;text-align:left;margin-top:4px}.cyminib b{display:block;font-size:17px}.cyminib span{font-size:13px}
+.svcard{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid color-mix(in srgb,var(--acc) 45%,transparent)}
 .recap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px}.recap .kpi .v{font-size:24px}
 .splt{margin-bottom:12px}.spl{display:flex;justify-content:space-between;font-weight:700;font-size:15px;margin-bottom:5px}.spl b{color:var(--mut)}
 .spb{height:12px;border-radius:7px;background:var(--soft);overflow:hidden}.spb i{display:block;height:100%;border-radius:7px;background:var(--grad)}
@@ -275,6 +276,23 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .bexp p{line-height:1.55;margin:12px 0 0}.bexl{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}.bexl>div{display:flex;flex-direction:column;align-items:center;font-size:11px;font-weight:800;color:var(--mut)}
 .stimgs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.stimgs small{display:block;text-align:center;color:var(--mut);font-weight:700;margin-top:4px}
 .stbox{border-radius:14px;overflow:hidden;background:var(--soft);aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:13px;text-align:center}
+/* Fin de séance avec record : phase 1 = trophée (2 s), phase 2 = BRAVO + récap */
+.cele .celpr{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:opacity .45s,transform .45s}
+.cele.phase2 .celpr{opacity:0;transform:scale(1.12);pointer-events:none}
+.cele.haspr .celc{opacity:0;transform:translateY(16px);transition:opacity .5s .15s,transform .5s .15s;animation:none}
+.cele.haspr.phase2 .celc{opacity:1;transform:none}
+.cele .celpr .prr{width:520px;height:520px}.cele .celpr .prl{font-size:40px}.cele .celpr .prn{font-size:16px}
+/* Cinématique « nouveau record » */
+.prpop{position:fixed;inset:0;z-index:95;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;pointer-events:none;background:radial-gradient(circle at 50% 45%,rgba(245,179,1,.28),rgba(10,14,22,.55) 60%);animation:prBg .25s ease-out;transition:opacity .4s,transform .4s}
+.prpop.out{opacity:0;transform:scale(1.08)}
+.prpop .prr,.celpr .prr{position:absolute;width:420px;height:420px;border-radius:50%;background:repeating-conic-gradient(rgba(255,214,90,.22) 0 10deg,transparent 10deg 30deg);animation:prSpin 1.6s linear;-webkit-mask:radial-gradient(circle,#000 30%,transparent 70%);mask:radial-gradient(circle,#000 30%,transparent 70%)}
+.prpop .prt,.celpr .prt{position:relative;animation:prIn .55s cubic-bezier(.2,1.5,.4,1) both;filter:drop-shadow(0 10px 30px rgba(245,179,1,.7))}
+.prpop .prl,.celpr .prl{position:relative;font:900 italic 34px var(--f-disp);text-transform:uppercase;color:#FFD54A;text-shadow:0 4px 18px rgba(0,0,0,.6);animation:prUp .4s .15s both}
+.prpop .prn,.celpr .prn{position:relative;font:800 15px var(--f-body);color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.7);animation:prUp .4s .25s both;max-width:86vw;text-align:center}
+@keyframes prIn{0%{transform:scale(.2) rotate(-25deg);opacity:0}70%{transform:scale(1.15) rotate(6deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes prUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes prSpin{to{transform:rotate(90deg)}}@keyframes prBg{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.prpop *,.celpr *{animation:none!important}}
 @keyframes celPop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
 @media (max-width:480px){.celk{grid-template-columns:repeat(2,auto)}.celt{font-size:52px}}
 .ordr{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);background:var(--card);position:relative;touch-action:none}
@@ -2076,6 +2094,8 @@ VIEWS.workout=()=>{
  ${W.items.length?'':`<div class="card empty" style="margin-top:16px">${fig('stand',[])}<h3 style="color:var(--fg)">Séance vide</h3><p>Ajoutez vos mouvements, le chrono tourne déjà.</p></div>`}
  <div class="stack" style="margin-top:16px;max-width:640px;margin-inline:auto"><button class="btn pri blk" data-a="picker" data-m="wk">${ic('plus')}Ajouter un exercice</button><button class="btn dng blk" data-a="discard">Abandonner la séance</button></div>`;
 };
+/* Fait défiler jusqu'à une carte d'exercice, sous l'en-tête collé de la séance */
+function exScroll(k){const c=$('#ex'+k);if(!c)return;const t=$('.wk-top'),nav=$('#nav'),off=(t?t.getBoundingClientRect().height:0)+(nav&&getComputedStyle(nav).top==='0px'?nav.getBoundingClientRect().height:0)+10;scrollTo({top:c.getBoundingClientRect().top+scrollY-off,behavior:'smooth'})}
 /* ----- Supersets : exercices enchaînés, le repos ne part qu'après le dernier du groupe ----- */
 const SS_COL=['#A855F7','#22C55E','#3B82F6','#EC4899','#F59E0B','#14B8A6'];
 const ssGroup=(items,g)=>items.map((x,i)=>x.ss===g?i:-1).filter(i=>i>=0);
@@ -2145,6 +2165,7 @@ VIEWS.session=()=>{
  const s=S.sessions.find(x=>x.id===view.sid);if(!s)return VIEWS.home();
  return `<div class="top"><button class="btn backb" data-a="tab" data-v="home">${ic('back')}Retour</button><div class="acts"><button class="btn sm" data-a="redo" data-s="${s.id}">${ic('play')}Refaire</button><button class="ib" style="color:var(--danger)" data-a="delSession" data-s="${s.id}" aria-label="Supprimer">${ic('trash')}</button></div></div>
  ${view.fresh?`<div class="card" style="background:var(--ok-bg);color:var(--ok-ink);margin-bottom:16px;font-weight:600">Séance enregistrée. Bien joué !${view.laf?' '+esc(view.laf):''}</div>`:''}
+ ${!s.programId&&!s.lafLvl?`<div class="card svcard" style="margin-bottom:16px"><div style="flex:1;min-width:0"><b>Tu veux refaire cette séance ?</b><div class="mut" style="font-size:13px">Enregistre-la comme programme, ou ajoute-la à un programme existant.</div></div><button class="btn pri" data-a="saveSess" data-s="${s.id}">${ic('copy')}Enregistrer</button></div>`:`<button class="btn sm" style="margin-bottom:14px" data-a="saveSess" data-s="${s.id}">${ic('copy')}Enregistrer cette séance dans un programme</button>`}
  <div class="eyebrow">${esc(DAY.format(s.start))} · ${HOUR.format(s.start)} → ${HOUR.format(s.end)}</div><h1 style="margin-top:6px">${esc(s.name)}</h1>
  ${(()=>{const R=sessRecap(s);return `<div class="card sec recap"><div class="kpi"><div class="l">Durée</div><div class="v">${fmtDur(s.duration)}</div></div><div class="kpi"><div class="l">Volume</div><div class="v">${fmtN(s.volume)} <small>kg</small></div></div><div class="kpi"><div class="l">Séries</div><div class="v">${s.sets}</div></div>
   <div class="kpi"><div class="l">Records</div><div class="v" style="display:flex;align-items:center;gap:6px">${TROPHY}${R.prs}</div></div><div class="kpi"><div class="l">Progrès</div><div class="v" style="color:#16A34A">▲ ${R.ups}</div></div><div class="kpi"><div class="l">Calories</div><div class="v">🔥 ${kcalOf(s)}</div></div></div>
@@ -2157,6 +2178,9 @@ VIEWS.session=()=>{
   <button class="btn sm" style="margin-top:10px" data-a="exInfo" data-e="${i.exId}">${ic('chart')}Récap de l’exercice</button></div>`}).join('')}</div>`;
 };
 
+/* Séance faite → séance de programme (séries de travail, dernières charges / reps / durées) */
+function sessToDay(s,name){return day(name||s.name,s.items.map(i=>{const w=i.sets.filter(x=>!x.w),l=w[w.length-1]||i.sets[i.sets.length-1]||{};
+ return it(i.exId,Math.max(1,w.length),{reps:l.reps??null,kg:l.kg??null,time:l.time??null,dist:l.dist??null,rest:90,note:i.note||''})}))}
 /* Récap d'une séance : records, progrès, répartition musculaire (% des séries de travail) */
 function sessRecap(s){let prs=0,ups=0;const mus={};let tot=0;
  s.items.forEach(i=>{const e=ex(i.exId),c=exCls(e),key=['Cardio','Corps entier & HYROX','Cou & mobilité','Mollets'].includes(c[0])?c[0].replace(' & HYROX',''):c[1]==='Torse'?'Pectoraux':c[1]==='Abdominaux'?'Abdos':c[1];
@@ -2165,14 +2189,18 @@ function sessRecap(s){let prs=0,ups=0;const mus={};let tot=0;
  const split=Object.entries(mus).map(([m,n])=>[m,Math.round(100*n/tot)]).sort((a,b)=>b[1]-a[1]);
  return {prs,ups,split}}
 /* Fin de séance : feu d'artifice + « Bravo ! » */
-function celebrate(s){const R=sessRecap(s);const d=document.createElement('div');d.className='cele';
- d.innerHTML=`<canvas></canvas><div class="celc"><div class="celt">BRAVO !</div><div class="cels">${esc(s.name)} · séance terminée</div>
+function celebrate(s){const R=sessRecap(s);const d=document.createElement('div');d.className='cele'+(R.prs?' haspr':'');
+ /* Séance avec record(s) : le trophée doré occupe l'écran 2 secondes, puis « BRAVO ! » et le récap */
+ const prEx=[...new Set(s.items.filter(i=>i.sets.some(x=>x.pr)).map(i=>ex(i.exId).n))];
+ const prBlock=R.prs?`<div class="celpr"><div class="prr"></div><div class="prt">${TROPHY.replace('width:22px;height:22px','width:190px;height:190px')}</div><div class="prl">${R.prs>1?R.prs+' nouveaux records !':'Nouveau record !'}</div><div class="prn">${esc(prEx.slice(0,3).join(' · '))}${prEx.length>3?' …':''}</div></div>`:'';
+ d.innerHTML=`<canvas></canvas>${prBlock}<div class="celc"><div class="celt">BRAVO !</div><div class="cels">${esc(s.name)} · séance terminée</div>
  <div class="celk"><div><b>${fmtDur(s.duration)}</b><span>Durée</span></div><div><b>${fmtN(s.volume)}</b><span>kg soulevés</span></div><div><b>${kcalOf(s)}</b><span>kcal</span></div><div><b>${R.prs}</b><span>record${R.prs>1?'s':''}</span></div></div>
  ${R.ups?`<div class="celu">▲ ${R.ups} série${R.ups>1?'s':''} en progrès</div>`:''}
  ${s.badges&&s.badges.length?`<div class="celbt">${s.badges.length>1?s.badges.length+' nouveaux badges':'Nouveau badge !'}</div><div class="celb">${s.badges.slice(0,3).map(b=>`<div>${medal(b.lvl,b.glyph,72)}<span>${esc(b.name)}<b>${LVL[b.lvl]}</b></span></div>`).join('')}</div>`:''}
  <div class="celtap">Touchez pour voir le récapitulatif</div></div>`;
  document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add('in'));
- let done=false;const close=()=>{if(done)return;done=true;d.classList.add('out');setTimeout(()=>d.remove(),450)};d.addEventListener('click',close);setTimeout(close,6500);
+ if(R.prs){prSound();setTimeout(()=>d.classList.add('phase2'),2000)}
+ let done=false;const close=()=>{if(done)return;if(R.prs&&!d.classList.contains('phase2')){d.classList.add('phase2');return}done=true;d.classList.add('out');setTimeout(()=>d.remove(),450)};d.addEventListener('click',close);setTimeout(close,R.prs?8500:6500);
  if(reduceMotion())return;
  const cv=d.querySelector('canvas'),c=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1);const rs=()=>{cv.width=innerWidth*dpr;cv.height=innerHeight*dpr};rs();
  const COLS=['#FFC21A','#FF8A1A','#FF5A1F','#FFFFFF','#FFE08A','#22C55E'],P=[],K=[];let t0=performance.now(),last=0;
@@ -2216,42 +2244,71 @@ function streakWeeks(L){const wk=new Set(L.map(s=>weekStart(s.start)));let w=wee
 function allBadges(sessions=S.sessions,rides=RIDES){const B=[],bw=bwKg();
  const G=(key,cat,name,glyph,val,th,fmt,desc)=>{const l=lvlOf(val,th);B.push({key,cat,name,glyph,lvl:l,val,valTxt:fmt(val),desc,next:l<6?{lvl:l+1,txt:`${fmt(th[l+1])} pour ${LVL[l+1]}`,pct:Math.max(0,Math.min(100,Math.round(100*(val-(l>=0?th[l]:0))/(th[l+1]-(l>=0?th[l]:0)))))}:null})};
  const all=[...sessions,...rides],vol=sessions.reduce((a,s)=>a+(s.volume||0),0),prs=sessions.reduce((a,s)=>a+s.items.reduce((b,i)=>b+i.sets.filter(x=>x.pr).length,0),0);
- G('r-sess','Régularité','Séances de muscu','💪',sessions.length,[1,10,25,50,100,250,500],v=>fmtN(v)+' séance'+(v>1?'s':''),'Nombre de séances terminées.');
- G('r-streak','Régularité','Semaines d’affilée','🔥',streakWeeks(all),[1,2,4,8,12,26,52],v=>v+' sem.','Semaines consécutives avec au moins une séance (muscu ou vélo).');
- G('r-vol','Régularité','Charge soulevée','🏋',vol/1000,[.1,1,10,50,100,250,500],v=>fmtN(+v.toFixed(1))+' t','Total des kilos soulevés, toutes séances confondues.');
- G('r-pr','Régularité','Records battus','🏆',prs,[1,5,15,30,60,100,200],v=>v+' record'+(v>1?'s':''),'Séries marquées d’un trophée doré.');
+ G('r-sess','Régularité','Séances de muscu','db',sessions.length,[1,10,25,50,100,250,500],v=>fmtN(v)+' séance'+(v>1?'s':''),'Nombre de séances terminées.');
+ G('r-streak','Régularité','Semaines d’affilée','fl',streakWeeks(all),[1,2,4,8,12,26,52],v=>v+' sem.','Semaines consécutives avec au moins une séance (muscu ou vélo).');
+ G('r-vol','Régularité','Charge soulevée','kb',vol/1000,[.1,1,10,50,100,250,500],v=>fmtN(+v.toFixed(1))+' t','Total des kilos soulevés, toutes séances confondues.');
+ G('r-pr','Régularité','Records battus','tr',prs,[1,5,15,30,60,100,200],v=>v+' record'+(v>1?'s':''),'Séries marquées d’un trophée doré.');
  const km=rides.reduce((a,r)=>a+(r.dist||0),0)/1000,lng=Math.max(0,...rides.map(r=>(r.dist||0)/1000)),wkg=Math.max(0,...rides.filter(r=>r.duration>=600000&&r.pAvg).map(r=>r.pAvg/bw));
- G('v-rides','Vélo','Sorties vélo','🚴',rides.length,[1,5,15,30,60,120,250],v=>v+' sortie'+(v>1?'s':''),'Nombre de sorties enregistrées dans JeRIDE.');
- G('v-km','Vélo','Distance cumulée','🛣',km,[.5,10,50,200,500,1000,2500],v=>fmtN(+v.toFixed(1))+' km','Total des kilomètres parcourus.');
- G('v-long','Vélo','Plus longue sortie','📏',lng,[.5,5,15,30,50,80,120],v=>fmtN(+v.toFixed(1))+' km','Ta plus grande distance en une seule sortie.');
- G('v-wkg','Vélo','Puissance','⚡',wkg,[.3,1,1.5,2,2.5,3,3.5],v=>fmtN(+v.toFixed(2))+' W/kg','Meilleure puissance moyenne d’une sortie de 10 min ou plus, divisée par ton poids.');
- const M=bestMap(sessions);Object.keys(M).forEach(id=>{const L=exLevel(id,M[id]);if(L)B.push({key:'x-'+id,cat:'Force',exId:id,name:ex(id).n,glyph:'',lvl:L.lvl,val:L.val,valTxt:L.txt,next:L.next?{lvl:L.next.lvl,txt:L.next.txt?`${L.next.txt} pour ${LVL[L.next.lvl]}`:LVL[L.next.lvl],pct:L.next.pct}:null,desc:''})});
+ G('v-rides','Vélo','Sorties vélo','bk',rides.length,[1,5,15,30,60,120,250],v=>v+' sortie'+(v>1?'s':''),'Nombre de sorties enregistrées dans JeRIDE.');
+ G('v-km','Vélo','Distance cumulée','rd',km,[.5,10,50,200,500,1000,2500],v=>fmtN(+v.toFixed(1))+' km','Total des kilomètres parcourus.');
+ G('v-long','Vélo','Plus longue sortie','rl',lng,[.5,5,15,30,50,80,120],v=>fmtN(+v.toFixed(1))+' km','Ta plus grande distance en une seule sortie.');
+ G('v-wkg','Vélo','Puissance','bo',wkg,[.3,1,1.5,2,2.5,3,3.5],v=>fmtN(+v.toFixed(2))+' W/kg','Meilleure puissance moyenne d’une sortie de 10 min ou plus, divisée par ton poids.');
+ const M=bestMap(sessions);Object.keys(M).forEach(id=>{const L=exLevel(id,M[id]);if(L)B.push({key:'x-'+id,cat:'Force',exId:id,name:ex(id).n,glyph:exGlyph(id),lvl:L.lvl,val:L.val,valTxt:L.txt,next:L.next?{lvl:L.next.lvl,txt:L.next.txt?`${L.next.txt} pour ${LVL[L.next.lvl]}`:LVL[L.next.lvl],pct:L.next.pct}:null,desc:''})});
  return B}
-/* Médaille dessinée (SVG) : « 1er », une étoile par palier, couronne pour Élite */
+/* Badge « hexagone épuré » : contour aux couleurs du niveau, fond sombre, icône au trait */
 let medN=0;
-const lvlGlyph=l=>l<0?'?':l===0?'1er':l===6?'♛':'★';
-function medal(lvl,glyph='',size=64){const id='md'+(++medN),c=lvl<0?['#5B6474','#2A303B']:LVC[lvl],dark=lvl===2||lvl===3||lvl===4||lvl===5;
- const g=glyph||lvlGlyph(lvl);
- return `<svg class="medal" viewBox="0 0 64 74" width="${size}" height="${Math.round(size*1.16)}" aria-label="${lvl<0?'À débloquer':LVL[lvl]}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs>
- <path d="M21 42 L15 72 L25 66 L31 73 L31 46Z" fill="${lvl<0?'#3A414D':'#FF6A1A'}"/><path d="M43 42 L49 72 L39 66 L33 73 L33 46Z" fill="${lvl<0?'#4A515D':'#FFB21A'}"/>
- <circle cx="32" cy="30" r="26" fill="url(#${id})" stroke="${c[1]}" stroke-width="3"/><circle cx="32" cy="30" r="19.5" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.4" stroke-dasharray="2 3"/>
- <path d="M14 22 Q32 8 50 22" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/>
- <text x="32" y="${g.length>2?36:38}" text-anchor="middle" font-family="Rubik,system-ui,sans-serif" font-weight="900" font-size="${g.length>2?14:g.length>1?16:20}" fill="${dark?'#2B2F3A':'#fff'}">${esc(g)}</text></svg>`}
+const BI={db:'M6 9v6M18 9v6M3.5 10.5v3M20.5 10.5v3M6 12h12',fl:'M12 21c4 0 6.5-2.6 6.5-6.2 0-3.8-3-6-4.3-9.3-.6 2.3-2 3.6-3.3 4.4C10.2 8.3 9.5 6.6 9.7 5 7 7.4 5.5 10.6 5.5 14.6 5.5 18.4 8 21 12 21z',
+ bk:'M2.8 16a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0-6.4 0M14.8 16a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0-6.4 0M6 16l4-7h5l3 7M10 9l2 7H6M9 6.5h3',
+ tr:'M7 4h10v4a5 5 0 0 1-10 0zM7 6H4.5a2.5 2.5 0 0 0 2.5 4M17 6h2.5a2.5 2.5 0 0 1-2.5 4M12 13v4M8.5 20.5h7M10 17h4v3.5h-4z',
+ kb:'M9 8.5a3 3 0 1 1 6 0M7.5 10.5h9l1.4 8.3a1.5 1.5 0 0 1-1.5 1.7H7.6a1.5 1.5 0 0 1-1.5-1.7z',rd:'M8 21l3-18M16 21l-3-18M12 7v2M12 12v2M12 17v2',
+ rl:'M3.4 19a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0M17.4 7a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0M6.6 19c3 0 3-6 5.4-6s3-6 5.4-6',bo:'M13 2.5L4.5 14h6.5l-1 7.5L18.5 10H12z',
+ st:'M12 3.5l2.5 5.3 5.8.7-4.3 4 1.1 5.8L12 16.5l-5.1 2.8 1.1-5.8-4.3-4 5.8-.7z',lk:'M7 11V8a5 5 0 0 1 10 0v3M5.5 11h13v9.5h-13zM12 15v2.5'};
+const HEX='M50 3 L93 28 V80 L50 105 L7 80 V28Z',HEXI='M50 13 L84 33 V75 L50 95 L16 75 V33Z';
+const lvlGlyph=()=> 'st';
+/* Médaille métal : bord en relief, laurier, étoile, icône embossée, ruban au nom du niveau.
+   Palette : [bord clair, bord foncé, disque clair, disque foncé, ruban, ruban foncé, texte/icône] */
+const MPAL=[['#C8F7D8','#2F8F57','#8BE0AB','#2E7D4F','#2F8F57','#1B5E37','#F0FFF5'],['#F6C29C','#6E3417','#DB9165','#874623','#A8603A','#5E2C12','#FFE6D4'],['#FFFFFF','#80868F','#E6E9ED','#989EA7','#B8BDC4','#727881','#FFFFFF'],['#FFF4B8','#9C6600','#F8D257','#B47F00','#E2AA14','#8C5E00','#FFF7D1'],['#FFFFFF','#7F9AB6','#EEF5FC','#A9C0D8','#C9D8E8','#7890AA','#FFFFFF'],['#FFFFFF','#7FA8DB','#EEF6FF','#A2C6F0','#3D6198','#1F3559','#FFFFFF'],['#FFE58F','#8F6100','#2B2E35','#0D0E11','#17181C','#000000','#F7C948']];
+const MLOCK=['#858B95','#3B4049','#5F656F','#30353D','#4A5059','#2B3037','#C9CED6'];
+function medal(lvl,glyph='',size=64){const id='md'+(++medN),P=lvl<0?MLOCK:MPAL[lvl],g=BI[glyph]?glyph:(lvl<0?'lk':'st'),lab=lvl<0?'À DÉBLOQUER':LVL[lvl].toUpperCase(),el=lvl===6,dia=lvl===5;
+ const cx=60,cy=58;let laurel='';
+ for(const s of[-1,1])for(let i=0;i<7;i++){const a=(s<0?118+i*17:62-i*17)*Math.PI/180,x=cx+Math.cos(a)*35,y=cy+Math.sin(a)*35,rot=(s<0?118+i*17:62-i*17)+(s<0?-35:35);
+  laurel+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="2.6" ry="6" transform="rotate(${rot.toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="url(#${id}l)" stroke="${P[3]}" stroke-width=".5"/>`}
+ let facets='';if(dia)for(let i=0;i<20;i++){const a1=i*18*Math.PI/180,a2=(i+1)*18*Math.PI/180,p=(a,r)=>`${(cx+Math.cos(a)*r).toFixed(1)},${(cy+Math.sin(a)*r).toFixed(1)}`;facets+=`<polygon points="${p(a1,51)} ${p(a2,51)} ${p((a1+a2)/2,42)}" fill="${i%2?'#FFFFFF':'#BFD9F7'}" opacity="${i%3?.9:.6}"/>`}
+ return `<svg class="medal" viewBox="0 -6 120 156" width="${size}" height="${Math.round(size*1.3)}" aria-label="${lab}"><defs>
+ <linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${P[0]}"/><stop offset=".5" stop-color="${P[1]}"/><stop offset="1" stop-color="${P[0]}"/></linearGradient>
+ <radialGradient id="${id}d" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="${P[2]}"/><stop offset="1" stop-color="${P[3]}"/></radialGradient>
+ <linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${el?'#FFE58F':P[0]}"/><stop offset="1" stop-color="${el?'#B98300':P[2]}"/></linearGradient>
+ <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P[4]}"/><stop offset="1" stop-color="${P[5]}"/></linearGradient></defs>
+ <path d="M34 92 L22 140 L36 132 L46 146 L54 100Z" fill="url(#${id}b)" stroke="${el?'#D9A520':P[5]}" stroke-width="1.2"/><path d="M86 92 L98 140 L84 132 L74 146 L66 100Z" fill="url(#${id}b)" stroke="${el?'#D9A520':P[5]}" stroke-width="1.2"/>
+ <path d="M18 112 H102 L96 122 L102 132 H18 L24 122Z" fill="url(#${id}b)" stroke="${el?'#D9A520':P[5]}" stroke-width="1.4"/>
+ <text x="60" y="126.5" text-anchor="middle" font-family="Rubik,Arial Black,system-ui,sans-serif" font-weight="900" font-size="${lab.length>8?8.5:11}" letter-spacing=".3" fill="${P[6]}" stroke="${P[5]}" stroke-width=".6" paint-order="stroke">${lab}</text>
+ <circle cx="${cx}" cy="${cy}" r="51" fill="url(#${id}r)"/>${facets}<circle cx="${cx}" cy="${cy}" r="51" fill="none" stroke="${P[1]}" stroke-width="1.5"/>
+ <circle cx="${cx}" cy="${cy}" r="42.5" fill="url(#${id}d)" stroke="${el?'#D9A520':P[1]}" stroke-width="1.6"/><circle cx="${cx}" cy="${cy}" r="39.5" fill="none" stroke="${el?'#F7C94855':'#ffffff55'}" stroke-width=".8"/>
+ ${laurel}<path d="M60 86.5l1.6 3.3 3.6.4-2.7 2.4.8 3.6L60 94.3l-3.3 1.9.8-3.6-2.7-2.4 3.6-.4z" fill="url(#${id}l)" stroke="${P[3]}" stroke-width=".4"/>
+ <g transform="translate(37.2 31) scale(1.9)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${BI[g]}" stroke="${el?'#000':P[3]}" stroke-opacity=".55" stroke-width="3" transform="translate(.45 .6)"/><path d="${BI[g]}" stroke="${el?'#F7C948':P[0]}" stroke-width="2.3"/></g>
+ <ellipse cx="46" cy="30" rx="20" ry="9" fill="#fff" opacity="${el?.06:.18}" transform="rotate(-25 46 30)"/>
+ ${el?'<path d="M40 14 L45 -1 L53 9 L60 -4 L67 9 L75 -1 L80 14 Q60 19 40 14Z" fill="#F4C542" stroke="#8F6100" stroke-width="1.2"/><circle cx="60" cy="-2" r="2.2" fill="#FFE58F"/>':''}</svg>`}
+/* Icône d'un badge d'exercice selon son type */
+const exGlyph=id=>{const e=ex(id),g=exCls(e)[0];return g==='Cardio'?'bo':e.t==='time'?'fl':e.t==='bw'?'st':'db'};
 /* Badges gagnés pendant une séance : comparaison avant / après */
 function badgeDiff(before,after){const m={};before.forEach(b=>m[b.key]=b.lvl);return after.filter(b=>b.lvl>=0&&b.lvl>(m[b.key]??-1)).sort((a,b)=>b.lvl-a.lvl)}
 /* Badge mis en avant pour une séance (image Strava, récap) */
 function sessBadge(s){if(s.badges&&s.badges.length)return {...s.badges[0],isNew:true};
  const before=S.sessions.filter(x=>x.start<=s.start),M=bestMap(before);let best=null;
- s.items.forEach(i=>{const L=exLevel(i.exId,M[i.exId]);if(L&&(!best||L.lvl>best.lvl))best={key:'x-'+i.exId,name:ex(i.exId).n,lvl:L.lvl,valTxt:L.txt}});
+ s.items.forEach(i=>{const L=exLevel(i.exId,M[i.exId]);if(L&&(!best||L.lvl>best.lvl))best={key:'x-'+i.exId,name:ex(i.exId).n,lvl:L.lvl,valTxt:L.txt,glyph:exGlyph(i.exId)}});
  return best||{key:'r-sess',name:'Séance terminée',lvl:0,valTxt:''}}
 /* Image « badge de la séance » pour Strava (1re photo) */
-function cvMedal(c,x,y,r,lvl,glyph){const col=lvl<0?['#5B6474','#2A303B']:LVC[lvl],g=c.createLinearGradient(x-r,y-r,x+r,y+r);g.addColorStop(0,col[0]);g.addColorStop(1,col[1]);
- c.fillStyle='#FF6A1A';c.beginPath();c.moveTo(x-r*.42,y+r*.5);c.lineTo(x-r*.65,y+r*1.62);c.lineTo(x-r*.27,y+r*1.4);c.lineTo(x-.05*r,y+r*1.66);c.lineTo(x-.05*r,y+r*.62);c.fill();
- c.fillStyle='#FFB21A';c.beginPath();c.moveTo(x+r*.42,y+r*.5);c.lineTo(x+r*.65,y+r*1.62);c.lineTo(x+r*.27,y+r*1.4);c.lineTo(x+.05*r,y+r*1.66);c.lineTo(x+.05*r,y+r*.62);c.fill();
- c.save();c.shadowColor=col[1];c.shadowBlur=r*.6;c.fillStyle=g;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.restore();
- c.lineWidth=r*.1;c.strokeStyle=col[1];c.beginPath();c.arc(x,y,r,0,7);c.stroke();
- c.setLineDash([r*.08,r*.12]);c.lineWidth=r*.05;c.strokeStyle='rgba(255,255,255,.6)';c.beginPath();c.arc(x,y,r*.76,0,7);c.stroke();c.setLineDash([]);
- const dark=lvl>=2&&lvl<=5;c.fillStyle=dark?'#2B2F3A':'#fff';c.textAlign='center';c.textBaseline='middle';c.font=`900 ${glyph.length>2?r*.5:r*.8}px Rubik, sans-serif`;c.fillText(glyph,x,y+r*.04);c.textBaseline='alphabetic'}
+/* Transforme un SVG (la médaille) en image pour la dessiner dans un canvas */
+function svgImg(svg){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" '))})}
+/* Secours : badge hexagonal dessiné en grand pour l'image Strava (x,y = centre, r = demi-largeur) */
+function cvMedal(c,x,y,r,lvl,glyph){const col=lvl<0?['#59606E','#3A404C']:LVC[lvl],tc=lvl<0?'#6B7280':col[0],s=r/50,gk=BI[glyph]?glyph:(lvl<0?'lk':'st');
+ c.save();c.translate(x-50*s,y-54*s);c.scale(s,s);
+ const g=c.createLinearGradient(0,0,100,108);g.addColorStop(0,col[0]);g.addColorStop(1,col[1]);
+ c.shadowColor=col[1];c.shadowBlur=60;c.fillStyle=g;c.fill(new Path2D(HEX));c.shadowBlur=0;
+ c.fillStyle='#111725';c.fill(new Path2D(HEXI));c.globalAlpha=.35;c.strokeStyle=tc;c.lineWidth=1;c.stroke(new Path2D(HEXI));c.globalAlpha=1;
+ if(lvl===6){c.fillStyle='#FFD36A';c.strokeStyle='#8A5A00';const cr=new Path2D('M38 2 L44 9 L50 0 L56 9 L62 2 L60 13 H40Z');c.fill(cr);c.stroke(cr)}
+ if(lvl===0){c.fillStyle=tc;c.textAlign='center';c.font='900 9px Rubik, sans-serif';c.fillText('1er',50,88)}
+ c.translate(26,30);c.scale(2,2);c.strokeStyle=tc;c.lineWidth=1.9;c.lineCap='round';c.lineJoin='round';c.stroke(new Path2D(BI[gk]));c.restore()}
 async function badgeImg(s){try{await Promise.all(['900 41px Rubik','800 40px Rubik','700 30px Nunito'].map(f=>document.fonts.load(f)))}catch(e){}
  const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d'),B=sessBadge(s),R=sessRecap(s);
  const bg=c.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#120C08');bg.addColorStop(1,'#0B0F1A');c.fillStyle=bg;c.fillRect(0,0,W,H);
@@ -2262,10 +2319,9 @@ async function badgeImg(s){try{await Promise.all(['900 41px Rubik','800 40px Rub
  c.save();c.globalAlpha=.06;c.translate(W/2,H*.86);c.rotate(-.12);cvLogo(c,-81*6,-24*6,6,lg(-500,500));c.restore();
  cvLogo(c,W/2-170-14,70,2.1,lg(W/2-170,W/2+170));
  c.textAlign='center';c.font='800 30px Rubik, sans-serif';c.fillStyle='#FFB35C';c.fillText(B.isNew?'NOUVEAU BADGE DÉBLOQUÉ':'BADGE DE LA SÉANCE',W/2,250);
- cvMedal(c,W/2,515,175,B.lvl,lvlGlyph(B.lvl));
- c.textAlign='center';c.fillStyle='#fff';c.font='900 70px Rubik, sans-serif';c.fillText(LVL[Math.max(0,B.lvl)].toUpperCase(),W/2,935);
- c.font='800 40px Rubik, sans-serif';c.fillStyle='rgba(255,255,255,.88)';const nm=cvWrap(c,B.name,W-160);nm.slice(0,2).forEach((l,i)=>c.fillText(l,W/2,995+i*48));
- if(B.valTxt){c.font='700 30px Nunito, sans-serif';c.fillStyle='rgba(255,255,255,.6)';c.fillText(B.valTxt,W/2,995+Math.min(2,nm.length)*48+8)}
+ try{const im=await svgImg(medal(B.lvl,B.glyph||'db',400));c.save();c.shadowColor='rgba(0,0,0,.6)';c.shadowBlur=40;c.shadowOffsetY=16;c.drawImage(im,W/2-200,275,400,500);c.restore()}catch(e){cvMedal(c,W/2,520,190,B.lvl,B.glyph||'db')}
+ c.textAlign='center';c.font='900 52px Rubik, sans-serif';c.fillStyle='#fff';const nm=cvWrap(c,B.name,W-160);nm.slice(0,2).forEach((l,i)=>c.fillText(l,W/2,880+i*60));
+ if(B.valTxt){c.font='700 32px Nunito, sans-serif';c.fillStyle='rgba(255,255,255,.62)';c.fillText(B.valTxt,W/2,880+Math.min(2,nm.length)*60+4)}
  const st=[['DURÉE',fmtDur(s.duration)],['VOLUME',s.volume?fmtN(s.volume)+' kg':'–'],['KCAL',String(kcalOf(s))],['RECORDS',String(R.prs)]],gw=(W-128-3*16)/4;
  st.forEach(([l,v],i)=>{const x=64+i*(gw+16);c.fillStyle='rgba(255,255,255,.07)';cvRR(c,x,1140,gw,120,22);c.textAlign='center';c.fillStyle='rgba(255,255,255,.55)';c.font='800 20px Rubik, sans-serif';c.fillText(l,x+gw/2,1180);c.fillStyle='#fff';c.font='900 '+(v.length>8?30:36)+'px Rubik, sans-serif';c.fillText(v,x+gw/2,1232,gw-24)});
  c.textAlign='left';
@@ -2533,6 +2589,12 @@ function sndPlay(k,final,t){try{audio();if(!AC)return [];t=t==null?AC.currentTim
   case 'gong':return final?bell(196,t,3,.65):bell(330,t,.6,.28);
  }}catch(e){}return []}
 let cueNodes=[],cueOn=false;
+/* Nouveau record : petit son de victoire + trophée géant au centre de l'écran pendant ~1 seconde */
+function prSound(){try{audio();if(!AC)return;const t=AC.currentTime+.02;[[523,0],[659,.09],[784,.18],[1047,.29]].forEach(([f,d],i)=>tone(f,t+d,i===3?.55:.16,i===3?.35:.25,'triangle'));tone(2093,t+.29,.4,.08)}catch(e){}}
+function prPop(name,val){prSound();try{navigator.vibrate&&navigator.vibrate([40,40,80])}catch(e){}
+ const old=$('.prpop');if(old)old.remove();const d=document.createElement('div');d.className='prpop';
+ d.innerHTML=`<div class="prr"></div><div class="prt">${TROPHY.replace('width:22px;height:22px','width:150px;height:150px')}</div><div class="prl">Nouveau record !</div><div class="prn">${esc(name)}${val?' · '+esc(val):''}</div>`;
+ document.body.appendChild(d);setTimeout(()=>d.classList.add('out'),1150);setTimeout(()=>d.remove(),1600)}
 /* Arrête tout : séance, chrono de repos et sons déjà programmés */
 function stopSession(){W=null;saveW();unwake();restCue();const r=$('#restbar');if(r)r.remove();const l=$('#livebar');if(l)l.remove()}
 function restCue(){cueNodes.forEach(o=>{try{o.stop()}catch(e){}});cueNodes=[];cueOn=false;
@@ -2691,12 +2753,14 @@ const A={
    /* Record : la série bat tout l'historique et les autres séries du jour */
    const tt=ex(item.exId).t,sc=setScore(tt,s),hist=bestScore(item.exId);
    const today=Math.max(0,...W.items.filter(x=>x.exId===item.exId).flatMap(x=>x.sets).filter(x=>x!==s&&x.done).map(x=>setScore(tt,x)));
-   s.pr=sc>0&&sc>Math.max(hist,today);if(s.pr){W.items.forEach(x=>x.exId===item.exId&&x.sets.forEach(y=>{if(y!==s)y.pr=false}));toast('🏆 Nouveau record : '+ex(item.exId).n)}
+   s.pr=sc>0&&sc>Math.max(hist,today);if(s.pr){W.items.forEach(x=>x.exId===item.exId&&x.sets.forEach(y=>{if(y!==s)y.pr=false}));prPop(ex(item.exId).n,setTxt(ex(item.exId).t,s))}
    /* Superset : on enchaîne l'exercice suivant du groupe, le repos part après le dernier */
    const g=item.ss?ssGroup(W.items,item.ss):null;
-   if(g&&g[g.length-1]!==k){const nk=g[g.indexOf(k)+1];if(!s.pr)toast('Enchaîne : '+ex(W.items[nk].exId).n);setTimeout(()=>{const c=$('#ex'+nk);if(c)c.scrollIntoView({behavior:'smooth',block:'start'})},200)}
+   if(g&&g[g.length-1]!==k){const nk=g[g.indexOf(k)+1];if(!s.pr)toast('Enchaîne : '+ex(W.items[nk].exId).n);setTimeout(()=>{exScroll(nk)},200)}
    else if(item.sets[j+1]&&item.sets[j+1].d&&!item.sets[j+1].done){if(!s.pr)toast('Drop set : enchaîne sans repos, charge plus légère')}
-   else if(item.rest>0)W.rest={end:Date.now()+item.rest*1000,total:item.rest,name:g?'Superset':ex(item.exId).n}}
+   else if(item.rest>0)W.rest={end:Date.now()+item.rest*1000,total:item.rest,name:g?'Superset':ex(item.exId).n};
+   /* Fin d'un tour de superset : on revient au 1er exercice du superset pour le tour suivant */
+   if(g&&g[g.length-1]===k&&g.some(i=>W.items[i].sets.some(x=>!x.done))){const f=g[0];setTimeout(()=>{exScroll(f)},250);if(!s.pr)toast('Tour terminé : retour à '+ex(W.items[f].exId).n)}}
   else{s.done=false;s.pr=false}
   saveW();const card=$('#ex'+k);if(card){const tmp=document.createElement('div');tmp.innerHTML=exCard(item,k);card.replaceWith(tmp.firstElementChild)}updWkStats();renderRest();restCue()},
  addSet:el=>{const item=W.items[+el.dataset.k];const l=item.sets[item.sets.length-1];item.sets.push({kg:null,reps:null,time:null,dist:null,done:false,w:false});saveW();render()},
@@ -2946,6 +3010,18 @@ Object.assign(A,{
  qStart:()=>{const q=qState(),G=genQuick(q.d,q.f,q.e,q.seed);if(!G.items.length)return;
   const items=G.items.map((x,i)=>mkItem(x.id,{sets:x.sets,reps:x.reps??null,time:x.time??null,dist:x.dist??null,kg:null,rest:x.rest,note:i===0&&QPAR[q.d].warm>60?'Échauffe-toi d’abord quelques minutes':''}));
   startWorkout({id:uid(),name:`Express ${q.d===60?'1 h':q.d+' min'} · ${G.name}`,cat:G.cat,qf:G.focus,programId:null,dayId:null,start:Date.now(),pausedMs:0,pausedAt:null,rest:null,items})},
+ /* Enregistrer une séance faite pour la refaire : nouveau programme ou nouvelle séance d'un programme existant */
+ saveSess:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);if(!s)return;const mine=S.programs.filter(p=>!p.builtin),other=S.programs.filter(p=>p.builtin);
+  const row=p=>`<button class="mi" data-a="svAdd" data-s="${s.id}" data-p="${p.id}">${ic('plus')}<span style="flex:1;text-align:left;min-width:0"><b style="display:block">${esc(p.name)}</b><small class="mut">${p.days.length} séance${p.days.length>1?'s':''} · ${(CATS[p.cat]||CATS.libre).n}</small></span></button>`;
+  openSheet(`<h2>Enregistrer cette séance</h2><p class="mut" style="margin:0">Pour la refaire plus tard avec les mêmes exercices, séries, charges et répétitions.</p>
+  <div class="form" style="margin-top:12px"><label>Nom de la séance<input id="svn" value="${esc(s.name)}" maxlength="60"></label></div>
+  <button class="btn pri blk" style="margin-top:12px" data-a="svNew" data-s="${s.id}">${ic('plus')}Créer un nouveau programme (Libre)</button>
+  <div class="eyebrow" style="margin-top:18px">Ou l’ajouter à un programme</div>
+  <div style="margin-top:6px">${mine.length?`<div class="mut" style="font-size:12px;font-weight:800;margin:6px 0 2px">MES PROGRAMMES</div>${mine.map(row).join('')}`:''}<details style="margin-top:6px"><summary class="mut" style="cursor:pointer;font-weight:800;font-size:13px">Programmes JeFIT (${other.length})</summary>${other.map(row).join('')}</details></div>`,`<button class="btn blk" data-a="close">Annuler</button>`)},
+ svNew:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);const nm=($('#svn').value||s.name).trim();const p={id:uid(),cat:'libre',name:nm,desc:'Créé à partir de ta séance du '+DSHORT.format(s.start)+'.',equip:null,days:[sessToDay(s,nm)]};
+  S.programs.unshift(p);touchCfg();closeSheet();toast('Programme « '+nm+' » créé');go('program',{pid:p.id})},
+ svAdd:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s),p=S.programs.find(x=>x.id===el.dataset.p);if(!s||!p)return;const nm=($('#svn').value||s.name).trim();
+  confirmSheet('Ajouter au programme ?',`La séance <b>${esc(nm)}</b> sera ajoutée comme nouvelle séance de <b>${esc(p.name)}</b>.`,'Ajouter',()=>{p.days.push(sessToDay(s,nm));touchCfg();toast('Séance ajoutée à « '+p.name+' »');go('program',{pid:p.id})},false)},
  qSave:()=>{const q=qState(),G=genQuick(q.d,q.f,q.e,q.seed);if(!G.items.length)return;
   const p={id:uid(),cat:G.cat,name:`Express ${q.d===60?'1 h':q.d+' min'} · ${G.name}`,desc:'Généré par « Sport en minutes ».',equip:[...EQP[q.e].eq],days:[day(G.name,G.items.map(x=>it(x.id,x.sets,{reps:x.reps??null,time:x.time??null,dist:x.dist??null,rest:x.rest})))]};
   S.programs.unshift(p);touchCfg();toast('Programme enregistré');go('program',{pid:p.id})},
@@ -2953,7 +3029,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V4.3',APP_BUILD='17/11/2026 à 13:30';
+const APP_V='V4.9',APP_BUILD='17/11/2026 à 16:50';
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||t.dataset?.f!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
