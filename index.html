@@ -2171,6 +2171,7 @@ VIEWS.session=()=>{
   <div class="kpi"><div class="l">Records</div><div class="v" style="display:flex;align-items:center;gap:6px">${TROPHY}${R.prs}</div></div><div class="kpi"><div class="l">Progrès</div><div class="v" style="color:#16A34A">▲ ${R.ups}</div></div><div class="kpi"><div class="l">Calories</div><div class="v">🔥 ${kcalOf(s)}</div></div></div>
   ${s.badges&&s.badges.length?`<div class="card sec"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h2 style="margin:0">Badges gagnés</h2><button class="btn sm" data-a="tab" data-v="badges">${ic('medal')}Mes badges</button></div><div class="bgrid">${s.badges.map(b=>`<div class="bdg">${medal(b.lvl,b.glyph,54)}<div class="bdgt"><div class="bdgn">${esc(b.name)}</div><div class="bdgl" style="color:${LVC[b.lvl][1]}">${LVL[b.lvl]}</div><div class="bdgv">${esc(b.valTxt||'')}</div></div></div>`).join('')}</div></div>`:''}
   ${R.split.length?`<div class="card sec"><h2 style="margin:0 0 12px">Répartition musculaire</h2>${R.split.map(([m,p])=>`<div class="splt"><div class="spl"><span>${esc(m)}</span><b>${p} %</b></div><div class="spb"><i style="width:${p}%"></i></div></div>`).join('')}</div>`:''}`})()}
+ ${view.fresh?`<button class="btn pri blk" style="background:#FC4C02;margin-top:12px" data-a="strava" data-s="${s.id}"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M10 2L4 14h4l2-4 2 4h4zM14.5 14l-2 4 2 4 2-4 2-4h-3z"/></svg>Publier sur Strava</button>`:''}
  <div class="quick" style="margin-top:12px"><button class="btn" data-a="health" data-s="${s.id}"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#FF2D55"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8.2 3.2 4.5 6.9 4.5c2.1 0 3.6 1.1 5.1 3 1.5-1.9 3-3 5.1-3 3.7 0 5.9 3.7 4.4 7.2C19.5 16.4 12 21 12 21z"/></svg>Envoyer vers Santé</button><button class="btn" data-a="strava" data-s="${s.id}"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#FC4C02"><path d="M10 2L4 14h4l2-4 2 4h4zM14.5 14l-2 4 2 4 2-4 2-4h-3z"/></svg>Envoyer vers Strava</button></div>
  <div class="grid sec">${s.items.map(i=>{const e=ex(i.exId),t=TYPES[e.t];let n=0;const isPr=(s.prs||[]).includes(i.exId);
   return `<div class="card"><div class="exrow" style="margin-bottom:8px">${picto(i.exId)}<button class="nm" style="color:var(--acc);text-align:left" data-a="exInfo" data-e="${i.exId}">${esc(e.n)}</button>${isPr?'<span class="pr" style="margin-left:auto">PR</span>':''}</div>${i.note?`<p class="mut" style="margin:0 0 6px;font-size:14px">${esc(i.note)}</p>`:''}
@@ -2728,22 +2729,32 @@ const A={
   <li>Dans les réglages du raccourci, autorisez l’accès à Santé.</li></ol>
   <p class="mut" style="font-size:13px">Si le bouton ne s’ouvre pas depuis l’app Claude, ouvrez JeFIT dans Safari, ou copiez les valeurs et lancez le raccourci à la main.</p></details>`)},
  strava:el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);const txt=stravaTxt(s);
-  openSheet(`<h2>Envoyer vers Strava</h2><p class="mut" style="margin:0">Strava n’accepte pas d’envoi direct depuis une page web. Créez une activité manuelle : type <b>${actType(s).strava}</b>, durée ${fmtDur(s.duration)}, début ${HOUR.format(s.start)}, collez le résumé et ajoutez l’image en photo.</p>
-  <div class="eyebrow" style="margin-top:14px">1 · Les images (à ajouter dans cet ordre)</div>
+  openSheet(`<h2>Envoyer vers Strava</h2>
   <div class="stimgs"><div><div id="stimg0" class="stbox">Création du badge…</div><small>1re photo : le badge</small></div><div><div id="stimg" class="stbox">Création…</div><small>2e photo : les exercices</small></div></div>
-  <button class="btn pri blk" style="margin-top:10px" data-a="stImg" data-s="${s.id}">${ic('copy')}Enregistrer / partager les 2 images</button>
-  <div class="eyebrow" style="margin-top:16px">2 · Le résumé</div>
-  <div class="form"><textarea id="stv" readonly style="font:14px/1.5 var(--f-body);min-height:160px">${esc(txt)}</textarea></div>
-  <button class="btn blk" data-a="copyTxt" data-t="${esc(txt)}">${ic('copy')}Copier le résumé</button>
-  <div class="eyebrow" style="margin-top:16px">3 · L’activité</div>
-  <a class="btn pri blk" style="background:#FC4C02;margin-top:8px" href="https://www.strava.com/upload/manual" target="_blank" rel="noopener">Ouvrir Strava · activité manuelle</a>`);
+  <button class="btn pri blk" style="margin-top:12px" data-a="stGo" data-s="${s.id}">${ic('copy')}1 · Copier le résumé + enregistrer les images</button>
+  <p class="mut" style="font-size:13px;margin:6px 4px 0">Choisissez « Enregistrer 2 images » : elles vont dans vos Photos, le résumé est déjà copié.</p>
+  <a id="stopen" class="btn pri blk" style="background:#FC4C02;margin-top:12px" href="https://www.strava.com/upload/manual" target="_blank" rel="noopener">2 · Ouvrir Strava</a>
+  <div class="card" style="margin-top:12px;font-size:14px;padding:12px 14px">Dans Strava, renseignez : <b>${actType(s).strava}</b> · durée <b>${fmtDur(s.duration)}</b> · début <b>${HOUR.format(s.start)}</b>. Collez le résumé dans la description, puis ajoutez les 2 photos.</div>
+  <details style="margin-top:10px"><summary class="mut" style="font-size:14px">Voir le résumé</summary>
+   <div class="form" style="margin-top:8px"><textarea id="stv" readonly style="font:14px/1.5 var(--f-body);min-height:160px">${esc(txt)}</textarea></div>
+   <button class="btn blk" data-a="copyTxt" data-t="${esc(txt)}">${ic('copy')}Copier le résumé seul</button>
+   <button class="btn blk" style="margin-top:8px" data-a="stImg" data-s="${s.id}">Enregistrer les images seules</button>
+  </details>`);
   const show=(sel,url,alt)=>{const b=$(sel);if(b)b.innerHTML=`<img src="${url}" alt="${alt}" style="width:100%;height:100%;object-fit:contain;display:block">`};
   Promise.all([badgeImg(s),sessImg(s)]).then(([b,x])=>{stImgCache={id:s.id,b,x};show('#stimg0',b.url,'Badge de la séance');show('#stimg',x.url,'Exercices de la séance')}).catch(()=>{const b=$('#stimg');if(b)b.textContent='Image indisponible sur cet appareil.'})},
  stImg:async el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);if(!s)return;
   if(!stImgCache||stImgCache.id!==s.id||!stImgCache.b){const [b,x]=await Promise.all([badgeImg(s),sessImg(s)]);stImgCache={id:s.id,b,x}}
   const d=new Date(s.start).toISOString().slice(0,10),files=[new File([stImgCache.b.blob],`JeFIT-${d}-1-badge.png`,{type:'image/png'}),new File([stImgCache.x.blob],`JeFIT-${d}-2-exercices.png`,{type:'image/png'})];
-  try{if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files,title:s.name+' · JeFIT'});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});return}}catch(e){if(e&&e.name==='AbortError')return}
   [[stImgCache.b.url,files[0].name],[stImgCache.x.url,files[1].name]].forEach(([u,n],i)=>setTimeout(()=>{const a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove()},i*400));toast('2 images enregistrées')},
+ /* Strava en un geste : résumé dans le presse-papiers, puis feuille de partage des 2 images */
+ stGo:async el=>{const s=S.sessions.find(x=>x.id===el.dataset.s);if(!s)return;
+  let copied=true;try{navigator.clipboard.writeText(stravaTxt(s)).catch(()=>{copied=false})}catch(e){copied=false}
+  await A.stImg(el);
+  toast(copied?'Résumé copié · ouvrez Strava':'Images prêtes · copiez le résumé ci-dessous');
+  const o=$('#stopen');if(o)o.scrollIntoView({behavior:'smooth',block:'center'})},
+ shareSite:async()=>{const u=SITE_URL;try{if(navigator.share){await navigator.share({title:'JeFIT',text:'Rejoins-moi sur JeFIT 💪',url:u});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(u);toast('Lien copié')}catch(e){toast(u)}},
  copyTxt:async el=>{try{await navigator.clipboard.writeText(el.dataset.t);toast('Copié')}catch(e){toast('Copie impossible : sélectionnez le texte')}},
  bw:()=>{},
  /* séance */
@@ -3029,6 +3040,44 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
+const SITE_URL='https://jeremyrosa1722038.github.io/JeFIT/';
+/* QR code (octets, correction M, versions 1 à 10), dessiné en SVG sans dépendance : fonctionne hors ligne */
+function qrSVG(text){
+ const D=[...new TextEncoder().encode(text)],ECC=[0,10,16,26,18,24,16,18,22,22,26],BLK=[0,1,1,1,2,2,4,4,4,5,5];
+ const raw=v=>{let r=(16*v+128)*v+64;if(v>=2){const n=Math.floor(v/7)+2;r-=(25*n-10)*n-55;if(v>=7)r-=36}return r};
+ let v=1,cap=0;for(;v<=10;v++){cap=Math.floor(raw(v)/8)-ECC[v]*BLK[v];if(12+(v<10?0:8)+D.length*8<=cap*8)break}
+ if(v>10)return '';
+ const bits=[],put=(x,n)=>{for(let i=n-1;i>=0;i--)bits.push(x>>>i&1)};
+ put(4,4);put(D.length,v<10?8:16);D.forEach(b=>put(b,8));put(0,Math.min(4,cap*8-bits.length));put(0,(8-bits.length%8)%8);
+ for(let p=0xEC;bits.length<cap*8;p^=0xEC^0x11)put(p,8);
+ const cw=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=b<<1|bits[i+j];cw.push(b)}
+ const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z};
+ const dg=ECC[v],gen=new Array(dg).fill(0);gen[dg-1]=1;let rt=1;
+ for(let i=0;i<dg;i++){for(let j=0;j<dg;j++){gen[j]=mul(gen[j],rt);if(j+1<dg)gen[j]^=gen[j+1]}rt=mul(rt,2)}
+ const rem=d=>{const r=new Array(dg).fill(0);d.forEach(b=>{const f=b^r.shift();r.push(0);gen.forEach((g,i)=>r[i]^=mul(g,f))});return r};
+ const nb=BLK[v],rc=Math.floor(raw(v)/8),ns=nb-rc%nb,sl=Math.floor(rc/nb),blocks=[];
+ for(let i=0,k=0;i<nb;i++){const d=cw.slice(k,k+sl-dg+(i<ns?0:1));k+=d.length;const e=rem(d);if(i<ns)d.push(0);blocks.push(d.concat(e))}
+ const all=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!==sl-dg||j>=ns)all.push(b[i])});
+ const N=v*4+17,M=[...Array(N)].map(()=>new Array(N).fill(false)),F=[...Array(N)].map(()=>new Array(N).fill(false));
+ const set=(x,y,d)=>{M[y][x]=d;F[y][x]=true};
+ for(let i=0;i<N;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+ [[3,3],[N-4,3],[3,N-4]].forEach(([x,y])=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const d=Math.max(Math.abs(dx),Math.abs(dy)),X=x+dx,Y=y+dy;if(X>=0&&X<N&&Y>=0&&Y<N)set(X,Y,d!==2&&d!==4)}});
+ const al=[];if(v>1){const n=Math.floor(v/7)+2,st=Math.ceil((v*4+4)/(n*2-2))*2;al.push(6);for(let p=v*4+10;al.length<n;p-=st)al.splice(1,0,p)}
+ al.forEach((a,i)=>al.forEach((b,j)=>{if((i===0&&j===0)||(i===0&&j===al.length-1)||(i===al.length-1&&j===0))return;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(a+dx,b+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}));
+ const fmt=mk=>{let r=mk;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const b=(mk<<10|r)^0x5412,g=i=>(b>>>i&1)===1;
+  for(let i=0;i<=5;i++)set(8,i,g(i));set(8,7,g(6));set(8,8,g(7));set(7,8,g(8));for(let i=9;i<15;i++)set(14-i,8,g(i));
+  for(let i=0;i<8;i++)set(N-1-i,8,g(i));for(let i=8;i<15;i++)set(8,N-15+i,g(i));set(8,N-8,true)};
+ fmt(0);
+ if(v>=7){let r=v;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const b=v<<12|r;for(let i=0;i<18;i++){const g=(b>>>i&1)===1,a=N-11+i%3,c=Math.floor(i/3);set(a,c,g);set(c,a,g)}}
+ let n=0;for(let r=N-1;r>=1;r-=2){if(r===6)r=5;for(let q=0;q<N;q++)for(let j=0;j<2;j++){const x=r-j,y=((r+1)&2)===0?N-1-q:q;if(!F[y][x]&&n<all.length*8){M[y][x]=(all[n>>>3]>>>(7-(n&7))&1)===1;n++}}}
+ const MK=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,x=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+ const flip=k=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!F[y][x]&&MK[k](x,y))M[y][x]=!M[y][x]};
+ const pen=()=>{let p=0,dk=0;for(let a=0;a<N;a++){let rx=1,ry=1;for(let b=0;b<N;b++){if(M[a][b])dk++;if(b){if(M[a][b]===M[a][b-1]){if(++rx===5)p+=3;else if(rx>5)p++}else rx=1;if(M[b][a]===M[b-1][a]){if(++ry===5)p+=3;else if(ry>5)p++}else ry=1}if(a&&b&&M[a][b]===M[a-1][b]&&M[a][b]===M[a][b-1]&&M[a][b]===M[a-1][b-1])p+=3}}return p+Math.floor(Math.abs(dk*20-N*N*10)/(N*N))*10};
+ let best=0,bp=1e9;for(let k=0;k<8;k++){flip(k);fmt(k);const p=pen();if(p<bp){bp=p;best=k}flip(k)}
+ flip(best);fmt(best);
+ let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
+ return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
+}
 const APP_V='V4.9',APP_BUILD='17/11/2026 à 16:50';
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||t.dataset?.f!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
@@ -3150,6 +3199,13 @@ VIEWS.settings=()=>{
    <ol><li>Créez un nouveau projet Supabase « JeFIT ».</li><li>Authentication › Sign In / Providers › Email : désactivez <b>Confirm email</b> (le compte se fait avec un nom, sans e-mail).</li><li>SQL Editor : collez et lancez ce script.</li><li>Project Settings › API : copiez l’URL et la clé <b>anon public</b> ici.</li></ol>
    <pre>${esc(SB_SQL)}</pre><button class="btn sm" data-a="copyTxt" data-t="${esc(SB_SQL)}">${ic('copy')}Copier le script</button>
   </details>
+ </div></div>
+
+ <div class="sec"><div class="hd"><h2>Partager JeFIT</h2></div><div class="card form" style="align-items:center;text-align:center">
+  <p class="mut" style="margin:0;font-size:14px">Faites scanner ce QR code ou envoyez le lien pour ouvrir JeFIT.</p>
+  <div style="width:220px;max-width:100%">${qrSVG(SITE_URL)}</div>
+  <a href="${SITE_URL}" target="_blank" rel="noopener" style="font-weight:600;word-break:break-all">${SITE_URL}</a>
+  <div class="btnrow" style="justify-content:center"><button class="btn pri" data-a="shareSite">${ic('up')}Partager le lien</button><button class="btn" data-a="copyTxt" data-t="${SITE_URL}">${ic('copy')}Copier le lien</button></div>
  </div></div>
 
  <div class="sec"><div class="hd"><h2>Préférences</h2></div><div class="card set-card">
