@@ -2029,10 +2029,30 @@ function quickCard(){
 let avoidPrev=null;
 const avoidOf=id=>(ex(id).m||[]).filter(m=>(S.avoid||[]).includes(m)).map(m=>MUS[m]).join(', ');
 const avoidOk=id=>!(S.avoid||[]).length||!(ex(id).m||[]).some(m=>S.avoid.includes(m));
+/* Alternative à un exercice qui touche une zone à éviter : même(s) muscle(s) restant(s), sans la zone, avec le matériel dispo */
+const tFam=t=>t==='weight'||t==='bw'?'r':t;
+/* sens du mouvement : on ne remplace pas un tirage par une poussée (et inversement) */
+const mvCls=n=>/curl|tirage|rowing|traction|pull|oiseau|shrug|haussement|soulev|rack|good ?morning|extension (dos|lombaire)|superman/i.test(n)?'pull':/d[ée]velopp|pompe|dips|triceps|front|[ée]cart|press|pec|[ée]l[ée]vation/i.test(n)?'push':'';
+const noAlt=c=>(REQ[c]||[]).some(q=>['sac','sled','wallball','ski','rameur'].includes(q))||/burpee|sprint|clean|snatch|arrach|[ée]paul[ée]|thruster|devil|sled|wall ?ball|saut|jump|course|run/i.test(ex(c).n);
+function avoidAlt(id,eq,used){
+ const o=ex(id),A=S.avoid||[],keep=(o.m||[]).filter(m=>!A.includes(m));if(!keep.length)return null;
+ const E=eq||Object.keys(EQUIP),oc=mvCls(o.n);let best=null,bs=0;
+ EXL.forEach(([c,n,pose,m,t],k)=>{
+  if(c===id||/^L[A-Z]|^laf/.test(c)||(used&&used.has(c))||tFam(t)!==tFam(o.t)||!avoidOk(c)||!hasEq(c,E)||noAlt(c))return;
+  const sh=m.filter(x=>keep.includes(x)).length;if(!sh)return;
+  const cc=mvCls(n);if(oc&&cc&&oc!==cc)return;
+  const s=sh*3+(m[0]===keep[0]?4:0)-m.filter(x=>!(o.m||[]).includes(x)).length+(t===o.t?1:0)+(pose===o.pose?1:0)+(oc&&cc===oc?2:0)-k/1e4;
+  if(s>bs){bs=s;best=c}});
+ return best;
+}
+/* Pour l'affichage d'une séance : exercice à éviter → alternative prévue (ou null si retiré) */
+function dayAlts(d,eq){const R=new Map(),used=new Set(d.items.map(i=>i.exId).filter(avoidOk));d.items.forEach(i=>{if(avoidOk(i.exId))return;const b=avoidAlt(i.exId,eq,used);if(b)used.add(b);R.set(i.exId,b)});return R}
+/* Copie un élément de séance sur un autre exercice en adaptant les valeurs au nouveau type */
+function swapItem(i,a,why){const ea=ex(a),src={...i,exId:a};if(ea.t==='time'&&!src.time)src.time=30;if((ea.t==='weight'||ea.t==='bw')&&!src.reps)src.reps=12;if(ea.t.startsWith('dist')&&!src.dist)src.dist=i.dist||400;if(ea.t==='bw')src.kg=null;const m=mkItem(a,src);m.note=`Remplace ${ex(i.exId).n} (${why})`+(i.note?' · '+i.note:'');return m}
 function avoidBar(){const A=S.avoid||[];
- return `<button class="card" data-a="avoidSheet" style="display:flex;align-items:center;gap:12px;width:100%;max-width:640px;text-align:left;margin-top:14px;padding:14px 16px;${A.length?'border:1px solid var(--warm)':''}"><span style="width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;background:var(--soft);color:${A.length?'var(--warm)':'var(--mut)'}">${icS('cross',20)}</span><span style="flex:1;min-width:0"><b style="display:block">Muscles à éviter</b><span class="mut" style="font-size:13px">${A.length?A.map(m=>MUS[m]).join(', ')+' : exercices retirés de tous les programmes':'Aucun · touchez pour exclure une zone (blessure, opération…)'}</span></span></button>`}
+ return `<button class="card" data-a="avoidSheet" style="display:flex;align-items:center;gap:12px;width:100%;max-width:640px;text-align:left;margin-top:14px;padding:14px 16px;${A.length?'border:1px solid var(--warm)':''}"><span style="width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;background:var(--soft);color:${A.length?'var(--warm)':'var(--mut)'}">${icS('cross',20)}</span><span style="flex:1;min-width:0"><b style="display:block">Muscles à éviter</b><span class="mut" style="font-size:13px">${A.length?A.map(m=>MUS[m]).join(', ')+' : exercices remplacés par une alternative dans les programmes':'Aucun · touchez pour exclure une zone (blessure, opération…)'}</span></span></button>`}
 function avoidBody(){const A=S.avoid||[];
- return `<h2>Muscles à éviter</h2><p class="mut" style="margin:0">Les exercices qui sollicitent ces zones sont retirés des programmes, de Lafay et de « Sport en minutes ». Pour un pied ou une jambe : choisissez <b>Jambes</b> et <b>Mollets</b>.</p>
+ return `<h2>Muscles à éviter</h2><p class="mut" style="margin:0">Dans vos programmes, chaque exercice qui sollicite ces zones est remplacé par une alternative qui travaille les autres muscles visés (ex. : soulevé de terre → rowing si « Jambes » est exclu). S’il n’y en a pas, il est retiré. Lafay et « Sport en minutes » les écartent aussi. Pour un pied ou une jambe : choisissez <b>Jambes</b> et <b>Mollets</b>.</p>
  <div class="chips wrap" style="margin-top:14px">${Object.entries(MUS).map(([k,n])=>`<button class="chip ${A.includes(k)?'on':''}" data-a="avoidTog" data-v="${k}">${A.includes(k)?'✕ ':''}${n}</button>`).join('')}</div>
  <p class="mut" style="font-size:13px;margin:12px 0 0">${A.length?'Exercices retirés au total : '+EXL.map(e=>e[0]).filter(id=>!avoidOk(id)).length+' sur '+EXL.length+'.':'Aucune zone exclue.'}</p>`}
 function progCard(p){
@@ -2041,7 +2061,7 @@ function progCard(p){
  <h2 style="margin-top:10px">${esc(p.name)}</h2>
  ${exs.length?`<div class="strip">${exs.slice(0,6).map(e=>picto(e)).join('')}${exs.length>6?`<span class="more">+${exs.length-6}</span>`:''}</div>`:''}
  <div class="days">${p.days.map(d=>esc(d.name)).join(' · ')}</div>
- ${(()=>{const n=exs.filter(e=>!avoidOk(e)).length;return n?`<div style="font-size:13px;font-weight:700;color:var(--warm);margin-top:-4px;display:flex;align-items:center;gap:6px">${icS('cross',14)}${n} exercice${n>1?'s':''} retiré${n>1?'s':''} (${(S.avoid||[]).map(m=>MUS[m]).join(', ')})</div>`:''})()}
+ ${(()=>{const n=exs.filter(e=>!avoidOk(e)).length;return n?`<div style="font-size:13px;font-weight:700;color:var(--warm);margin-top:-4px;display:flex;align-items:center;gap:6px">${icS('cross',14)}${n} exercice${n>1?'s':''} adapté${n>1?'s':''} (${(S.avoid||[]).map(m=>MUS[m]).join(', ')})</div>`:''})()}
  <div class="row"><button class="btn" data-a="openProgram" data-p="${p.id}">Ouvrir</button>${p.days[0]?`<button class="btn pri" data-a="startDay" data-p="${p.id}" data-d="${p.days[0].id}">Démarrer</button>`:''}</div></div>`;
 }
 
@@ -2057,7 +2077,9 @@ VIEWS.program=()=>{
   return `<p class="mut" style="margin:10px 0;font-size:14px">Durée conseillée : <b style="color:var(--fg)">${a} à ${b} semaines</b> · ${p.days.length} séances par semaine. Le choix se fait au premier « Démarrer ».</p>`})()}
  <button class="pill" style="padding:8px 12px;margin-top:4px" data-a="equip" data-p="${p.id}">${ic('gear').replace('<svg','<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"')}${p.equip?(p.equip.length?'Matériel : '+p.equip.map(k=>EQUIP[k]).join(', '):'Sans matériel'):'Matériel : à renseigner'} · modifier</button>
  <div class="grid sec">${p.days.map(d=>`<div class="card dcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>${esc(d.name)}</h2><button class="ib" data-a="editDay" data-p="${p.id}" data-d="${d.id}" aria-label="Modifier">${ic('edit')}</button></div>
-  <div class="exl">${d.items.length?d.items.map(i=>`<div class="exrow" ${avoidOk(i.exId)?'':'style="opacity:.4"'}>${picto(i.exId)}<div style="min-width:0"><div class="nm" ${avoidOk(i.exId)?'':'style="text-decoration:line-through"'}>${esc(ex(i.exId).n)}</div><div class="sub">${avoidOk(i.exId)?targetTxt(i):'Retiré : '+avoidOf(i.exId)}</div></div></div>`).join(''):'<p class="mut" style="margin:0">Aucun mouvement. Touchez « Modifier » pour en ajouter.</p>'}</div>
+  <div class="exl">${d.items.length?(()=>{const AL=dayAlts(d,p.equip);return d.items.map(i=>{if(avoidOk(i.exId))return `<div class="exrow">${picto(i.exId)}<div style="min-width:0"><div class="nm">${esc(ex(i.exId).n)}</div><div class="sub">${targetTxt(i)}</div></div></div>`;
+   const b=AL.get(i.exId);return b?`<div class="exrow">${picto(b)}<div style="min-width:0"><div class="nm">${esc(ex(b).n)}</div><div class="sub" style="color:var(--warm)">↻ Remplace ${esc(ex(i.exId).n)} (${esc(avoidOf(i.exId))})</div></div></div>`
+   :`<div class="exrow" style="opacity:.4">${picto(i.exId)}<div style="min-width:0"><div class="nm" style="text-decoration:line-through">${esc(ex(i.exId).n)}</div><div class="sub">Retiré : ${esc(avoidOf(i.exId))} · pas d’alternative</div></div></div>`}).join('')})():'<p class="mut" style="margin:0">Aucun mouvement. Touchez « Modifier » pour en ajouter.</p>'}</div>
   <div style="display:flex;gap:10px"><button class="btn" style="flex:1" data-a="editDay" data-p="${p.id}" data-d="${d.id}">Modifier</button><button class="btn pri" style="flex:1" data-a="startDay" data-p="${p.id}" data-d="${d.id}">Démarrer</button></div></div>`).join('')}
   <button class="card btn" style="min-height:120px;border:2px dashed var(--line);background:transparent;box-shadow:none;flex-direction:column" data-a="addDay" data-p="${p.id}">${ic('plus')}Ajouter une séance</button></div>`;
 };
@@ -2482,7 +2504,7 @@ function cycCard(c,i=0){const pct=Math.min(100,Math.round(100*c.done/c.total)),n
  <div class="pbar" style="margin-top:10px"><i style="width:${pct}%"></i></div>
  <div class="grid" style="margin-top:14px;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
   ${c.last?`<button class="card" style="background:var(--soft);box-shadow:none;text-align:left;padding:12px" data-a="openSession" data-s="${c.last.id}"><div class="eyebrow">Séance précédente</div><div style="font-weight:800;margin-top:4px">${esc(c.last.name)}</div><div class="mut" style="font-size:13px">${esc(DAY.format(c.last.start))} · ${fmtDur(c.last.duration)}</div></button>`:`<div class="card" style="background:var(--soft);box-shadow:none;padding:12px"><div class="eyebrow">Séance précédente</div><div class="mut" style="margin-top:4px">Aucune pour l’instant</div></div>`}
-  ${nd?`<button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px" data-a="startDay" data-p="${c.p.id}" data-d="${nd.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(nd.name)}</div><div style="font-size:13px;opacity:.8">${nd.items.filter(i=>avoidOk(i.exId)).length} exercices</div></button>`:''}
+  ${nd?`<button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px" data-a="startDay" data-p="${c.p.id}" data-d="${nd.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(nd.name)}</div><div style="font-size:13px;opacity:.8">${(()=>{const AL=dayAlts(nd,c.p.equip);return nd.items.filter(i=>avoidOk(i.exId)||AL.get(i.exId)).length})()} exercices</div></button>`:''}
  </div></div>`}
 function startDay(pid,did,stage){const p=S.programs.find(x=>x.id===pid),d=p&&p.days.find(x=>x.id===did);if(!d)return;
  if(stage!=='go'){
@@ -2491,10 +2513,17 @@ function startDay(pid,did,stage){const p=S.programs.find(x=>x.id===pid),d=p&&p.d
   if(p.days.length>1&&!(c&&!c.ended)){if(stage!=='eq'){openEqCheck(pid,did);return}openWeeks(pid,did);return}
  }
  const eq=p.equip;
- const its=d.items.filter(i=>avoidOk(i.exId));
- if(d.items.length&&!its.length){toast('Tous les exercices de cette séance sollicitent une zone à éviter.');return}
- if(its.length<d.items.length)setTimeout(()=>toast(`${d.items.length-its.length} exercice(s) retiré(s) : ${(S.avoid||[]).map(m=>MUS[m]).join(', ')}`),600);
- startWorkout({id:uid(),name:d.name,cat:p.cat,programId:p.id,dayId:d.id,start:Date.now(),pausedMs:0,pausedAt:null,rest:null,items:(()=>{const used=new Set(its.map(i=>i.exId).filter(x=>hasEq(x,eq||Object.keys(EQUIP))));return its.map(i=>{const a=adapt(i.exId,eq,used);used.add(a);if(a===i.exId)return mkItem(i.exId,i);const ea=ex(a),src={...i,exId:a};if(ea.t==='time'&&!src.time)src.time=30;if((ea.t==='weight'||ea.t==='bw')&&!src.reps)src.reps=12;if(ea.t.startsWith('dist')&&!src.dist)src.dist=i.dist||400;if(ea.t==='bw')src.kg=null;const m=mkItem(a,src);m.note=`Remplace ${ex(i.exId).n} (matériel)`+(i.note?' · '+i.note:'');return m}).filter(m=>avoidOk(m.exId))})()})}
+ const zone=(S.avoid||[]).map(m=>MUS[m]).join(', ');
+ const used=new Set(d.items.map(i=>i.exId).filter(x=>avoidOk(x)&&hasEq(x,eq||Object.keys(EQUIP))));
+ let nAlt=0,nOut=0;
+ const items=d.items.map(i=>{
+  if(!avoidOk(i.exId)){const b=avoidAlt(i.exId,eq,used);if(!b){nOut++;return null}used.add(b);nAlt++;return swapItem(i,b,'à éviter : '+zone)}
+  const a=adapt(i.exId,eq,used);used.add(a);if(a===i.exId)return mkItem(i.exId,i);
+  if(!avoidOk(a)){const b=avoidAlt(i.exId,eq,used);if(!b){nOut++;return null}used.add(b);nAlt++;return swapItem(i,b,'à éviter : '+zone)}
+  return swapItem(i,a,'matériel')}).filter(Boolean);
+ if(d.items.length&&!items.length){toast('Tous les exercices de cette séance sollicitent une zone à éviter, sans alternative possible.');return}
+ if(nAlt||nOut)setTimeout(()=>toast([nAlt?`${nAlt} exercice(s) remplacé(s)`:'',nOut?`${nOut} retiré(s)`:''].filter(Boolean).join(' · ')+` (${zone})`),600);
+ startWorkout({id:uid(),name:d.name,cat:p.cat,programId:p.id,dayId:d.id,start:Date.now(),pausedMs:0,pausedAt:null,rest:null,items})}
 /* Questionnaire matériel */
 let EQ={pid:null,did:null,sel:[]};
 function equipNeeded(p){return [...new Set(p.days.flatMap(d=>d.items.flatMap(i=>REQ[i.exId]||[])))]}
