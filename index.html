@@ -226,6 +226,7 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .srow.done .up{color:#15803D}
 .mi.stype b{width:28px;text-align:center;font:900 20px var(--f-disp)}.mi.stype.on{background:var(--soft)}
 .cyx{width:34px;height:34px;color:var(--mut)}.cyx:hover{color:var(--danger)}
+.cymini{padding-top:12px;padding-bottom:12px}.cyminib{display:block;width:100%;text-align:left;margin-top:4px}.cyminib b{display:block;font-size:17px}.cyminib span{font-size:13px}
 .recap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px}.recap .kpi .v{font-size:24px}
 .splt{margin-bottom:12px}.spl{display:flex;justify-content:space-between;font-weight:700;font-size:15px;margin-bottom:5px}.spl b{color:var(--mut)}
 .spb{height:12px;border-radius:7px;background:var(--soft);overflow:hidden}.spb i{display:block;height:100%;border-radius:7px;background:var(--grad)}
@@ -1906,7 +1907,7 @@ VIEWS.home=()=>{
  <span class="mob-only">${sbChip(true)}</span></div>
  <h1>Où en sommes-nous ?</h1>
  ${W?`<button class="resume" style="margin-top:18px" data-a="tab" data-v="workout"><div style="flex:1"><div class="eyebrow" style="color:inherit;opacity:.8">Séance en cours</div><div style="font-weight:700;font-size:17px;margin-top:2px">${esc(W.name)}</div></div><div class="t" data-clock>${fmtT(elapsed(W)/1000)}</div></button>`:''}
- ${cycActive().map(cycCard).join('')||(next?`<div class="card sec"><span class="eyebrow">Dernier programme suivi</span><h2 style="margin:6px 0 10px">${esc(next.p.name)}</h2><button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px;width:100%" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(next.d.name)}</div></button></div>`
+ ${cycActive().map((c,i)=>cycCard(c,i)).join('')||(next?`<div class="card sec"><span class="eyebrow">Dernier programme suivi</span><h2 style="margin:6px 0 10px">${esc(next.p.name)}</h2><button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px;width:100%" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(next.d.name)}</div></button></div>`
   :`<div class="card sec" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap"><div><span class="eyebrow">Aucun programme en cours</span><div class="mut" style="font-size:14px;margin-top:4px">Lance un programme pour suivre tes semaines et ta prochaine séance ici.</div></div><button class="btn pri" data-a="tab" data-v="programs">${ic('list')}Programmes</button></div>`)}
  ${Object.keys(S.cycles||{}).map(cycOf).filter(c=>c&&c.ended).map(c=>`<div class="card sec" style="border:1px solid var(--ok)"><span class="eyebrow">Programme terminé</span><h2 style="margin:6px 0 4px">Bravo ! ${esc(c.p.name)}</h2><p class="mut" style="margin:0 0 12px">${c.done} séances en ${c.weeks} semaines. Change de programme pour continuer à progresser.</p><div class="quick"><button class="btn pri" data-a="tab" data-v="programs">Choisir un programme</button><button class="btn" data-a="cyStop" data-p="${c.p.id}">Masquer</button></div></div>`).join('')}
  <div class="sec card"><div class="hd" style="display:flex;justify-content:space-between;align-items:baseline"><span class="eyebrow">Cette semaine</span><span class="eyebrow">10 semaines</span></div>
@@ -2220,9 +2221,14 @@ function openEqCheck(pid,did){const p=S.programs.find(x=>x.id===pid);
  openSheet(`<div class="eyebrow">${esc(p.name)}</div><h2>Ton matériel a-t-il changé ?</h2><p class="mut" style="margin:0">Matériel enregistré : <b>${p.equip.length?p.equip.map(k=>EQUIP[k]).join(', '):'aucun · poids du corps'}</b>.</p>`,
  `<button class="btn" data-a="eqChange" data-p="${pid}" data-d="${did}">Oui, le modifier</button><button class="btn pri" data-a="eqSame" data-p="${pid}" data-d="${did}">Non, continuer</button>`)}
 /* Carte « Programme en cours » de l'Accueil */
-function cycCard(c){const pct=Math.min(100,Math.round(100*c.done/c.total)),nd=c.next;
- return `<div class="card sec"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="eyebrow">Programme en cours</span><span style="display:flex;align-items:center;gap:8px"><span class="eyebrow">Semaine ${c.week} / ${c.weeks}</span><button class="ib cyx" data-a="cyDel" data-p="${c.p.id}" aria-label="Supprimer le programme en cours" title="Supprimer le programme en cours">${icS('cross',20)}</button></span></div>
- <h2 style="margin:6px 0 2px">${esc(c.p.name)}</h2><div class="mut" style="font-size:13px">${c.done} / ${c.total} séances · cette semaine ${c.thisWeek} / ${c.perWeek}</div>
+/* Cartes « programme » de l'Accueil : le plus récent ouvert, les autres réduits (réglable avec la flèche) */
+const cycFolded=(pid,i)=>{const m=LS.get('jefit.cycFold',{})||{};return pid in m?!!m[pid]:i>0};
+const cycLastTxt=c=>c.last?'Dernière séance le '+DSHORT.format(c.last.start):'Pas encore de séance';
+function cycCard(c,i=0){const pct=Math.min(100,Math.round(100*c.done/c.total)),nd=c.next,fold=cycFolded(c.p.id,i),lbl=i===0?'Programme en cours':'Dernier programme suivi';
+ const head=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="eyebrow">${lbl}</span><span style="display:flex;align-items:center;gap:4px"><span class="eyebrow">Sem. ${c.week} / ${c.weeks}</span><button class="ib cyx" data-a="cyFold" data-p="${c.p.id}" data-i="${i}" aria-label="${fold?'Afficher':'Réduire'}" title="${fold?'Afficher':'Réduire'}">${icS(fold?'down':'up',20)}</button><button class="ib cyx" data-a="cyDel" data-p="${c.p.id}" aria-label="Supprimer le programme en cours" title="Supprimer le programme en cours">${icS('cross',20)}</button></span></div>`;
+ if(fold)return `<div class="card sec cymini">${head}<button class="cyminib" data-a="cyFold" data-p="${c.p.id}" data-i="${i}"><b>${esc(c.p.name)}</b><span class="mut">${cycLastTxt(c)} · ${c.done} / ${c.total} séances</span></button><div class="pbar" style="margin-top:8px;height:5px"><i style="width:${pct}%"></i></div></div>`;
+ return `<div class="card sec">${head}
+ <h2 style="margin:6px 0 2px">${esc(c.p.name)}</h2><div class="mut" style="font-size:13px">${cycLastTxt(c)} · ${c.done} / ${c.total} séances · cette semaine ${c.thisWeek} / ${c.perWeek}</div>
  <div class="pbar" style="margin-top:10px"><i style="width:${pct}%"></i></div>
  <div class="grid" style="margin-top:14px;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
   ${c.last?`<button class="card" style="background:var(--soft);box-shadow:none;text-align:left;padding:12px" data-a="openSession" data-s="${c.last.id}"><div class="eyebrow">Séance précédente</div><div style="font-weight:800;margin-top:4px">${esc(c.last.name)}</div><div class="mut" style="font-size:13px">${esc(DAY.format(c.last.start))} · ${fmtDur(c.last.duration)}</div></button>`:`<div class="card" style="background:var(--soft);box-shadow:none;padding:12px"><div class="eyebrow">Séance précédente</div><div class="mut" style="margin-top:4px">Aucune pour l’instant</div></div>`}
@@ -2441,6 +2447,7 @@ const A={
  eqChange:el=>openEquip(el.dataset.p,el.dataset.d),
  cyW:el=>{CY.w=+el.dataset.v;$('#sheet .sb').innerHTML=weeksBody()},
  cyOk:()=>{const p=S.programs.find(x=>x.id===CY.pid);S.cycles=S.cycles||{};S.cycles[p.id]={start:Date.now(),weeks:CY.w,perWeek:p.days.length};touchCfg();closeSheet();toast(`Programme lancé pour ${CY.w} semaines`);startDay(CY.pid,CY.did,'go')},
+ cyFold:el=>{const m=LS.get('jefit.cycFold',{})||{},pid=el.dataset.p;m[pid]=!cycFolded(pid,+el.dataset.i);LS.set('jefit.cycFold',m);const y=scrollY;render();scrollTo(0,y)},
  cyDel:el=>{const p=S.programs.find(x=>x.id===el.dataset.p);confirmSheet('Attention !',`Voulez-vous supprimer votre programme en cours <b>${esc(p?p.name:'')}</b> ? Le suivi des semaines s’arrête. Tes séances déjà faites restent dans l’historique.`,'Oui',()=>{delete S.cycles[el.dataset.p];touchCfg();render();toast('Programme en cours supprimé')},true,'Non')},
  cyStop:el=>confirmSheet('Arrêter ce programme ?','Le suivi des semaines s’arrête. Tes séances restent dans l’historique.','Arrêter',()=>{delete S.cycles[el.dataset.p];touchCfg();render()}),
  equip:el=>openEquip(el.dataset.p,null),
@@ -2742,7 +2749,7 @@ Object.assign(A,{
 
 /* ===================== Version ===================== */
 const JERIDE_URL='https://jeremyrosa1722038.github.io/Jeride/';
-const APP_V='V3.8',APP_BUILD='17/11/2026 à 11:05';
+const APP_V='V3.9',APP_BUILD='17/11/2026 à 11:20';
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||t.dataset?.f!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
