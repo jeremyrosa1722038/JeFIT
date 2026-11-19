@@ -9,6 +9,8 @@ L'app est utilisée sur un iPad mini 2 bloqué en **iOS 12.5.8 (Safari 12)** et 
 - Les API récentes (clipboard, wakeLock, canShare…) doivent toujours être testées avant usage et entourées de try/catch.
 - Animations : légères, déclenchées ponctuellement (pas d'animation en continu), coupées si `prefers-reduced-motion`.
 
+**Version :** à chaque série de modifications, augmenter `APP_V` et mettre la date dans `APP_BUILD` (affichés dans Paramètres).
+
 **Avant chaque mise en ligne :** `powershell -ExecutionPolicy Bypass -File tools\check-ios12.ps1` doit afficher « OK ».
 
 ## JeRIDE
