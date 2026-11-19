@@ -3462,7 +3462,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V4.9',APP_BUILD='17/11/2026 à 16:50';
+const APP_V='V5.0',APP_BUILD='19/11/2026 à 13:00'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
