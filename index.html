@@ -138,6 +138,8 @@ a.btn{text-decoration:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:9px 16px;border-radius:12px;background:var(--soft);font:700 15px var(--f-disp);color:var(--mut)}
 .chip.on{background:var(--acc);color:#fff}
+/* Mode clair : boutons et filtres en vrais encarts blancs (comme les cartes) au lieu d'un gris qui se confond avec le fond */
+:root[data-theme="light"] .chip:not(.on),:root[data-theme="light"] .btn:not(.pri){background:var(--card);border:1px solid var(--line);box-shadow:0 1px 3px rgba(20,30,50,.07)}
 a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--acc)}
 .btn.backb{min-height:46px;padding:0 18px 0 12px;font:700 16px var(--f-disp);background:var(--soft);border:1px solid var(--line);gap:6px}.btn.backb svg{width:22px;height:22px;stroke-width:2.4}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--soft);color:var(--mut)}
@@ -3647,7 +3649,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V5.8',APP_BUILD='19/11/2026 à 17:00'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V5.9',APP_BUILD='19/11/2026 à 17:15'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
