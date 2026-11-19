@@ -256,7 +256,7 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .srow.w .sn{color:var(--warm);font-weight:900}
 .srow.f .sn{color:var(--danger);font-weight:900}.srow.d .sn{color:#3B82F6;font-weight:900}
 .srow .pv{display:flex;flex-direction:column;justify-content:center;line-height:1.15}
-.up{display:inline-block;align-self:flex-start;margin-top:3px;font:800 11px var(--f-body);color:#16A34A;background:color-mix(in srgb,#22C55E 16%,transparent);padding:1px 6px;border-radius:6px;white-space:nowrap}
+.up{display:inline-block;align-self:flex-start;margin-top:3px;font:800 11px var(--f-body);color:#16A34A;background:rgba(34,197,94,0.16);background:color-mix(in srgb,#22C55E 16%,transparent);padding:1px 6px;border-radius:6px;white-space:nowrap}
 .srow.done .up{color:#15803D}
 .mi.stype b{width:28px;text-align:center;font:900 20px var(--f-disp)}.mi.stype.on{background:var(--soft)}
 .cyx{width:34px;height:34px;color:var(--mut)}.cyx:hover{color:var(--danger)}
@@ -266,8 +266,8 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .splt{margin-bottom:12px}.spl{display:flex;justify-content:space-between;font-weight:700;font-size:15px;margin-bottom:5px}.spl b{color:var(--mut)}
 .spb{height:12px;border-radius:7px;background:var(--soft);overflow:hidden}.spb i{display:block;height:100%;border-radius:7px;background:var(--grad)}
 .sets-t .f{color:var(--danger);font-weight:800}.sets-t .d{color:#3B82F6;font-weight:800}.sets-t td svg{vertical-align:middle;width:20px;height:20px}
-.sets-t tr.prrow td{background:color-mix(in srgb,#F5B301 10%,transparent)}
-.prb{font:800 11px var(--f-body);color:#B07D00;background:color-mix(in srgb,#F5B301 22%,transparent);padding:2px 7px;border-radius:6px}
+.sets-t tr.prrow td{background:rgba(245,179,1,0.1);background:color-mix(in srgb,#F5B301 10%,transparent)}
+.prb{font:800 11px var(--f-body);color:#B07D00;background:rgba(245,179,1,0.22);background:color-mix(in srgb,#F5B301 22%,transparent);padding:2px 7px;border-radius:6px}
 .cele{position:fixed;top:0;right:0;bottom:0;left:0;z-index:90;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,rgba(58,28,6,.92),rgba(10,14,22,.97) 65%);opacity:0;transition:opacity .4s}
 .cele.in{opacity:1}.cele.out{opacity:0}.cele canvas{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
 .celc{position:relative;z-index:1;text-align:center;color:#fff;padding:24px;animation:celUp .6s .2s backwards}
@@ -287,8 +287,8 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .radar .rl{font:800 16px var(--f-disp);fill:var(--fg)}.radar .rv{font:900 14px var(--f-disp);fill:#FFB21A;paint-order:stroke;stroke:var(--card);stroke-width:3px}.radar .rd{fill:#FFB21A;stroke:var(--card);stroke-width:2}
 .rseg{min-width:240px}.rseg button{height:36px;font-size:13px}
 .rtips{display:flex;flex-direction:column;gap:8px}.rtip{padding:10px 12px;border-radius:12px;font-weight:700;font-size:14px;line-height:1.4;background:var(--soft)}
-.rtip.warn{background:color-mix(in srgb,#F59E0B 16%,var(--card));color:var(--fg);border:1px solid color-mix(in srgb,#F59E0B 45%,transparent)}
-.rtip.ok{background:color-mix(in srgb,#22C55E 14%,var(--card));border:1px solid color-mix(in srgb,#22C55E 40%,transparent)}
+.rtip.warn{background:rgba(245,158,11,0.16);background:color-mix(in srgb,#F59E0B 16%,var(--card));color:var(--fg);border:1px solid rgba(245,158,11,0.45);border:1px solid color-mix(in srgb,#F59E0B 45%,transparent)}
+.rtip.ok{background:rgba(34,197,94,0.14);background:color-mix(in srgb,#22C55E 14%,var(--card));border:1px solid rgba(34,197,94,0.4);border:1px solid color-mix(in srgb,#22C55E 40%,transparent)}
 /* Badges */
 .medal{flex:none;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
 .bgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
@@ -299,7 +299,7 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .bdgp{height:7px;border-radius:5px;background:var(--soft);overflow:hidden;margin-top:8px}.bdgp i{display:block;height:100%;border-radius:5px}
 .bdgx{font-size:12px;font-weight:700;color:var(--mut);margin-top:4px}
 .bdgb{display:block;width:100%;padding:0;text-align:left}.card .bdg{border:0;padding:0;background:none}
-.bhero{background:radial-gradient(circle at 50% 0,color-mix(in srgb,#FFB21A 18%,transparent),transparent 70%),var(--card)}
+.bhero{background:radial-gradient(circle at 50% 0,rgba(255,178,26,0.18),transparent 70%),var(--card);background:radial-gradient(circle at 50% 0,color-mix(in srgb,#FFB21A 18%,transparent),transparent 70%),var(--card)}
 .bhm{display:flex;justify-content:space-between;gap:4px;overflow-x:auto}.bhl{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px}.bhl.z{opacity:.35}
 .bhl b{font:900 20px var(--f-disp)}.bhl span{font-size:10px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 .bexp summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;gap:10px}.bexp summary::-webkit-details-marker{display:none}
@@ -335,6 +335,17 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .shine .trophy{-webkit-animation:tro 1.1s ease-in-out;animation:tro 1.1s ease-in-out}
 @-webkit-keyframes tro{0%,100%{-webkit-transform:none;-webkit-filter:none}30%{-webkit-transform:rotate(-12deg) scale(1.2);-webkit-filter:drop-shadow(0 0 5px #FFD54A)}60%{-webkit-transform:rotate(10deg) scale(1.2);-webkit-filter:drop-shadow(0 0 5px #FFD54A)}}
 @keyframes tro{0%,100%{transform:none;filter:none}30%{transform:rotate(-12deg) scale(1.2);filter:drop-shadow(0 0 5px #FFD54A)}60%{transform:rotate(10deg) scale(1.2);filter:drop-shadow(0 0 5px #FFD54A)}}
+/* Bandeau de navigation : toutes les 40 s, reflet doré + petite vague sur les icônes (classe .navfx posée par navFx).
+   Le reflet ne capte aucun clic et seules les icônes bougent : les boutons restent cliquables normalement. */
+#nav::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;opacity:0;background:linear-gradient(105deg,transparent 42%,rgba(255,194,26,.18) 50%,transparent 58%) no-repeat;background-size:260% 100%;background-position:130% 0}
+.navfx #nav::after{-webkit-animation:navSweep 1.6s ease-in-out;animation:navSweep 1.6s ease-in-out}
+@-webkit-keyframes navSweep{0%{opacity:0;background-position:130% 0}15%{opacity:1}85%{opacity:1}100%{opacity:0;background-position:-30% 0}}
+@keyframes navSweep{0%{opacity:0;background-position:130% 0}15%{opacity:1}85%{opacity:1}100%{opacity:0;background-position:-30% 0}}
+.navfx .navb svg{-webkit-animation:navHop .5s ease-out;animation:navHop .5s ease-out}
+.navfx .navb:nth-child(2) svg{-webkit-animation-delay:.12s;animation-delay:.12s}.navfx .navb:nth-child(3) svg{-webkit-animation-delay:.24s;animation-delay:.24s}.navfx .navb:nth-child(4) svg{-webkit-animation-delay:.36s;animation-delay:.36s}.navfx .navb:nth-child(5) svg{-webkit-animation-delay:.48s;animation-delay:.48s}.navfx .navb:nth-child(n+6) svg{-webkit-animation-delay:.6s;animation-delay:.6s}
+@-webkit-keyframes navHop{0%,100%{-webkit-transform:none}40%{-webkit-transform:translateY(-3px) scale(1.1)}}
+@keyframes navHop{0%,100%{transform:none}40%{transform:translateY(-3px) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.navfx #nav::after,.navfx .navb svg{-webkit-animation:none!important;animation:none!important}}
 /* Équilibre musculaire qui « se génère » chaque minute (classe .regen posée par radarRegen) */
 .rgen{display:none;color:var(--acc)}.regen .rgen{display:inline}
 .regen .rtip{opacity:0;-webkit-animation:rtin .45s ease-out forwards;animation:rtin .45s ease-out forwards}
@@ -1589,8 +1600,8 @@ const LAF=[
 ];
 
 /* ---------- Programmes par défaut ---------- */
-const CATS={hyrox:{n:'HYROX',c:'#E8B400'},split:{n:'Split muscu',c:'#4EA1FF'},libre:{n:'Libre',c:'#7A5AF8'},lafay:{n:'Méthode Lafay',c:'#E0483E'},cali:{n:'Callisthénie',c:'#16A34A'},corde:{n:'Corde à sauter',c:'#F07B16'},abdo:{n:'Abdos',c:'#0EA5E9'},circuit:{n:'Circuit',c:'#EC4899'},muscle:{n:'Par muscle',c:'#14B8A6'}};
-const MET={hyrox:8,split:5,libre:5,lafay:4.5,cali:4.5,corde:11,abdo:4,circuit:7,muscle:5};
+const CATS={hyrox:{n:'HYROX',c:'#E8B400'},split:{n:'Split muscu',c:'#4EA1FF'},libre:{n:'Libre',c:'#7A5AF8'},lafay:{n:'Méthode Lafay',c:'#E0483E'},gomuscu:{n:'go-muscu.com',c:'#F7891A'},cali:{n:'Callisthénie',c:'#16A34A'},corde:{n:'Corde à sauter',c:'#F07B16'},abdo:{n:'Abdos',c:'#0EA5E9'},circuit:{n:'Circuit',c:'#EC4899'},muscle:{n:'Par muscle',c:'#14B8A6'}};
+const MET={hyrox:8,split:5,libre:5,gomuscu:5,lafay:4.5,cali:4.5,corde:11,abdo:4,circuit:7,muscle:5};
 const it=(exId,sets,o={})=>({id:uid(),exId,sets,rest:nz(o.rest,90),reps:nz(o.reps,null),kg:nz(o.kg,null),time:nz(o.time,null),dist:nz(o.dist,null),note:o.note||''});
 const day=(name,items)=>({id:uid(),name,items});
 function seedPrograms(){
@@ -1879,6 +1890,34 @@ function seedPrograms(){
   P('p-biceps-banc','muscle','Biceps au banc (pupitre & incliné)','Tous les curls sur banc : pupitre pour isoler, incliné pour étirer, concentré pour le pic du biceps.',[
    day('Biceps au banc',[it('preacherez',4,{reps:10,rest:90}),it('inclinecurl',3,{reps:12,rest:75}),it('seatcurl',3,{reps:12,rest:60}),it('conccurl',3,{reps:12,rest:60,note:'Par bras'}),it('seathammer',3,{reps:12,rest:60}),it('spidercurl',2,{reps:15,rest:60})]),
   ]),
+  /* ----- go-muscu.com : 3 programmes de 4 séances par semaine (source : go-muscu.com, Robin) ----- */
+  ...gmPrograms(P),
+ ];
+}
+/* Programmes go-muscu.com. Repères : r = répétitions (fourchette), s = séries, p = repos en secondes. 5 à 10 min d'échauffement avant chaque séance. */
+function gmPrograms(P){
+ const g=(id,s,r,p,note)=>{const [lo,hi]=String(r).split('-').map(Number);return it(id,s,{reps:lo,rest:p,note:(hi?`${lo} à ${hi} reps`:'')+(note?(hi?' · ':'')+note:'')})};
+ const D=(nm,focus,items)=>{const d=day(nm,items);d.focus=focus;if(items[0])items[0].note='Échauffement 5 à 10 min avant'+(items[0].note?' · '+items[0].note:'');return d};
+ const src=' Source : go-muscu.com.';
+ return [
+  P('p-gm-ppl','gomuscu','PPL · 4 séances / semaine','Push · Pull · Legs, puis une séance de rappels et cardio. Lundi, mardi, jeudi, samedi. Séances de 1 h 15 à 1 h 30.'+src,[
+   D('J1 · Push (lundi)',['Pectoraux','Épaules & trapèzes','Bras›Triceps'],[g('dbbench',4,'6-8',120),g('inclinebb',3,'8-10',105),g('arnold',3,'10-12',90),g('fly',3,'12-15',75),g('cablelat',3,'12-15',75),g('benchdips',3,'12-15',90,'focus triceps'),g('ropepush',3,'12-15',75,'par bras')]),
+   D('J2 · Pull (mardi)',['Dos','Bras›Biceps'],[g('pullup',4,'6-12',120,'poids du corps ou lesté'),g('row',3,'8-10',120,'buste penché'),g('pulldown',3,'8-10',90,'pronation'),g('seatedrow',3,'10-12',90,'prise neutre'),g('facepull',3,'12-15',75),g('preacher',3,'10-12',75),g('hammer',3,'12-15',75,'à la poulie (corde) si possible')]),
+   D('J3 · Legs (jeudi)',['Jambes & fessiers','Mollets'],[g('squat',4,'8-10',150,'ou presse à cuisses'),g('dbrdl',3,'10-12',120,'3 ou 4 séries'),g('hipthrust',3,'8-12',120,'à la barre'),g('walklunge',3,'10-12',90,'ou fentes bulgares · par jambe'),g('calf',3,'12-15',75,'à la machine'),g('adductor',3,'12-15',60,'en biset avec les abducteurs'),g('abductor',3,'12-15',60,'biset')]),
+   D('J4 · Rappels & cardio (samedi)',['full','Cardio'],[it('bench',3,{reps:8,rest:120,note:'Rappel 1 (lourd) · 8 à 12 reps · remplacez par votre point faible'}),it('row',3,{reps:8,rest:120,note:'Rappel 2 (lourd) · 8 à 12 reps · remplacez par votre point faible'}),it('latraise',3,{reps:12,rest:90,note:'Rappel 3 (léger) · 12 à 15 reps · au choix'}),it('curl',3,{reps:12,rest:90,note:'Rappel 4 (léger) · 12 à 15 reps · au choix'}),it('run',1,{dist:3000,rest:0,note:'Cardio au choix selon la forme : HIIT, zone 2 ou marche active'})]),
+  ]),
+  P('p-gm-half','gomuscu','Half Body · 4 séances / semaine','Haut du corps / bas du corps, deux fois par semaine. Lundi, mardi, jeudi, samedi. Séances de 1 h 05 à 1 h 25.'+src,[
+   D('J1 · Haut du corps 1 (lundi)',['Pectoraux','Dos','Épaules & trapèzes','Bras'],[g('bench',4,'8-10',120),g('pullup',3,'8-10',120,'ou tirage vertical'),g('dbpress',3,'10-12',90,'développé militaire aux haltères'),g('cablelat',3,'12-15',75),g('skull',3,'10-12',75,'barre droite ou EZ'),g('inclinecurl',3,'12-15',75)]),
+   D('J2 · Bas du corps 1 (mardi)',['Jambes & fessiers','Mollets'],[g('frontsquat',4,'8-10',150,'ou goblet squat'),g('rdl',3,'10-12',120,'à la barre'),g('hipthrust',3,'12-15',120,'à la barre'),g('bulgarian',3,'10-12',90,'avec haltère · par jambe'),g('calf',3,'12-15',75,'debout ou à la presse'),g('adductor',3,'12-15',75)]),
+   D('J3 · Haut du corps 2 (jeudi)',['Dos','Pectoraux','Épaules & trapèzes','Bras'],[g('row',3,'8-10',120,'buste penché'),g('incline',4,'8-10',120),g('seatedrow',3,'10-12',90,'prise neutre'),g('reardelt',3,'12-15',75,'sur banc incliné'),g('pushdown',3,'10-12',75,'à la V-bar'),g('barcurl',3,'12-15',75,'strict, léger')]),
+   D('J4 · Bas du corps 2 (samedi)',['Jambes & fessiers','Mollets'],[g('legpress',4,'8-10',150,'ou squat'),g('legcurl',3,'10-12',90,'assis ou allongé'),g('walklunge',3,'10-12',90,'ou step-up · par jambe'),g('goodmorning',3,'12-15',90,'à la barre'),g('seatedcalf',3,'12-15',75,'ou donkey raise'),g('abductor',3,'12-15',75)]),
+  ]),
+  P('p-gm-split','gomuscu','Split · 4 séances / semaine','Pecs-triceps, dos-biceps, jambes, puis épaules et rappels. Lundi, mardi, jeudi, samedi. Séances de 1 h à 1 h 20.'+src,[
+   D('J1 · Pectoraux + triceps (lundi)',['Pectoraux','Bras›Triceps'],[g('bench',4,'8-10',120),g('incline',3,'10-12',90,'3 ou 4 séries'),g('dips',3,'6-10',90,'à la chaise romaine'),g('fly',3,'12-15',75),g('skull',3,'10-12',75,'barre droite ou EZ'),g('ropepush',3,'12-15',75,'par bras')]),
+   D('J2 · Dos + biceps (mardi)',['Dos','Bras›Biceps'],[g('pullup',4,'8-10',120,'poids du corps ou lesté'),g('row',3,'8-12',90,'buste penché · 3 ou 4 séries'),g('pulldown',3,'8-12',90,'pronation'),g('dbrow',3,'10-12',75,'rowing bûcheron · par bras'),g('barcurl',4,'10-12',75,'barre droite ou EZ'),g('hammer',3,'12-15',75)]),
+   D('J3 · Jambes (jeudi)',['Jambes & fessiers','Mollets'],[g('squat',4,'10-12',150,'ou presse à cuisses'),g('hipthrust',3,'10-12',120,'3 ou 4 séries'),g('walklunge',3,'12-15',90,'à la barre · par jambe'),g('legcurl',3,'12-15',75,'assis ou allongé'),g('legext',3,'12-15',90),g('calf',4,'12-15',75,'debout ou à la presse')]),
+   D('J4 · Épaules + rappels (samedi)',['Épaules & trapèzes'],[g('ohp',4,'8-10',120,'à la Smith machine si possible'),g('latraise',3,'12-15',75,'3 ou 4 séries'),g('reardelt',3,'12-15',75,'sur banc incliné'),g('frontraise',3,'12-15',90,'à la poulie si possible'),it('fly',3,{reps:12,rest:75,note:'Rappel 1 (léger) : remplacez par votre point faible'}),it('curl',3,{reps:12,rest:75,note:'Rappel 2 (léger) : remplacez par votre point faible'})]),
+  ]),
  ];
 }
 
@@ -1893,6 +1932,8 @@ if(S.seedV<5){const sd=seedPrograms().find(p=>p.id==='p-corde'),old=S.programs.f
 if(S.seedV<6){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=6;S.cfgAt=Date.now();}
 if(S.seedV<7){S.programs=S.programs.filter(p=>!(p.id==='p-lafay'&&p.builtin));S.seedV=7;S.cfgAt=Date.now();}
 if(S.seedV<8){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=8;S.cfgAt=Date.now();}
+if(S.seedV<9){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=9;S.cfgAt=Date.now();} /* + programmes go-muscu.com */
+if(S.seedV<10){const n=seedPrograms().find(p=>p.id==='p-gm-ppl'),k=S.programs.findIndex(p=>p.id==='p-gm-ppl'&&p.builtin);if(n&&k>=0)S.programs[k]=n;S.seedV=10;S.cfgAt=Date.now();} /* PPL J4 : rappels ajoutés */
 S.lafay=S.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]};
 S.deleted=S.deleted||[];S.custom=S.custom||[];
 let W=LS.get(AKEY,null);
@@ -2099,7 +2140,7 @@ VIEWS.programs=()=>{
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top" style="justify-content:flex-start;gap:14px"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button></div>
  ${avoidBar()}<div class="chips wrap" style="margin-top:14px"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<button class="chip" data-a="jeride">Vélo · JeRIDE</button></div>
- <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
+ <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${f==='gomuscu'?gmCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
 /* Carte « Sport en minutes » (ex-onglet Express) en tête des programmes */
 function quickCard(){
@@ -2129,6 +2170,37 @@ function avoidAlt(id,eq,used){
   if(s>bs){bs=s;best=c}});
  return best;
 }
+/* ===== Durées : estimation avant la séance + fin réajustée en direct =====
+   Effort d'une série : 20 s d'installation (charger, se placer) + 3,5 s par répétition ; durée prévue pour les exercices au temps ;
+   allure moyenne pour la distance. Entre deux exercices : le repos prévu, et au moins 90 s pour changer de poste.
+   + 8 min d'échauffement quand la séance le prévoit (note « Échauffement » sur le 1er exercice). */
+const DUR={setup:20,perRep:3.5,trans:90,warm:480};
+const hasWarm=d=>!!(d&&d.items&&d.items[0]&&/chauffement/i.test(d.items[0].note||''));
+function setSecs(t,reps,time,dist,exId){
+ if(t==='time')return +time||30;
+ if(t==='dist'||t==='distw'){if(+time)return +time;const d=+dist||400,id=exId||'';return Math.round(d*(t==='distw'?1:/row|ski/.test(id)?0.24:/sprint|shuttle/.test(id)?0.25:0.33))}
+ return DUR.setup+(+reps||10)*DUR.perRep;
+}
+/* Séance d'un programme (avant de la lancer), en millisecondes */
+function dayEst(d){if(!d||!d.items||!d.items.length)return 0;let s=0;const L=d.items;
+ L.forEach((i,k)=>{const n=Math.max(1,+i.sets||1),e=ex(i.exId);s+=n*setSecs(e.t,i.reps,i.time,i.dist,i.exId)+(n-1)*(+i.rest||0);if(k<L.length-1)s+=Math.max(+i.rest||0,DUR.trans)});
+ if(hasWarm(d))s+=DUR.warm;
+ return Math.round(s)*1000}
+const durTxt=ms=>ms?'≈ '+fmtDur(ms):'';
+function progEst(p){const v=p.days.map(dayEst).filter(Boolean);if(!v.length)return '';const a=Math.min.apply(null,v),b=Math.max.apply(null,v);return fmtDur(a)===fmtDur(b)?'≈ '+fmtDur(a)+' par séance':'≈ '+fmtDur(a)+' à '+fmtDur(b)+' par séance'}
+/* Séance en cours : temps prévu (toutes les séries) et temps restant (séries non validées) */
+function wkSecs(item,s){const e=ex(item.exId),tg=item.target||{};return setSecs(e.t,s.reps||tg.reps,s.time||tg.time,s.dist||tg.dist,item.exId)}
+function wkSum(onlyLeft){let r=0;const L=W.items;
+ L.forEach((it,k)=>{const S2=onlyLeft?it.sets.filter(s=>!s.done):it.sets;S2.forEach((s,j)=>{r+=wkSecs(it,s);if(j<S2.length-1)r+=+it.rest||0;else if(k<L.length-1&&S2.length)r+=Math.max(+it.rest||0,DUR.trans)})});
+ return r}
+function wkEta(){
+ if(!W||!W.items.length)return '';
+ const el=elapsed(W)/1000,wu=+W.warm||0,started=W.items.some(i=>i.sets.some(s=>s.done));
+ const plan=wkSum(false)+wu,rest=W.rest?Math.max(0,(W.rest.end-Date.now())/1000):0,left=wkSum(true)+rest+(wu&&!started?Math.max(0,wu-el):0);
+ if(!plan)return '';
+ const diff=Math.round((el+left-plan)/60),end=HOUR.format(Date.now()+left*1000);
+ const st=diff>=2?`<b style="color:#F97316">+${diff} min de retard</b>`:diff<=-2?`<b style="color:#16A34A">${-diff} min d’avance</b>`:'<b style="color:#16A34A">dans les temps</b>';
+ return `⏱ Prévu ${fmtDur(plan*1000)} · fin estimée <b>${end}</b> · ${st}`}
 /* Pour l'affichage d'une séance : exercice à éviter → alternative prévue (ou null si retiré) */
 function dayAlts(d,eq){const R=new Map(),used=new Set(d.items.map(i=>i.exId).filter(avoidOk));d.items.forEach(i=>{if(avoidOk(i.exId))return;const b=avoidAlt(i.exId,eq,used);if(b)used.add(b);R.set(i.exId,b)});return R}
 /* Copie un élément de séance sur un autre exercice en adaptant les valeurs au nouveau type */
@@ -2145,6 +2217,7 @@ function progCard(p){
  <h2 style="margin-top:10px">${esc(p.name)}</h2>
  ${exs.length?`<div class="strip">${exs.slice(0,6).map(e=>picto(e)).join('')}${exs.length>6?`<span class="more">+${exs.length-6}</span>`:''}</div>`:''}
  <div class="days">${p.days.map(d=>esc(d.name)).join(' · ')}</div>
+ ${progEst(p)?`<div style="font-size:13px;font-weight:700;color:var(--acc);margin-top:-4px">⏱ ${progEst(p)}</div>`:''}
  ${(()=>{const n=exs.filter(e=>!avoidOk(e)).length;return n?`<div style="font-size:13px;font-weight:700;color:var(--warm);margin-top:-4px;display:flex;align-items:center;gap:6px">${icS('cross',14)}${n} exercice${n>1?'s':''} adapté${n>1?'s':''} (${(S.avoid||[]).map(m=>MUS[m]).join(', ')})</div>`:''})()}
  <div class="row"><button class="btn" data-a="openProgram" data-p="${p.id}">Ouvrir</button>${p.days[0]?`<button class="btn pri" data-a="startDay" data-p="${p.id}" data-d="${p.days[0].id}">Démarrer</button>`:''}</div></div>`;
 }
@@ -2160,7 +2233,7 @@ VIEWS.program=()=>{
   if(cy&&!cy.ended)return `<div class="card" style="margin:12px 0;max-width:640px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><b>Semaine ${cy.week} / ${cy.weeks}</b><span class="mut" style="font-size:13px">${cy.done} / ${cy.total} séances</span></div><div class="pbar" style="margin-top:8px"><i style="width:${Math.min(100,Math.round(100*cy.done/cy.total))}%"></i></div><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px"><span class="mut" style="font-size:13px">Prochaine : <b style="color:var(--fg)">${esc(cy.next.name)}</b></span><button class="btn sm" data-a="cyStop" data-p="${p.id}">Arrêter</button></div></div>`;
   return `<p class="mut" style="margin:10px 0;font-size:14px">Durée conseillée : <b style="color:var(--fg)">${a} à ${b} semaines</b> · ${p.days.length} séances par semaine. Le choix se fait au premier « Démarrer ».</p>`})()}
  <button class="pill" style="padding:8px 12px;margin-top:4px" data-a="equip" data-p="${p.id}">${ic('gear').replace('<svg','<svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"')}${p.equip?(p.equip.length?'Matériel : '+p.equip.map(k=>EQUIP[k]).join(', '):'Sans matériel'):'Matériel : à renseigner'} · modifier</button>
- <div class="grid sec">${p.days.map(d=>`<div class="card dcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>${esc(d.name)}${d.focus&&d.focus.length?`<div style="font:700 12px var(--f-body);color:var(--acc);margin-top:3px;text-transform:none;letter-spacing:0">${esc(focTxt(d.focus))}</div>`:''}</h2><button class="ib" data-a="editDay" data-p="${p.id}" data-d="${d.id}" aria-label="Modifier">${ic('edit')}</button></div>
+ <div class="grid sec">${p.days.map(d=>`<div class="card dcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>${esc(d.name)}${d.focus&&d.focus.length?`<div style="font:700 12px var(--f-body);color:var(--acc);margin-top:3px;text-transform:none;letter-spacing:0">${esc(focTxt(d.focus))}</div>`:''}${dayEst(d)?`<div class="mut" style="font:700 12px var(--f-body);margin-top:3px;text-transform:none;letter-spacing:0">⏱ ${durTxt(dayEst(d))} · fin vers ${HOUR.format(Date.now()+dayEst(d))} si vous commencez maintenant</div>`:''}</h2><button class="ib" data-a="editDay" data-p="${p.id}" data-d="${d.id}" aria-label="Modifier">${ic('edit')}</button></div>
   <div class="exl">${d.items.length?(()=>{const AL=dayAlts(d,p.equip);return d.items.map(i=>{if(avoidOk(i.exId))return `<div class="exrow">${picto(i.exId)}<div style="min-width:0"><div class="nm">${esc(ex(i.exId).n)}</div><div class="sub">${targetTxt(i)}</div></div></div>`;
    const b=AL.get(i.exId);return b?`<div class="exrow">${picto(b)}<div style="min-width:0"><div class="nm">${esc(ex(b).n)}</div><div class="sub" style="color:var(--warm)">↻ Remplace ${esc(ex(i.exId).n)} (${esc(avoidOf(i.exId))})</div></div></div>`
    :`<div class="exrow" style="opacity:.4">${picto(i.exId)}<div style="min-width:0"><div class="nm" style="text-decoration:line-through">${esc(ex(i.exId).n)}</div><div class="sub">Retiré : ${esc(avoidOf(i.exId))} · pas d’alternative</div></div></div>`}).join('')})():'<p class="mut" style="margin:0">Aucun mouvement. Touchez « Modifier » pour en ajouter.</p>'}</div>
@@ -2176,6 +2249,7 @@ VIEWS.dayedit=()=>{
  ${(()=>{const F=d.focus||[],on=g=>F.some(x=>x.split('›')[0]===g),sub=g=>{const s=F.find(x=>x.split('›')[0]===g&&x.includes('›'));return s?' · '+s.split('›')[1]:''};
   return `<div class="card" style="margin-bottom:14px"><b>Muscles travaillés</b><div class="mut" style="font-size:13px;margin-top:2px">${F.length?'« Ajouter des exercices » proposera d’abord ces muscles.':'Choisissez Full body ou des muscles (split) : « Ajouter des exercices » les proposera en premier.'}</div>
   <div class="chips wrap" style="margin-top:10px"><button class="chip ${F.includes('full')?'on':''}" data-a="focTog" data-v="full">💪 Full body</button>${FOC.map(([g,l])=>`<button class="chip ${on(g)?'on':''}" data-a="focTog" data-v="${g}">${l}${esc(sub(g))}</button>`).join('')}<button class="chip ${F.includes('Cardio')?'on':''}" data-a="focTog" data-v="Cardio">❤️ Cardio</button></div></div>`})()}
+ ${dayEst(d)?`<div class="card" style="margin-bottom:14px;display:flex;align-items:center;gap:12px"><span style="font-size:24px">⏱</span><div><b>Durée estimée : ${fmtDur(dayEst(d))}</b><div class="mut" style="font-size:13px">Séries, temps d’effort, repos et changements de poste compris${hasWarm(d)?', échauffement de 8 min inclus':' (hors échauffement)'} · fin vers ${HOUR.format(Date.now()+dayEst(d))} si vous commencez maintenant</div></div></div>`:''}
  <div class="card">${d.items.length?d.items.map((i,k)=>{const e=ex(i.exId),t=TYPES[e.t];return `<div class="edit-it">${picto(i.exId)}<div style="min-width:0"><div style="font-weight:700">${esc(e.n)}</div>
    <div class="fields">
     <div class="fld">Séries<div class="step"><button data-a="isets" data-k="${k}" data-v="-1" aria-label="Moins">−</button><b>${i.sets}</b><button data-a="isets" data-k="${k}" data-v="1" aria-label="Plus">+</button></div></div>
@@ -2183,7 +2257,7 @@ VIEWS.dayedit=()=>{
     ${t.cols.includes('kg')?`<label class="fld">${e.t==='bw'?'+kg':'kg'}<input inputmode="decimal" id="ik${k}" data-f="it" data-k="${k}" data-c="kg" value="${nz(i.kg,'')}"></label>`:''}
     ${t.cols.includes('dist')?`<label class="fld">Mètres<input inputmode="numeric" id="id${k}" data-f="it" data-k="${k}" data-c="dist" value="${nz(i.dist,'')}"></label>`:''}
     ${e.t==='time'?`<label class="fld">Temps<input inputmode="numeric" id="it${k}" data-f="it" data-k="${k}" data-c="time" value="${fmtT(i.time)}" placeholder="0:30"></label>`:''}
-    <label class="fld">Repos<select id="ix${k}" data-f="it" data-k="${k}" data-c="rest">${[0,15,25,30,40,45,60,75,90,120,150,180,240,300].map(v=>`<option value="${v}" ${+i.rest===v?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></label>
+    <label class="fld">Repos<select id="ix${k}" data-f="it" data-k="${k}" data-c="rest">${[0,15,25,30,40,45,60,75,90,105,120,150,180,240,300].map(v=>`<option value="${v}" ${+i.rest===v?'selected':''}>${fmtRest(v)}</option>`).join('')}</select></label>
    </div>
    <input class="search" style="height:40px;margin-top:10px;font-size:14px;background:var(--soft)" id="in${k}" data-f="it" data-k="${k}" data-c="note" value="${esc(i.note)}" placeholder="Note (optionnel)"></div>
    <div class="vbtns"><button class="ib" data-a="imove" data-k="${k}" data-v="-1" aria-label="Monter">${ic('up')}</button><button class="ib" data-a="imove" data-k="${k}" data-v="1" aria-label="Descendre">${ic('down')}</button><button class="ib" style="color:var(--danger)" data-a="idel" data-k="${k}" aria-label="Supprimer">${ic('trash')}</button></div></div>`}).join(''):`<div class="empty">${fig('stand',[])}<p>Pas encore de mouvement dans cette séance.</p></div>`}
@@ -2195,9 +2269,9 @@ VIEWS.dayedit=()=>{
 VIEWS.workout=()=>{
  if(!W)return `<div class="top"><h1>Séance</h1></div>
   <div class="card stack"><h2>Démarrage rapide</h2><button class="btn pri blk" data-a="startEmpty">${ic('plus')}Commencer une séance vide</button></div>
-  <div class="sec"><div class="hd"><h2>Vos programmes</h2></div><div class="grid">${S.programs.map(p=>`<div class="card"><div class="eyebrow">${(CATS[p.cat]||CATS.libre).n}</div><h2 style="margin:4px 0 12px">${esc(p.name)}</h2><div class="stack" style="gap:8px">${p.days.map(d=>`<button class="btn" style="justify-content:space-between" data-a="startDay" data-p="${p.id}" data-d="${d.id}"><span>${esc(d.name)}</span>${ic('play')}</button>`).join('')}</div></div>`).join('')}</div></div>`;
+  <div class="sec"><div class="hd"><h2>Vos programmes</h2></div><div class="grid">${S.programs.map(p=>`<div class="card"><div class="eyebrow">${(CATS[p.cat]||CATS.libre).n}</div><h2 style="margin:4px 0 12px">${esc(p.name)}</h2><div class="stack" style="gap:8px">${p.days.map(d=>`<button class="btn" style="justify-content:space-between" data-a="startDay" data-p="${p.id}" data-d="${d.id}"><span>${esc(d.name)}${dayEst(d)?` <small class="mut">· ${durTxt(dayEst(d))}</small>`:''}</span>${ic('play')}</button>`).join('')}</div></div>`).join('')}</div></div>`;
  return `<div class="wk-top"><div class="r1"><input class="nm" id="wkname" data-f="wkname" value="${esc(W.name)}" aria-label="Nom de la séance"><button class="btn pri" data-a="finish">Terminer</button></div>
-  <div class="stats3"><div><div class="l">Durée</div><div class="clockb"><span class="v acc" data-clock>${fmtT(elapsed(W)/1000)}</span><button class="ib" data-a="pause" aria-label="${W.pausedAt?'Reprendre':'Pause'}">${ic(W.pausedAt?'play':'pause')}</button></div></div><div><div class="l">Volume</div><div class="v" id="wkvol">${fmtN(volOf(W.items))} kg</div></div><div><div class="l">Séries</div><div class="v" id="wksets">${setsOf(W.items)}</div></div></div></div>
+  <div class="stats3"><div><div class="l">Durée</div><div class="clockb"><span class="v acc" data-clock>${fmtT(elapsed(W)/1000)}</span><button class="ib" data-a="pause" aria-label="${W.pausedAt?'Reprendre':'Pause'}">${ic(W.pausedAt?'play':'pause')}</button></div></div><div><div class="l">Volume</div><div class="v" id="wkvol">${fmtN(volOf(W.items))} kg</div></div><div><div class="l">Séries</div><div class="v" id="wksets">${setsOf(W.items)}</div></div></div><div data-eta class="mut" style="font-size:13px;margin-top:8px;text-align:center">${wkEta()}</div></div>
  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:16px 0 0">${W.items.length>1?`<button class="restb" style="margin:0" data-a="exOrder">${icS('list',16)}Réorganiser</button>`:'<span></span>'}</div>
  <div class="wk-grid">${W.items.map((item,k)=>exCard(item,k)).join('')}</div>
  ${W.items.length?'':`<div class="card empty" style="margin-top:16px">${fig('stand',[])}<h3 style="color:var(--fg)">Séance vide</h3><p>Ajoutez vos mouvements, le chrono tourne déjà.</p></div>`}
@@ -2569,6 +2643,7 @@ function toast(t){const d=document.createElement('div');d.className='toast';d.te
 function mkItem(exId,src){const e=ex(exId);const n=(src&&src.sets)||3;const sets=[];for(let i=0;i<n;i++)sets.push({kg:null,reps:null,time:null,dist:null,done:false,w:false});
  return {id:uid(),exId,rest:nz(src&&src.rest,e.t==='time'?60:90),note:(src&&src.note)||'',target:src?{reps:src.reps,kg:src.kg,time:src.time,dist:src.dist}:{},sets}}
 function startWorkout(w){
+ try{const p=w.programId&&S.programs.find(x=>x.id===w.programId),d=p&&p.days.find(x=>x.id===w.dayId);if(d&&hasWarm(d)&&w.warm==null)w.warm=DUR.warm}catch(e){} /* échauffement compté dans la durée prévue */
  const doIt=()=>{if(W)stopSession();W=w;saveW();wake();go('workout')};
  if(W)confirmSheet('Remplacer la séance en cours ?',`« ${esc(W.name)} » n’est pas terminée. Elle sera abandonnée.`,'Remplacer',doIt);else doIt();
 }
@@ -2752,7 +2827,8 @@ let wakeLock=null;async function wake(){try{if(navigator.wakeLock&&W)wakeLock=aw
 function unwake(){try{wakeLock&&wakeLock.release()}catch(e){}wakeLock=null}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&W)wake()});
 function tick(){
- if(!W)return;const t=fmtT(elapsed(W)/1000);document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=t);document.querySelectorAll('[data-clock2]').forEach(e=>e.textContent=hms(elapsed(W)));
+ if(!W)return;const t=fmtT(elapsed(W)/1000);document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=t);
+ const eb=$('[data-eta]');if(eb&&(!tick.n||++tick.n%5===0||!eb.innerHTML)){tick.n=tick.n||1;eb.innerHTML=wkEta()} /* toutes les 5 s : léger pour les vieux iPad */document.querySelectorAll('[data-clock2]').forEach(e=>e.textContent=hms(elapsed(W)));
  if(W.rest){const left=Math.ceil((W.rest.end-Date.now())/1000);if(left<=0){W.rest=null;saveW();if(!cueOn)sndPlay(sndCfg().k,true);cueOn=false;cueNodes=[];renderRest();if(navigator.vibrate)try{navigator.vibrate([200,100,200])}catch(e){}}else{const r=$('[data-rest]');if(r)r.textContent=fmtT(left);const b=$('#restbar .bar');if(b)b.style.width=100*left/W.rest.total+'%'}}
 }
 setInterval(tick,500);
@@ -3083,6 +3159,11 @@ VIEWS.lafay=()=>{
   </div></div>`;
 };
 /* Carte « Méthode Lafay » dans Programmes : le vrai programme complet (13 niveaux) avec le suivi de progression */
+/* En-tête de l'onglet go-muscu.com : source et mode d'emploi */
+function gmCard(){return `<div class="card pcard" style="border:1px solid ${CATS.gomuscu.c}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:${CATS.gomuscu.c}"></i>${CATS.gomuscu.n}</span><span class="mut" style="font-size:13px">3 programmes · 4 séances / semaine</span></div>
+ <h2 style="margin-top:10px">Programmes go-muscu.com</h2>
+ <p class="mut" style="font-size:14px;margin:4px 0 0">PPL, Half Body ou Split, à faire le lundi, mardi, jeudi et samedi. Chaque exercice indique la fourchette de répétitions à viser et le repos conseillé. Échauffez-vous 5 à 10 minutes avant chaque séance.</p>
+ <p class="mut" style="font-size:12px;margin:8px 0 0">Programmes conçus par Robin pour <a href="https://www.go-muscu.com" target="_blank" rel="noopener" style="color:${CATS.gomuscu.c};font-weight:700">go-muscu.com</a>, à titre informatif : ils ne remplacent pas l’avis d’un coach diplômé ou d’un professionnel de santé.</p></div>`}
 function lafCard(){
  const L=S.lafay,cur=L.lvl,C=LAF[cur-1],cc=lafCrit(cur),okN=cc.filter(c=>c.ok).length,pct=cc.length?Math.round(100*okN/cc.length):0;
  const nk=lafNext(cur),ns=C.sess.find(s=>s.k===nk)||C.sess[0],codes=[...new Set(ns.items.map(x=>lafCur(x)))];
@@ -3233,6 +3314,9 @@ const SITE_URL='https://jeremyrosa1722038.github.io/JeFIT/';
 (function shineLoop(){const h=document.documentElement;
  const go=()=>{if(document.hidden)return;h.classList.remove('shine');void h.offsetWidth;h.classList.add('shine');setTimeout(()=>h.classList.remove('shine'),2200)};
  setTimeout(go,2500);setInterval(go,20000)})();
+/* Bandeau de navigation : petite animation toutes les 40 s */
+(function navFx(){const h=document.documentElement;
+ setInterval(()=>{if(document.hidden||$('#splash'))return;h.classList.remove('navfx');void h.offsetWidth;h.classList.add('navfx');setTimeout(()=>h.classList.remove('navfx'),1800)},40000)})();
 /* QR code (octets, correction M, versions 1 à 10), dessiné en SVG sans dépendance : fonctionne hors ligne */
 function qrSVG(text){
  const D=[...new TextEncoder().encode(text)],ECC=[0,10,16,26,18,24,16,18,22,22,26],BLK=[0,1,1,1,2,2,4,4,4,5,5];
@@ -3546,7 +3630,7 @@ function logoSVG(p){
 function logoSheen(g,stop){if(!g)return;const t0=performance.now();const f=now=>{const k=Math.min(1,(now-t0)/800),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,x=-90+e*290;g.setAttribute('x1',x);g.setAttribute('x2',x+50);if(k<1&&!(stop&&stop()))requestAnimationFrame(f)};requestAnimationFrame(f)}
 const reduceMotion=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-function splash(){
+function splash(quick){
  if($('#splash'))return;
  const d=document.createElement('div');d.id='splash';
  d.innerHTML=`<div class="spw"><svg viewBox="0 0 162 48" role="img" aria-label="JeFIT">${logoSVG('sp')}</svg><div class="spu"></div><div class="sp-tag">Prêt à transpirer ?</div></div><div class="sp-skip">Touchez pour passer</div>`;
@@ -3555,7 +3639,7 @@ function splash(){
  const end=()=>{if(done)return;done=true;timers.forEach(clearTimeout);d.classList.add('out');const a=$('#auth');if(a)setTimeout(()=>a.classList.add('in'),150);setTimeout(()=>{d.remove();authFocus()},600)};
  d.addEventListener('click',end);
  const reduce=reduceMotion();
- const start=()=>{if(done)return;d.classList.add('go');if(reduce){timers.push(setTimeout(end,1400));return}timers.push(setTimeout(()=>logoSheen(d.querySelector('#spsh'),()=>done),1450),setTimeout(end,3000))};
+ const start=()=>{if(done)return;d.classList.add('go');if(reduce){timers.push(setTimeout(end,1400));return}timers.push(setTimeout(()=>logoSheen(d.querySelector('#spsh'),()=>done),1450),setTimeout(end,quick?2300:3000))};
  if(reduce)d.querySelectorAll('.sl,.lt,.db').forEach(e=>{e.style.animationDuration='1ms';e.style.animationDelay='0s'});
  const fr=document.fonts&&document.fonts.load?document.fonts.load('900 41px Rubik'):Promise.resolve();
  Promise.race([fr,new Promise(r=>setTimeout(r,700))]).then(start,start);
@@ -3655,6 +3739,22 @@ function logoReplay(){
  });
 }
 setInterval(logoReplay,60000);
+
+/* Inactivité : après 5 min sans toucher l'écran, Paramètres revient sur l'Accueil et l'intro se rejoue (version courte) */
+const IDLE_MS=5*60000;let idleLast=Date.now();
+['mousedown','mousemove','keydown','touchstart','wheel','input'].forEach(t=>document.addEventListener(t,()=>{idleLast=Date.now()},{passive:true,capture:true}));
+document.addEventListener('scroll',()=>{idleLast=Date.now()},{passive:true,capture:true});
+function idleCheck(){
+ if(document.hidden||Date.now()-idleLast<IDLE_MS)return;
+ idleLast=Date.now();
+ if(W||$('#auth')||$('#splash')||($('#jr')&&$('#jr').classList.contains('on')))return; /* séance en cours, connexion, JeRIDE : on ne dérange pas */
+ closeSheet();
+ if(view.name==='settings'){backStack=[];go('home')}
+ splash(true);
+}
+setInterval(idleCheck,10000);
+/* En revenant sur l'app après plus de 5 min, la scène du début accueille aussi */
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)idleCheck()});
 
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const f=A[el.dataset.a];if(f){e.preventDefault();f(el,e)}});
 document.addEventListener('pointerdown',audio,{once:true});
