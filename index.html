@@ -2276,7 +2276,7 @@ VIEWS.programs=()=>{
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top" style="justify-content:flex-start;gap:14px"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button><button class="btn sm" data-a="tab" data-v="anatomie">🫀 Anatomie</button></div>
  ${avoidBar()}<div class="chips wrap" style="margin-top:14px"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<button class="chip" data-a="jeride">Vélo · JeRIDE</button></div>
- <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${f==='gomuscu'?gmCard():''}${f==='all'||f==='tempo'||f==='abdo'?TEMPO.map(tempoCard).join(''):''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
+ <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${f==='gomuscu'?gmCard():''}${TEMPO.filter(p=>f==='all'||f==='tempo'||f===(p.cat||'abdo')).map(tempoCard).join('')}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
 /* Carte « Sport en minutes » (ex-onglet Express) en tête des programmes */
 function quickCard(){
@@ -3217,7 +3217,8 @@ const A={
  theme:()=>{A.themeQuick();A.settings()},
  radarP:el=>{view.rp=el.dataset.v;view.ro=0;view.hw=null;const y=scrollY;render();scrollTo(0,y)},
  tpStart:el=>{const id=el.dataset.t;if(W){toast('Terminez d’abord la séance en cours');return}tpStart(id)},
- tpPause:()=>{if(!TP)return;if(TP.pausedAt){TP.pausedMs+=Date.now()-TP.pausedAt;TP.pausedAt=null}else TP.pausedAt=Date.now();tpPaint()},
+ tpVoice:()=>{LS.set('jefit.tpvoice',!tpVoiceOn());try{speechSynthesis.cancel()}catch(e){}if(tpVoiceOn())tpSay('Voix activée');tpPaint()},
+ tpPause:()=>{if(!TP)return;try{speechSynthesis.cancel()}catch(e){}if(TP.pausedAt){TP.pausedMs+=Date.now()-TP.pausedAt;TP.pausedAt=null}else TP.pausedAt=Date.now();tpPaint()},
  tpSkip:()=>{if(!TP)return;const ph=TP.L[TP.i];if(ph.kind==='ex')TP.done[ph.k]=Math.round(tpEl()/1000);if(TP.pausedAt){TP.pausedAt=null}TP.i++;if(TP.i>=TP.L.length){tpEnd(true);return}TP.t0=Date.now();TP.pausedMs=0;tpPaint()},
  tpStop:()=>{if(!TP)return;const ph=TP.L[TP.i];if(ph.kind==='ex')TP.done[ph.k]=Math.round(tpEl()/1000);if(!TP.pausedAt)TP.pausedAt=Date.now();confirmSheet('Arrêter la séance ?','Les exercices déjà faits sont enregistrés dans l’historique.','Arrêter et enregistrer',()=>tpEnd(false),false)},
  anGo:el=>{const k=el.dataset.v;view.ach=k;document.querySelectorAll('.anchip').forEach(b=>b.classList.toggle('on',b.dataset.v===k));
@@ -3316,12 +3317,16 @@ const TEMPO=[
    {e:'legraisefloor',n:'Relevés de jambe alternés',tip:'Une jambe tendue monte pendant que l’autre reste juste au-dessus du sol'},{e:'crunch',n:'Crunch mains sur la poitrine',tip:'Mains croisées sur la poitrine, bas du dos collé au sol'},{r:15},
    {e:'toetouch',n:'Crunch jambes à la verticale',tip:'Jambes tendues en l’air, les mains montent vers les pieds'},{e:'reversecrunch',n:'Crunch jambes à 90°',tip:'Cuisses verticales, genoux pliés à 90°, on enroule le haut du corps'},{r:15},
    {e:'vups',n:'Crunch bras tendus, pieds décollés',tip:'Genoux fléchis, pieds en l’air, bras tendus de chaque côté des genoux'},{e:'heeltouch',n:'Crunch mains vers les talons',tip:'Épaules décollées, les mains glissent vers les talons'}].map(s=>s.r?s:Object.assign({t:60},s))},
+ /* Vidéo « Entraînement pour pectoraux – Niveau 1 » : 3 exercices × 3 séries × 12 répétitions, 30 s de récupération, 1 répétition toutes les 2 s */
+ (()=>{const rep=2,P=[['kneepush','Pompes genoux au sol','Mains un peu plus larges que les épaules, corps droit des genoux à la tête'],['declinepush','Pompes genoux sur le banc','Genoux posés sur le banc, mains au sol : le buste descend vers le sol, plus difficile'],['kneepush','Pompes genoux au sol, mains largeur thorax','Mains rapprochées sous la poitrine, coudes le long du corps : travaille aussi les triceps']],st=[];
+  P.forEach(([e,n,tip],i)=>{for(let k=1;k<=3;k++){if(st.length)st.push({r:30});st.push({e:e,n:n+' · série '+k+'/3',tip:tip,reps:12,t:12*rep})}});
+  return {id:'pecs-1',n:'Pectoraux (pompes) · Niveau 1',lvl:1,rep:rep,cat:'muscle',d:'3 exercices de pompes sur les genoux, 3 séries de 12 répétitions chacun, 30 s de récupération. Rythme « 1 et 2 » : une répétition toutes les 2 secondes.',steps:st}})(),
 ];
-const tpDur=p=>p.steps.reduce((a,s)=>a+(s.r||s.t),0)+5*p.steps.filter(s=>!s.r).length;
+const tpDur=p=>tpPhases(p).reduce((a,ph)=>a+ph.t,0);
 function tempoCard(p){const exs=p.steps.filter(s=>!s.r);return `<div class="card pcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:${CATS.tempo.c}"></i>${CATS.tempo.n}</span><span class="mut" style="font-size:13px">⏱ ${fmtDur(tpDur(p)*1000)} · niveau ${p.lvl}</span></div>
  <h2 style="margin-top:10px">${esc(p.n)}</h2><div class="strip">${exs.slice(0,6).map(s=>picto(s.e)).join('')}</div>
  <div class="days">${esc(p.d)}</div>
- <details style="margin-top:6px"><summary class="mut" style="font-size:14px">Voir l’enchaînement</summary><ol style="margin:8px 0 0;padding-left:20px;font-size:14px">${p.steps.map(s=>s.r?`<li class="mut">Repos ${s.r} s</li>`:`<li>${esc(s.n)} · ${s.t} s</li>`).join('')}</ol></details>
+ <details style="margin-top:6px"><summary class="mut" style="font-size:14px">Voir l’enchaînement</summary><ol style="margin:8px 0 0;padding-left:20px;font-size:14px">${p.steps.map(s=>s.r?`<li class="mut">Repos ${s.r} s</li>`:`<li>${esc(s.n)} · ${s.reps?s.reps+' répétitions':s.t+' s'}</li>`).join('')}</ol></details>
  <div class="row"><button class="btn pri" data-a="tpStart" data-t="${p.id}">${ic('play')}Démarrer</button></div></div>`}
 /* Lecteur : une phase = transition (5 s), exercice ou repos */
 let TP=null;
@@ -3351,10 +3356,11 @@ function tpPaint(){const d=$('#tp');if(!d||!TP)return;const ph=TP.L[TP.i],p=TP.p
  <div class="tphead">${head}</div>
  <div class="tpname">${ph.kind==='rest'?(s?'Ensuite : '+esc(s.n):'Dernier effort terminé'):esc(s.n)}</div>
  <div class="tpfig ${ph.kind==='rest'?'dim':''}">${e?fig(e.pose,e.m):''}</div>
- ${ph.kind==='ex'?`<div class="tpbeat" id="tpbeat">1</div><div class="tprep">Répétition <b id="tprep">1</b></div>`:`<div class="tpbeat small" id="tpbeat"></div>`}
+ ${ph.kind==='ex'?`<div class="tpbeat" id="tpbeat">1</div><div class="tprep">Répétition <b id="tprep">1</b>${ph.s.reps?' / '+ph.s.reps:''}</div>`:`<div class="tpbeat small" id="tpbeat"></div>`}
  <div class="tpclock" id="tpclock"></div>
  <div class="tptip">${s&&s.tip?esc(s.tip):''}</div>
- <div class="tpbtns"><button class="btn" data-a="tpPause">${TP.pausedAt?ic('play')+'Reprendre':ic('pause')+'Pause'}</button><button class="btn" data-a="tpSkip">Passer ›</button></div>`;
+ <div class="tpbtns"><button class="btn" data-a="tpPause">${TP.pausedAt?ic('play')+'Reprendre':ic('pause')+'Pause'}</button><button class="btn" data-a="tpSkip">Passer ›</button></div>
+ ${window.speechSynthesis?`<button class="lnk" data-a="tpVoice" style="margin-top:10px;font-weight:700;color:var(--mut)">${tpVoiceOn()?'🔊 Voix « un, deux » activée · couper':'🔇 Voix coupée (bips) · réactiver'}</button>`:''}`;
  TP.beat=-1;
  /* annonce vocale de la phase (le premier appel, au toucher de Démarrer, débloque la voix sur iOS) */
  if(!TP.pausedAt){if(ph.kind==='go')tpSay(s.n,1.05);else if(ph.kind==='rest')tpSay('Repos'+(s?'. Ensuite, '+s.n:''),1.05)}
@@ -3362,17 +3368,20 @@ function tpPaint(){const d=$('#tp');if(!d||!TP)return;const ph=TP.L[TP.i],p=TP.p
 function tpTick(){if(!TP)return;const ph=TP.L[TP.i],el=tpEl(),dur=ph.t*1000,left=Math.max(0,Math.ceil((dur-el)/1000));
  const c=$('#tpclock');if(c)c.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
  if(TP.pausedAt)return;
- const b=Math.floor(el/1000);
+ const bms=ph.kind==='ex'?TP.p.rep*1000/3:1000,b=Math.floor(el/bms); /* « 1 », « et », « 2 » = une répétition */
  if(b!==TP.beat){TP.beat=b;const bt=$('#tpbeat');
   if(ph.kind==='ex'){const w=['1','et','2'][b%3];if(bt){bt.textContent=w;bt.className='tpbeat'+(w==='1'?' one':'');void bt.offsetWidth;bt.classList.add('pop')}
    if(w==='et')tpBeep(880,.1);else if(!tpSay(w==='1'?'un':'deux',1.3))tpBeep(w==='1'?1046:784,w==='1'?.16:.09);const r=$('#tprep');if(r)r.textContent=Math.min(Math.floor(el/(TP.p.rep*1000))+1,Math.floor(ph.t/TP.p.rep))}
   else{if(left<=3&&left>0){if(bt)bt.textContent=left;tpBeep(880,.12)}else if(bt)bt.textContent=''}}
  if(el>=dur){if(ph.kind==='ex')TP.done[ph.k]=ph.t;TP.i++;if(TP.i>=TP.L.length){tpEnd(true);return}TP.t0=Date.now();TP.pausedMs=0;tpBeep(1320,.25);tpPaint()}}
-function tpClose(){clearInterval(tpStart.iv);try{TP&&TP.wl&&TP.wl.release()}catch(e){}const d=$('#tp');if(d)d.remove();TP=null}
+function tpClose(){clearInterval(tpStart.iv);try{speechSynthesis.cancel()}catch(e){}try{TP&&TP.wl&&TP.wl.release()}catch(e){}const d=$('#tp');if(d)d.remove();TP=null}
 function tpEnd(full){if(!TP)return;const p=TP.p,start=TP.start,done=TP.done;tpClose();
- const items=p.steps.map((s,k)=>({s:s,k:k})).filter(x=>!x.s.r&&done[x.k]).map(x=>({exId:x.s.e,note:x.s.n+' · tempo 1 et 2',sets:[{kg:null,reps:Math.floor(done[x.k]/p.rep),time:done[x.k],dist:null,done:true}]}));
+ /* une série par passage ; les séries d'un même exercice sont regroupées */
+ const items=[];p.steps.forEach((s,k)=>{if(s.r||!done[k])return;const nm=s.n.split(' · série')[0];let it=items.filter(i=>i.exId===s.e&&i._n===nm)[0];
+  if(!it){it={exId:s.e,_n:nm,note:nm+' · tempo 1 et 2',sets:[]};items.push(it)}it.sets.push({kg:null,reps:Math.min(s.reps||1e9,Math.floor(done[k]/p.rep)),time:done[k],dist:null,done:true})});
+ items.forEach(i=>delete i._n);
  if(!items.length){toast('Séance arrêtée : rien à enregistrer');return}
- const s={id:uid(),cat:'abdo',name:p.n,programId:null,dayId:null,start:start,end:Date.now(),duration:Date.now()-start,items:items,volume:0,sets:items.length,prs:[]};
+ const s={id:uid(),cat:p.cat||'abdo',name:p.n,programId:null,dayId:null,start:start,end:Date.now(),duration:Date.now()-start,items:items,volume:0,sets:items.reduce((a,i)=>a+i.sets.length,0),prs:[]};
  S.sessions.unshift(s);S.sessions.sort((a,b)=>b.start-a.start);S.pending.push(s.id);save();pushSess(s.id);
  go('session',{sid:s.id,fresh:true});if(full)setTimeout(()=>{try{celebrate(s)}catch(e){}},120)}
 /* ===== Anatomie des mouvements : chapitres par muscle (texte simplifié, d'après « Musculation, anatomie et mouvements », P. Manocchia) =====
@@ -3607,7 +3616,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V5.2',APP_BUILD='19/11/2026 à 14:30'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V5.4',APP_BUILD='19/11/2026 à 15:30'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
