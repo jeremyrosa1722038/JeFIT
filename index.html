@@ -1605,7 +1605,13 @@ EXL.push(
  ['kbdecksquat','Deck squat (kettlebell)','squat',['jambes','abdos'],'weight'],
  ['kbunevenpush','Pompes décalées (une main sur kettlebell)','pushup',['pecs','bras','abdos'],'bw'],
  ['kbburpeejump','Burpee saut par-dessus le kettlebell','bbj',['jambes','pecs'],'bw'],
- ['kbohkneel','Genou-debout kettlebell au-dessus de la tête','lunge',['jambes','epaules','abdos'],'weight']
+ ['kbohkneel','Genou-debout kettlebell au-dessus de la tête','lunge',['jambes','epaules','abdos'],'weight'],
+ /* Affiche « 30 Day Kettlebell Clean Challenge » */
+ ['kbbottomsup','Épaulé cloche à l’envers (bottoms up)','deadlift',['epaules','bras','jambes'],'weight'],
+ ['kbcleanpress','Épaulé-développé (kettlebell)','ohp',['epaules','jambes','bras'],'weight'],
+ ['kbcleansqpress','Épaulé, squat et développé (kettlebell)','ohp',['jambes','epaules','bras'],'weight'],
+ ['kbsidelungeclean','Fente latérale et épaulé (kettlebell)','lunge',['jambes','epaules'],'weight'],
+ ['kbslclean','Épaulé sur une jambe (kettlebell)','deadlift',['jambes','epaules','abdos'],'weight']
 );
 Object.assign(DESC,{
  kbswing1:'Kettlebell dans une main entre les jambes. Pousser les hanches vers l’avant pour envoyer la cloche à hauteur d’épaules, bras tendu, puis la laisser redescendre en reculant les fesses. Dos plat, l’élan vient des hanches. Faire les deux côtés.',
@@ -1646,8 +1652,14 @@ Object.assign(DESC,{
  kbunevenpush:'En position de pompe, une main au sol, l’autre sur la poignée ou le corps d’un kettlebell. Descendre la poitrine en gardant le corps gainé, remonter. Changer de côté.',
  kbburpeejump:'Kettlebell posé au sol à côté de soi. Faire un burpee (pompe au sol), se relever puis sauter latéralement par-dessus la cloche. Enchaîner le burpee suivant de l’autre côté.',
  kbohkneel:'À genoux, kettlebell bras tendu au-dessus de la tête. Avancer un pied, se relever en fente jusqu’à être debout, puis redescendre sur les genoux un par un. La cloche reste verticale.',
+ kbbottomsup:'Comme un épaulé, mais on serre fort la poignée pour finir avec la cloche en l’air, à l’envers, devant l’épaule. Avant-bras vertical, poignet droit. Prendre une charge légère.',
+ kbcleanpress:'Épauler le kettlebell (de l’entre-jambes jusqu’à la position contre l’épaule), puis le pousser au-dessus de la tête bras tendu. Redescendre en rack, puis entre les jambes.',
+ kbcleansqpress:'Épauler le kettlebell, descendre en squat cloche contre l’épaule, remonter et pousser la cloche au-dessus de la tête. Redescendre et recommencer.',
+ kbsidelungeclean:'Faire une fente latérale en amenant le kettlebell vers le pied fléchi, puis remonter en épaulant la cloche contre l’épaule. Redescendre et recommencer.',
+ kbslclean:'Debout sur une jambe, l’autre tendue vers l’arrière. Pencher le buste pour saisir le kettlebell au sol, puis se redresser en l’épaulant contre l’épaule. Ventre gainé, bon équilibre.',
 });
-['kbswing1','kbchop','kbwindmill','kbatlas','kbsumohp','kbsprow','kbdefpush','kbpress','kbpullover','kbtricep','kblatraise','kbfrontraise','kbsidebend','kbsidewinder','kbhalftgu','kbohsitup','kbrussian','kbsideplank','kbfig8','kblegraise','kbtorsotwist','kbrow','kbrenegade','kbdeadlift','kbsldl','kblungepass','kbsquatflip','kbohsquat','kbjerk','kbbentpress','kbohrevlunge','kbpistolbox','kbcossack','kbsots','kbdecksquat','kbunevenpush','kbburpeejump','kbohkneel'].forEach(id=>{REQ[id]=['kb']});
+['kbswing1','kbchop','kbwindmill','kbatlas','kbsumohp','kbsprow','kbdefpush','kbpress','kbpullover','kbtricep','kblatraise','kbfrontraise','kbsidebend','kbsidewinder','kbhalftgu','kbohsitup','kbrussian','kbsideplank','kbfig8','kblegraise','kbtorsotwist','kbrow','kbrenegade','kbdeadlift','kbsldl','kblungepass','kbsquatflip','kbohsquat','kbjerk','kbbentpress','kbohrevlunge','kbpistolbox','kbcossack','kbsots','kbdecksquat','kbunevenpush','kbburpeejump','kbohkneel','kbbottomsup','kbcleanpress','kbcleansqpress','kbsidelungeclean','kbslclean'].forEach(id=>{REQ[id]=['kb']});
+Object.assign(SUBS,{kbbottomsup:['x-epaule-kettlebell','hammer'],kbcleanpress:['x-epaule-developpe','dbpress'],kbcleansqpress:['thruster','goblet'],kbsidelungeclean:['sidelunge','cossack'],kbslclean:['singlerdl','kbsldl']});
 Object.assign(SUBS,{kbjerk:['ohp','dbpress'],kbbentpress:['kbwindmill','dbpress'],kbohrevlunge:['revlunge','bwlunge'],kbpistolbox:['pistol','goblet'],kbcossack:['cossack'],kbsots:['kbohsquat','goblet'],kbdecksquat:['goblet','airsquat'],kbunevenpush:['pushup'],kbburpeejump:['burpee'],kbohkneel:['bwlunge','revlunge']});
 Object.assign(SUBS,{kbswing1:['kbswing','hipbridge'],kbchop:['woodchop','russian'],kbwindmill:['sidebend','sideplank'],kbatlas:['kbswing','burpee'],kbsumohp:['uprow','sumo','airsquat'],kbsprow:['dbrow','sideplank'],kbdefpush:['pushup','declinepush'],kbpress:['dbbench','pushup'],kbpullover:['pullover','superman'],kbtricep:['ohtri2','diamond'],kblatraise:['latraise','lafC'],kbfrontraise:['frontraise','pike'],kbsidebend:['sidebend','sidecrunch'],kbsidewinder:['sidelunge','cossack'],kbhalftgu:['situp','deadbug'],kbohsitup:['situp','crunch'],kbrussian:['russian'],kbsideplank:['sideplank'],kbfig8:['russian','squat'],kblegraise:['legraisefloor'],kbtorsotwist:['russian'],kbrow:['dbrow','australian'],kbrenegade:['x-renegade-row-haltere','plankshoulder'],kbdeadlift:['dbrdl','hipbridge'],kbsldl:['singlerdl','singlebridge'],kblungepass:['bwlunge'],kbsquatflip:['goblet','airsquat'],kbohsquat:['goblet','airsquat']});
 EXL.push(['sprint','Sprints (course)','run',['jambes','mollets'],'dist']);DESC.sprint='Courir le plus vite possible sur la distance, puis récupérer en marchant pendant le repos. Bien s’échauffer avant.';
@@ -2076,6 +2088,12 @@ function seedPrograms(){
    day('Force & gainage',[it('kbsots',3,{reps:8,rest:60}),it('kbdecksquat',3,{reps:8,rest:60}),it('kbrenegade',3,{reps:8,rest:60,note:'Un seul kettlebell · chaque côté'}),it('kblungepass',3,{reps:8,rest:60,note:'Tactical lunge · chaque jambe'})]),
    day('Conditionnement',[it('kbunevenpush',3,{reps:6,rest:60,note:'Chaque côté'}),it('kbfig8',3,{reps:10,rest:60,note:'Finir chaque passage en tenant la cloche contre la poitrine'}),it('kbburpeejump',3,{reps:10,rest:60}),it('kbohkneel',3,{reps:5,rest:60,note:'Chaque côté'})]),
   ]),
+  /* Affiche « 30 Day Kettlebell Clean Challenge » (kettlebellsworkouts.com) : [exercice, séries, répétitions ou secondes (s)] par jour, toujours de chaque côté */
+  P('p-kb-clean30','kb','Défi épaulé kettlebell 30 jours','Un exercice par jour autour de l’épaulé (clean), toujours de chaque côté. Les variantes arrivent petit à petit : cloche à l’envers, développé, squat, fente latérale, sur une jambe.',
+   (()=>{const C='x-epaule-kettlebell',B='kbbottomsup',P2='kbcleanpress',Q='kbcleansqpress',L='kbsidelungeclean',U='kbslclean';
+    return [[C,3,5],[B,1,8],[C,3,5],[B,1,10],[C,3,5],[B,1,12],[C,1,'60'],[P2,3,5],[B,2,8],[P2,3,5],[C,4,5],[P2,3,5],[B,2,10],[P2,1,'90'],[Q,1,10],
+     [C,5,5],[B,2,12],[Q,1,12],[P2,4,5],[C,5,5],[Q,1,'90'],[L,3,5],[B,3,8],[Q,3,5],[C,1,25],[L,3,5],[U,2,5],[P2,5,5],[U,3,5],[Q,4,5]]
+     .map(([e,s,r],i)=>day('Jour '+(i+1),[it(e,s,typeof r==='string'?{rest:60,note:r+' s en continu de chaque côté (sans compter)'}:{reps:r,rest:60,note:'Chaque côté'})]))})()),
  ];
 }
 /* Programmes go-muscu.com. Repères : r = répétitions (fourchette), s = séries, p = repos en secondes. 5 à 10 min d'échauffement avant chaque séance. */
@@ -2118,7 +2136,7 @@ if(S.seedV<7){S.programs=S.programs.filter(p=>!(p.id==='p-lafay'&&p.builtin));S.
 if(S.seedV<8){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=8;S.cfgAt=Date.now();}
 if(S.seedV<9){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=9;S.cfgAt=Date.now();} /* + programmes go-muscu.com */
 if(S.seedV<10){const n=seedPrograms().find(p=>p.id==='p-gm-ppl'),k=S.programs.findIndex(p=>p.id==='p-gm-ppl'&&p.builtin);if(n&&k>=0)S.programs[k]=n;S.seedV=10;S.cfgAt=Date.now();} /* PPL J4 : rappels ajoutés */
-if(S.seedV<11){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=12;S.cfgAt=Date.now();} /* + programmes kettlebell (30 jours, full body, avancé) */
+if(S.seedV<11){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=12;S.cfgAt=Date.now();} /* + programmes kettlebell (30 jours, full body, avancé, défi épaulé) */
 S.lafay=S.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]};
 S.deleted=S.deleted||[];S.custom=S.custom||[];
 let W=LS.get(AKEY,null);
