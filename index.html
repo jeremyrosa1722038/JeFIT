@@ -1526,6 +1526,69 @@ Object.assign(DESC,{
 });
 Object.assign(REQ,{pmlegpressw:['poulie'],pmcableabd:['poulie'],pmextrot:['halteres'],pmscaption:['halteres'],pmdbplankt:['halteres'],pmproprio:['wallball']});
 Object.assign(SUBS,{pmlegpressw:['sumo','goblet'],pmcableabd:['reardelt','bandapart'],pmextrot:['ytw'],pmscaption:['lafC'],pmdbplankt:['tpush','sideplank'],pmproprio:['singlerdl']});
+/* Exercices au kettlebell (affiche « Kettlebell Workout ») absents de la base */
+EXL.push(
+ ['kbswing1','Swing un bras (kettlebell)','deadlift',['jambes','lombaires','epaules'],'weight'],
+ ['kbchop','Bûcheron (kettlebell)','russian',['abdos','epaules'],'weight'],
+ ['kbwindmill','Moulin à vent / windmill (kettlebell)','sidebend',['abdos','epaules'],'weight'],
+ ['kbatlas','Atlas swing (kettlebell)','deadlift',['jambes','abdos','epaules'],'weight'],
+ ['kbsumohp','Tirage haut sumo (kettlebell)','deadlift',['epaules','jambes'],'weight'],
+ ['kbsprow','Rowing en planche latérale (kettlebell)','sideplank',['dos','abdos'],'weight'],
+ ['kbdefpush','Pompes en déficit sur kettlebells','pushup',['pecs','bras'],'bw'],
+ ['kbpress','Développé couché au sol (kettlebell)','bench',['pecs','bras'],'weight'],
+ ['kbpullover','Pull-over (kettlebell)','bench',['dos','pecs'],'weight'],
+ ['kbtricep','Extension triceps au-dessus de la tête (kettlebell)','ohtri',['bras'],'weight'],
+ ['kblatraise','Élévations latérales (kettlebell)','lateral',['epaules'],'weight'],
+ ['kbfrontraise','Élévation frontale (kettlebell)','front',['epaules'],'weight'],
+ ['kbsidebend','Flexion latérale (kettlebell)','sidebend',['abdos'],'weight'],
+ ['kbsidewinder','Sidewinder (kettlebell)','squat',['jambes','abdos'],'weight'],
+ ['kbhalftgu','Demi relevé turc (kettlebell)','crunch',['abdos','epaules'],'weight'],
+ ['kbohsitup','Sit-up kettlebell au-dessus de la tête','crunch',['abdos','epaules'],'weight'],
+ ['kbrussian','Russian twist (kettlebell)','russian',['abdos'],'weight'],
+ ['kbsideplank','Gainage latéral kettlebell levé','sideplank',['abdos','epaules'],'time'],
+ ['kbfig8','Huit entre les jambes (kettlebell)','squat',['abdos','jambes'],'weight'],
+ ['kblegraise','Relevés de jambes avec kettlebell','legfloor',['abdos'],'weight'],
+ ['kbtorsotwist','Rotation du buste debout (kettlebell)','stand',['abdos'],'weight'],
+ ['kbrow','Rowing buste penché (kettlebell)','row',['dos','bras'],'weight'],
+ ['kbrenegade','Renegade row (kettlebells)','pushup',['dos','abdos','bras'],'weight'],
+ ['kbdeadlift','Soulevé de terre (kettlebell)','deadlift',['jambes','lombaires','dos'],'weight'],
+ ['kbsldl','Soulevé de terre une jambe (kettlebell)','deadlift',['jambes','lombaires'],'weight'],
+ ['kblungepass','Fentes avec passage sous la jambe (kettlebell)','lunge',['jambes','abdos'],'weight'],
+ ['kbsquatflip','Squat avec retournement (kettlebell)','squat',['jambes','bras'],'weight'],
+ ['kbohsquat','Squat kettlebell au-dessus de la tête','squat',['jambes','epaules','abdos'],'weight']
+);
+Object.assign(DESC,{
+ kbswing1:'Kettlebell dans une main entre les jambes. Pousser les hanches vers l’avant pour envoyer la cloche à hauteur d’épaules, bras tendu, puis la laisser redescendre en reculant les fesses. Dos plat, l’élan vient des hanches. Faire les deux côtés.',
+ kbchop:'Kettlebell tenu à deux mains près d’une hanche, jambes fléchies. Le monter en diagonale au-dessus de l’épaule opposée en pivotant le buste et les pieds, puis redescendre. Faire les deux côtés.',
+ kbwindmill:'Kettlebell tenu bras tendu au-dessus de la tête, pieds tournés de 45°. Pousser la hanche côté kettlebell et descendre l’autre main le long de la jambe vers le pied, regard sur la cloche, bras toujours vertical. Remonter lentement.',
+ kbatlas:'Comme un swing, mais la cloche tenue à deux mains par le corps (ou les cornes) monte jusqu’au-dessus de la tête, bras tendus. Pousser fort des hanches, gainer le ventre en haut.',
+ kbsumohp:'Pieds très écartés, pointes vers l’extérieur, kettlebell au sol entre les pieds. Se relever en tirant la cloche jusque sous le menton, coudes hauts, puis redescendre en contrôlant.',
+ kbsprow:'En planche latérale sur le coude ou la main, kettlebell dans la main du dessus. Tirer la cloche vers la poitrine (coude vers le plafond) puis tendre le bras, bassin haut. Faire les deux côtés.',
+ kbdefpush:'Pompes les mains sur les poignées de deux kettlebells : la poitrine descend plus bas que les mains, ce qui augmente l’amplitude. Corps gainé, coudes à 45°.',
+ kbpress:'Allongé au sol (ou sur un banc), kettlebell en main, coude au sol. Pousser la cloche vers le plafond bras tendu, poignet droit, puis redescendre jusqu’à toucher le sol avec le coude. Un bras ou deux.',
+ kbpullover:'Allongé sur le dos, kettlebell tenu à deux mains au-dessus de la poitrine. Descendre la cloche derrière la tête bras presque tendus, puis la ramener au-dessus de la poitrine. Bas du dos plaqué.',
+ kbtricep:'Debout ou assis, kettlebell tenu à deux mains derrière la tête, coudes vers le plafond. Tendre les bras pour monter la cloche, puis redescendre lentement. Les coudes restent fixes et serrés.',
+ kblatraise:'Debout, un kettlebell léger dans chaque main. Monter les bras sur les côtés jusqu’à hauteur d’épaules, coudes légèrement fléchis, puis redescendre lentement. Pas d’élan.',
+ kbfrontraise:'Debout, kettlebell tenu à deux mains (ou une main) devant les cuisses. Monter bras tendus jusqu’à hauteur des yeux, puis redescendre lentement, sans se pencher en arrière.',
+ kbsidebend:'Debout, kettlebell dans une main le long du corps. Pencher le buste sur le côté du kettlebell, puis remonter en contractant l’autre côté. Pas de rotation. Faire les deux côtés.',
+ kbsidewinder:'Pieds écartés, kettlebell tenu à deux mains. Descendre en fente latérale d’un côté en amenant la cloche vers le pied, remonter et enchaîner de l’autre côté, comme un balancier.',
+ kbhalftgu:'Allongé, kettlebell tenu bras tendu au-dessus de l’épaule, jambe du même côté pliée. Monter sur le coude puis sur la main opposée en gardant la cloche verticale, puis redescendre. Première moitié du relevé turc.',
+ kbohsitup:'Allongé, kettlebell tenu à deux mains (ou une) bras tendus vers le plafond. Remonter en position assise sans que la cloche bouge de la verticale, puis redescendre vertèbre par vertèbre.',
+ kbrussian:'Assis, buste incliné en arrière, pieds au sol ou décollés. Tenir le kettlebell à deux mains et le passer d’une hanche à l’autre en tournant le buste. Dos droit.',
+ kbsideplank:'En planche latérale sur le coude, l’autre bras tient un kettlebell léger tendu vers le plafond. Tenir, bassin haut et corps aligné. Faire les deux côtés.',
+ kbfig8:'Jambes écartées et fléchies, buste penché. Passer le kettlebell d’une main à l’autre entre les jambes en dessinant un 8 autour des cuisses, dos plat.',
+ kblegraise:'Allongé sur le dos, kettlebell tenu bras tendus au-dessus de la poitrine (ou derrière la tête pour se caler). Monter les jambes tendues à la verticale puis redescendre sans toucher le sol, bas du dos plaqué.',
+ kbtorsotwist:'Debout, jambes légèrement fléchies, kettlebell tenu à deux mains devant la poitrine bras semi-tendus. Pivoter le buste d’un côté puis de l’autre, bassin face à l’avant.',
+ kbrow:'Buste penché à 45°, dos plat, kettlebell dans une ou deux mains. Tirer la cloche vers la hanche en serrant l’omoplate, puis redescendre bras tendu.',
+ kbrenegade:'En planche bras tendus, mains sur deux kettlebells, pieds écartés. Tirer une cloche vers la hanche sans tourner le bassin, la reposer, puis l’autre. Ventre gainé.',
+ kbdeadlift:'Kettlebell au sol entre les pieds. Reculer les fesses, dos plat, saisir la poignée à deux mains, puis se redresser en poussant dans le sol. Redescendre en reculant les hanches.',
+ kbsldl:'Debout sur une jambe, kettlebell dans la main opposée. Pencher le buste en tendant la jambe libre vers l’arrière, dos plat, jusqu’à l’horizontale, puis remonter en serrant le fessier.',
+ kblungepass:'Faire une fente avant et passer le kettlebell d’une main à l’autre sous la cuisse avant. Se relever, changer de jambe et repasser la cloche. Buste droit.',
+ kbsquatflip:'En squat, tenir le kettlebell par la poignée, cloche en bas. En remontant, lancer légèrement la cloche pour la retourner et la rattraper par le corps (cloche en haut), puis recommencer. Charge légère.',
+ kbohsquat:'Kettlebell tenu bras tendu au-dessus de la tête (une main) ou à deux mains. Descendre en squat en gardant la cloche à la verticale et le buste droit. Demande de la mobilité d’épaules.',
+});
+['kbswing1','kbchop','kbwindmill','kbatlas','kbsumohp','kbsprow','kbdefpush','kbpress','kbpullover','kbtricep','kblatraise','kbfrontraise','kbsidebend','kbsidewinder','kbhalftgu','kbohsitup','kbrussian','kbsideplank','kbfig8','kblegraise','kbtorsotwist','kbrow','kbrenegade','kbdeadlift','kbsldl','kblungepass','kbsquatflip','kbohsquat'].forEach(id=>{REQ[id]=['kb']});
+Object.assign(SUBS,{kbswing1:['kbswing','hipbridge'],kbchop:['woodchop','russian'],kbwindmill:['sidebend','sideplank'],kbatlas:['kbswing','burpee'],kbsumohp:['uprow','sumo','airsquat'],kbsprow:['dbrow','sideplank'],kbdefpush:['pushup','declinepush'],kbpress:['dbbench','pushup'],kbpullover:['pullover','superman'],kbtricep:['ohtri2','diamond'],kblatraise:['latraise','lafC'],kbfrontraise:['frontraise','pike'],kbsidebend:['sidebend','sidecrunch'],kbsidewinder:['sidelunge','cossack'],kbhalftgu:['situp','deadbug'],kbohsitup:['situp','crunch'],kbrussian:['russian'],kbsideplank:['sideplank'],kbfig8:['russian','squat'],kblegraise:['legraisefloor'],kbtorsotwist:['russian'],kbrow:['dbrow','australian'],kbrenegade:['x-renegade-row-haltere','plankshoulder'],kbdeadlift:['dbrdl','hipbridge'],kbsldl:['singlerdl','singlebridge'],kblungepass:['bwlunge'],kbsquatflip:['goblet','airsquat'],kbohsquat:['goblet','airsquat']});
 EXL.push(['sprint','Sprints (course)','run',['jambes','mollets'],'dist']);DESC.sprint='Courir le plus vite possible sur la distance, puis récupérer en marchant pendant le repos. Bien s’échauffer avant.';
 const BASE={};EXL.forEach(([id,n,pose,m,t])=>BASE[id]={id,n,pose,m,t});
 const POSE_BY_MUS={pecs:'bench',dos:'row',epaules:'ohp',bras:'curl',jambes:'squat',mollets:'calf',abdos:'crunch',lombaires:'superman'};
