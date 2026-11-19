@@ -155,6 +155,9 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .thumb .fig{width:50px;height:50px}
 .thumb.lg{width:64px;height:64px}.thumb.lg .fig{width:60px;height:60px}
 .strip{display:flex;margin:12px 0 4px}
+/* Mode clair : le rond était blanc sur carte blanche → fond gris clair et bordure plus marquée */
+:root[data-theme="light"] .thumb{background:radial-gradient(circle at 50% 35%,#FFFFFF 0 40%,var(--soft2) 100%);border-color:#C3CBD8;box-shadow:inset 0 1px 2px rgba(20,30,50,.06)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .thumb{border-color:#C3CBD8}}
 .strip .thumb{width:44px;height:44px;margin-right:-8px;box-shadow:0 0 0 2px var(--card)}
 .strip .thumb .fig{width:40px;height:40px}
 .strip .more{width:44px;height:44px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--mut);box-shadow:0 0 0 2px var(--card)}
@@ -361,6 +364,10 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .tptip{font-size:14px;color:var(--mut);max-width:420px;margin-top:4px;min-height:20px}
 .tpbtns{display:flex;justify-content:center;margin-top:14px}.tpbtns .btn{margin:0 6px;min-width:130px}
 @media (prefers-reduced-motion:reduce){.tpbeat.pop{-webkit-animation:none;animation:none}}
+/* Filet d'or sur les titres (voir goldTitles) : ne capte aucun clic */
+.goldline{position:absolute;left:0;top:0;bottom:0;width:0;overflow:hidden;pointer-events:none;white-space:nowrap;-webkit-transition:width 1.8s ease-in-out,opacity .8s;transition:width 1.8s ease-in-out,opacity .8s}
+.goldin{display:block;white-space:normal;font:inherit;letter-spacing:inherit;text-transform:inherit;line-height:inherit;color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:1.3px #FFC23A;-webkit-filter:drop-shadow(0 0 3px rgba(255,178,26,.7));filter:drop-shadow(0 0 3px rgba(255,178,26,.7))}
+.goldin *{color:transparent!important;-webkit-text-fill-color:transparent!important;background:none!important}
 /* Anatomie : bandeau de chapitres (à gauche sur grand écran, en haut et défilant sur téléphone) */
 .anwrap{margin-top:14px;min-width:0;max-width:100%}
 .anrail{position:-webkit-sticky;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:8px 0;margin:0 0 8px;width:100%;max-width:100%;box-sizing:border-box}
@@ -3321,6 +3328,10 @@ const TEMPO=[
  (()=>{const rep=2,P=[['kneepush','Pompes genoux au sol','Mains un peu plus larges que les épaules, corps droit des genoux à la tête'],['declinepush','Pompes genoux sur le banc','Genoux posés sur le banc, mains au sol : le buste descend vers le sol, plus difficile'],['kneepush','Pompes genoux au sol, mains largeur thorax','Mains rapprochées sous la poitrine, coudes le long du corps : travaille aussi les triceps']],st=[];
   P.forEach(([e,n,tip],i)=>{for(let k=1;k<=3;k++){if(st.length)st.push({r:30});st.push({e:e,n:n+' · série '+k+'/3',tip:tip,reps:12,t:12*rep})}});
   return {id:'pecs-1',n:'Pectoraux (pompes) · Niveau 1',lvl:1,rep:rep,cat:'muscle',d:'3 exercices de pompes sur les genoux, 3 séries de 12 répétitions chacun, 30 s de récupération. Rythme « 1 et 2 » : une répétition toutes les 2 secondes.',steps:st}})(),
+ /* Vidéo « Entraînement musculation pectoraux Niveau 2 » : 3 phases × 3 séries d'environ 30 s (≈ 15 répétitions à 2 s), 30 s de récupération */
+ (()=>{const rep=2,P=[['pushup','Pompes','Mains un peu plus larges que les épaules, corps gainé de la tête aux pieds : travail du bas des pectoraux'],['declinepush','Pompes pieds sur le banc','Pieds posés sur le banc, mains au sol : le haut des pectoraux et les épaules travaillent davantage'],[BASE['x-pompes-prise-serree']?'x-pompes-prise-serree':'diamond','Pompes mains largeur thorax','Mains rapprochées sous la poitrine, coudes serrés le long du corps : travail de l’intérieur des pectoraux et des triceps']],st=[];
+  P.forEach(([e,n,tip],i)=>{for(let k=1;k<=3;k++){if(st.length)st.push({r:30});st.push({e:e,n:n+' · série '+k+'/3',tip:tip,reps:15,t:15*rep})}});
+  return {id:'pecs-2',n:'Pectoraux (pompes) · Niveau 2',lvl:2,rep:rep,cat:'muscle',d:'3 exercices de pompes classiques (au sol, pieds sur le banc, mains serrées), 3 séries de 15 répétitions chacun, 30 s de récupération. Rythme « 1 et 2 » : une répétition toutes les 2 secondes.',steps:st}})(),
 ];
 const tpDur=p=>tpPhases(p).reduce((a,ph)=>a+ph.t,0);
 function tempoCard(p){const exs=p.steps.filter(s=>!s.r);return `<div class="card pcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:${CATS.tempo.c}"></i>${CATS.tempo.n}</span><span class="mut" style="font-size:13px">⏱ ${fmtDur(tpDur(p)*1000)} · niveau ${p.lvl}</span></div>
@@ -3576,6 +3587,24 @@ const SITE_URL='https://jeremyrosa1722038.github.io/JeFIT/';
 (function shineLoop(){const h=document.documentElement;
  const go=()=>{if(document.hidden)return;h.classList.remove('shine');void h.offsetWidth;h.classList.add('shine');setTimeout(()=>h.classList.remove('shine'),2200)};
  setTimeout(go,2500);setInterval(go,20000)})();
+/* Titres (h1) : toutes les 15 s, un filet d'or fait le contour des lettres puis s'efface.
+   Une copie exacte du titre (même largeur, même retour à la ligne), en contour doré, se dévoile de gauche à droite. */
+(function goldTitles(){
+ function run(){
+  if(document.hidden||reduceMotion()||$('#splash')||$('#auth')||(typeof TP!=='undefined'&&TP))return;
+  [].forEach.call(document.querySelectorAll('#main h1'),h=>{
+   const r0=h.getBoundingClientRect();if(!r0.width||r0.bottom<0||r0.top>innerHeight||h.querySelector('.goldline'))return;
+   const cs=getComputedStyle(h);if(cs.position==='static')h.style.position='relative';
+   const ov=document.createElement('span');ov.className='goldline';ov.setAttribute('aria-hidden','true');
+   const inner=document.createElement('span');inner.className='goldin';inner.innerHTML=h.innerHTML;
+   inner.style.width=h.clientWidth+'px';inner.style.textAlign=cs.textAlign;
+   ov.appendChild(inner);h.appendChild(ov);void ov.offsetWidth;
+   ov.style.width='100%';
+   setTimeout(()=>{ov.style.opacity='0'},2300);setTimeout(()=>{if(ov.parentNode)ov.parentNode.removeChild(ov)},3200);
+  });
+ }
+ setTimeout(run,4000);setInterval(run,15000);
+})();
 /* Bandeau de navigation : petite animation toutes les 40 s */
 (function navFx(){const h=document.documentElement;
  setInterval(()=>{if(document.hidden||$('#splash'))return;h.classList.remove('navfx');void h.offsetWidth;h.classList.add('navfx');setTimeout(()=>h.classList.remove('navfx'),1800)},40000)})();
@@ -3616,7 +3645,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V5.4',APP_BUILD='19/11/2026 à 15:30'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V5.7',APP_BUILD='19/11/2026 à 16:45'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
