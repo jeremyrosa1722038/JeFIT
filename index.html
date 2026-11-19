@@ -346,9 +346,25 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 @-webkit-keyframes navHop{0%,100%{-webkit-transform:none}40%{-webkit-transform:translateY(-3px) scale(1.1)}}
 @keyframes navHop{0%,100%{transform:none}40%{transform:translateY(-3px) scale(1.1)}}
 @media (prefers-reduced-motion:reduce){.navfx #nav::after,.navfx .navb svg{-webkit-animation:none!important;animation:none!important}}
+/* Tempo guidé : lecteur plein écran (sous les fenêtres #ov/#sheet, z 40-41) */
+#tp{position:fixed;top:0;right:0;bottom:0;left:0;z-index:38;background:var(--bg);display:flex;flex-direction:column;align-items:center;overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(10px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));text-align:center}
+.tpbar{width:100%;max-width:640px;height:6px;border-radius:3px;background:var(--soft);overflow:hidden}.tpbar i{display:block;height:100%;background:var(--grad);-webkit-transition:width .4s;transition:width .4s}
+.tptop{width:100%;max-width:640px;display:flex;align-items:center;margin-top:8px}
+.tphead{font:800 14px var(--f-disp);letter-spacing:.12em;color:var(--acc);margin-top:10px}
+.tpname{font:900 22px/1.2 var(--f-disp);margin-top:4px;max-width:640px}
+.tpfig{width:100%;max-width:320px;margin:6px auto 0}.tpfig svg{width:100%;height:auto;display:block}.tpfig.dim{opacity:.55}
+.tpbeat{font:900 76px/1 var(--f-disp);color:var(--fg);min-height:80px;margin-top:4px}.tpbeat.one{color:var(--acc)}.tpbeat.small{font-size:56px;color:var(--acc)}
+.tpbeat.pop{-webkit-animation:tpPop .35s ease-out;animation:tpPop .35s ease-out}
+@-webkit-keyframes tpPop{from{-webkit-transform:scale(1.35)}to{-webkit-transform:none}}@keyframes tpPop{from{transform:scale(1.35)}to{transform:none}}
+.tprep{font-size:15px;color:var(--mut)}.tprep b{color:var(--fg);font-size:18px}
+.tpclock{font:900 40px var(--f-disp);margin-top:6px;font-variant-numeric:tabular-nums}
+.tptip{font-size:14px;color:var(--mut);max-width:420px;margin-top:4px;min-height:20px}
+.tpbtns{display:flex;justify-content:center;margin-top:14px}.tpbtns .btn{margin:0 6px;min-width:130px}
+@media (prefers-reduced-motion:reduce){.tpbeat.pop{-webkit-animation:none;animation:none}}
 /* Anatomie : bandeau de chapitres (à gauche sur grand écran, en haut et défilant sur téléphone) */
-.anwrap{margin-top:14px}
-.anrail{position:-webkit-sticky;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:8px 0;margin:0 -4px 8px}
+.anwrap{margin-top:14px;min-width:0;max-width:100%}
+.anrail{position:-webkit-sticky;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:8px 0;margin:0 0 8px;width:100%;max-width:100%;box-sizing:border-box}
+.anbody{min-width:0;max-width:100%}
 .anchip{flex:none;display:flex;align-items:center;margin:0 4px;padding:8px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--fg);font:700 13px var(--f-body);white-space:nowrap}
 .anchip span{margin-right:6px}.anchip.on{background:var(--grad);color:var(--acc-ink);border-color:transparent}
 .ansec{padding-top:10px;margin-bottom:26px}
@@ -1720,7 +1736,7 @@ const LAF=[
 ];
 
 /* ---------- Programmes par défaut ---------- */
-const CATS={hyrox:{n:'HYROX',c:'#E8B400'},split:{n:'Split muscu',c:'#4EA1FF'},libre:{n:'Libre',c:'#7A5AF8'},lafay:{n:'Méthode Lafay',c:'#E0483E'},gomuscu:{n:'go-muscu.com',c:'#F7891A'},cali:{n:'Callisthénie',c:'#16A34A'},corde:{n:'Corde à sauter',c:'#F07B16'},abdo:{n:'Abdos',c:'#0EA5E9'},circuit:{n:'Circuit',c:'#EC4899'},muscle:{n:'Par muscle',c:'#14B8A6'}};
+const CATS={hyrox:{n:'HYROX',c:'#E8B400'},split:{n:'Split muscu',c:'#4EA1FF'},libre:{n:'Libre',c:'#7A5AF8'},lafay:{n:'Méthode Lafay',c:'#E0483E'},gomuscu:{n:'go-muscu.com',c:'#F7891A'},tempo:{n:'Tempo guidé',c:'#22C55E'},cali:{n:'Callisthénie',c:'#16A34A'},corde:{n:'Corde à sauter',c:'#F07B16'},abdo:{n:'Abdos',c:'#0EA5E9'},circuit:{n:'Circuit',c:'#EC4899'},muscle:{n:'Par muscle',c:'#14B8A6'}};
 const MET={hyrox:8,split:5,libre:5,gomuscu:5,lafay:4.5,cali:4.5,corde:11,abdo:4,circuit:7,muscle:5};
 const it=(exId,sets,o={})=>({id:uid(),exId,sets,rest:nz(o.rest,90),reps:nz(o.reps,null),kg:nz(o.kg,null),time:nz(o.time,null),dist:nz(o.dist,null),note:o.note||''});
 const day=(name,items)=>({id:uid(),name,items});
@@ -2260,7 +2276,7 @@ VIEWS.programs=()=>{
  const list=S.programs.filter(p=>f==='all'||p.cat===f);
  return `<div class="top" style="justify-content:flex-start;gap:14px"><h1>Programmes</h1><button class="btn pri sm" data-a="newProgram">${ic('plus')}Nouveau</button><button class="btn sm" data-a="tab" data-v="anatomie">🫀 Anatomie</button></div>
  ${avoidBar()}<div class="chips wrap" style="margin-top:14px"><button class="chip ${f==='all'?'on':''}" data-a="cat" data-v="all">Tous</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${f===k?'on':''}" data-a="cat" data-v="${k}">${c.n}</button>`).join('')}<button class="chip" data-a="jeride">Vélo · JeRIDE</button></div>
- <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${f==='gomuscu'?gmCard():''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
+ <div class="grid sec" style="margin-top:16px">${f==='all'?quickCard():''}${f==='all'||f==='lafay'?lafCard():''}${f==='gomuscu'?gmCard():''}${f==='all'||f==='tempo'||f==='abdo'?TEMPO.map(tempoCard).join(''):''}${list.map(progCard).join('')||(f==='lafay'?'':`<div class="card empty"><p>Aucun programme dans cette catégorie.</p><button class="btn pri" data-a="newProgram">Créer un programme</button></div>`)}</div>`;
 };
 /* Carte « Sport en minutes » (ex-onglet Express) en tête des programmes */
 function quickCard(){
@@ -3200,6 +3216,10 @@ const A={
  restore:()=>confirmSheet('Réinstaller les programmes par défaut ?','Tous les programmes fournis avec JeFIT (HYROX, muscu, circuits, par muscle, Lafay, abdos, cardio…) sont rajoutés ou remis à zéro. Vos propres programmes sont conservés.','Réinstaller',()=>{const seed=seedPrograms();S.programs=[...seed,...S.programs.filter(p=>!seed.some(s=>s.id===p.id))];touchCfg();render();toast('Programmes réinstallés')},false),
  theme:()=>{A.themeQuick();A.settings()},
  radarP:el=>{view.rp=el.dataset.v;view.ro=0;view.hw=null;const y=scrollY;render();scrollTo(0,y)},
+ tpStart:el=>{const id=el.dataset.t;if(W){toast('Terminez d’abord la séance en cours');return}tpStart(id)},
+ tpPause:()=>{if(!TP)return;if(TP.pausedAt){TP.pausedMs+=Date.now()-TP.pausedAt;TP.pausedAt=null}else TP.pausedAt=Date.now();tpPaint()},
+ tpSkip:()=>{if(!TP)return;const ph=TP.L[TP.i];if(ph.kind==='ex')TP.done[ph.k]=Math.round(tpEl()/1000);if(TP.pausedAt){TP.pausedAt=null}TP.i++;if(TP.i>=TP.L.length){tpEnd(true);return}TP.t0=Date.now();TP.pausedMs=0;tpPaint()},
+ tpStop:()=>{if(!TP)return;const ph=TP.L[TP.i];if(ph.kind==='ex')TP.done[ph.k]=Math.round(tpEl()/1000);if(!TP.pausedAt)TP.pausedAt=Date.now();confirmSheet('Arrêter la séance ?','Les exercices déjà faits sont enregistrés dans l’historique.','Arrêter et enregistrer',()=>tpEnd(false),false)},
  anGo:el=>{const k=el.dataset.v;view.ach=k;document.querySelectorAll('.anchip').forEach(b=>b.classList.toggle('on',b.dataset.v===k));
   const s=document.getElementById('an-'+k);if(!s)return;const r=document.querySelector('.anrail'),off=(innerWidth<820&&r?r.offsetHeight:0)+(innerWidth>=820?96:8);
   const y=s.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop)-off;window.scrollTo(0,y) /* saut direct : le défilement « smooth » n'existe pas sur Safari 12 */
@@ -3283,6 +3303,67 @@ VIEWS.lafay=()=>{
   </div></div>`;
 };
 /* Carte « Méthode Lafay » dans Programmes : le vrai programme complet (13 niveaux) avec le suivi de progression */
+/* ===== Tempo guidé : séances au rythme « 1 et 2 », enchaînement automatique =====
+   Reconstitué d'après les vidéos « Abdos en 8 minutes » (niveaux 1 et 2) : ordre, durées, repos et rythme (1 répétition / 3 s mesurée sur l'image). */
+const TEMPO=[
+ {id:'abdo8-1',n:'Abdos en 8 minutes · Niveau 1',lvl:1,rep:3,d:'8 exercices de 45 s enchaînés par deux, 30 s de repos entre chaque paire. Rythme « 1 et 2 » : une répétition toutes les 3 secondes.',
+  steps:[{e:'crunch',n:'Crunch mains sur les cuisses',tip:'Les mains glissent sur les cuisses jusqu’aux genoux, menton rentré'},{e:'x-coude-genou',n:'Crunch coude-genou alterné',tip:'Le coude va vers le genou opposé, une fois à droite, une fois à gauche'},{r:30},
+   {e:'crunch',n:'Crunch bras tendus',tip:'Bras tendus vers les genoux, on décolle les épaules'},{e:'legraisefloor',n:'Relevés de jambe alternés',tip:'Une jambe tendue monte à la verticale pendant que l’autre reste au sol'},{r:30},
+   {e:'crunch',n:'Crunch mains vers les genoux',tip:'On monte jusqu’à toucher les genoux, on redescend lentement'},{e:'toetouch',n:'Crunch jambes à la verticale',tip:'Jambes tendues en l’air, les mains montent vers les pieds'},{r:30},
+   {e:'crunch',n:'Crunch mains sur la poitrine',tip:'Mains croisées sur la poitrine, bas du dos collé au sol'},{e:'vups',n:'Crunch bras tendus, pieds décollés',tip:'Genoux fléchis, pieds en l’air, bras tendus de chaque côté des genoux'}].map(s=>s.r?s:Object.assign({t:45},s))},
+ {id:'abdo8-2',n:'Abdos en 8 minutes · Niveau 2',lvl:2,rep:3,d:'8 exercices de 60 s enchaînés par deux, 15 s de repos seulement entre chaque paire. Rythme « 1 et 2 » : une répétition toutes les 3 secondes.',
+  steps:[{e:'crunch',n:'Crunch bras tendus',tip:'Bras tendus vers les genoux, on décolle les épaules'},{e:'x-coude-genou',n:'Crunch coude-genou alterné',tip:'Le coude va vers le genou opposé, en alternant'},{r:15},
+   {e:'legraisefloor',n:'Relevés de jambe alternés',tip:'Une jambe tendue monte pendant que l’autre reste juste au-dessus du sol'},{e:'crunch',n:'Crunch mains sur la poitrine',tip:'Mains croisées sur la poitrine, bas du dos collé au sol'},{r:15},
+   {e:'toetouch',n:'Crunch jambes à la verticale',tip:'Jambes tendues en l’air, les mains montent vers les pieds'},{e:'reversecrunch',n:'Crunch jambes à 90°',tip:'Cuisses verticales, genoux pliés à 90°, on enroule le haut du corps'},{r:15},
+   {e:'vups',n:'Crunch bras tendus, pieds décollés',tip:'Genoux fléchis, pieds en l’air, bras tendus de chaque côté des genoux'},{e:'heeltouch',n:'Crunch mains vers les talons',tip:'Épaules décollées, les mains glissent vers les talons'}].map(s=>s.r?s:Object.assign({t:60},s))},
+];
+const tpDur=p=>p.steps.reduce((a,s)=>a+(s.r||s.t),0)+5*p.steps.filter(s=>!s.r).length;
+function tempoCard(p){const exs=p.steps.filter(s=>!s.r);return `<div class="card pcard"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="pill"><i class="dot" style="background:${CATS.tempo.c}"></i>${CATS.tempo.n}</span><span class="mut" style="font-size:13px">⏱ ${fmtDur(tpDur(p)*1000)} · niveau ${p.lvl}</span></div>
+ <h2 style="margin-top:10px">${esc(p.n)}</h2><div class="strip">${exs.slice(0,6).map(s=>picto(s.e)).join('')}</div>
+ <div class="days">${esc(p.d)}</div>
+ <details style="margin-top:6px"><summary class="mut" style="font-size:14px">Voir l’enchaînement</summary><ol style="margin:8px 0 0;padding-left:20px;font-size:14px">${p.steps.map(s=>s.r?`<li class="mut">Repos ${s.r} s</li>`:`<li>${esc(s.n)} · ${s.t} s</li>`).join('')}</ol></details>
+ <div class="row"><button class="btn pri" data-a="tpStart" data-t="${p.id}">${ic('play')}Démarrer</button></div></div>`}
+/* Lecteur : une phase = transition (5 s), exercice ou repos */
+let TP=null;
+function tpBeep(f,d){try{audio();if(!AC)return;const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+.01;o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.4,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+(d||.12));o.start(t);o.stop(t+(d||.12)+.02)}catch(e){}}
+function tpPhases(p){const L=[];p.steps.forEach((s,k)=>{if(s.r){L.push({kind:'rest',t:s.r});return}L.push({kind:'go',t:5,s:s});L.push({kind:'ex',t:s.t,s:s,k:k})});
+ L.forEach((ph,i)=>{if(ph.kind==='rest'){for(let j=i+1;j<L.length;j++)if(L[j].kind==='ex'){ph.next=L[j].s;break}}});
+ /* pas de transition juste après un repos : le repos sert déjà de préparation */
+ return L.filter((ph,i)=>!(ph.kind==='go'&&i>0&&L[i-1].kind==='rest'))}
+function tpStart(id){const p=TEMPO.filter(x=>x.id===id)[0];if(!p)return;audio();
+ TP={p:p,L:tpPhases(p),i:0,t0:Date.now(),pausedAt:null,pausedMs:0,start:Date.now(),beat:-1,done:{}};
+ let d=$('#tp');if(!d){d=document.createElement('div');d.id='tp';document.body.appendChild(d)}d.className='on';
+ try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(w=>{TP&&(TP.wl=w)}).catch(()=>{})}catch(e){}
+ tpPaint();clearInterval(tpStart.iv);tpStart.iv=setInterval(tpTick,100)}
+function tpEl(){return TP?(TP.pausedAt||Date.now())-TP.t0-TP.pausedMs:0}
+function tpPaint(){const d=$('#tp');if(!d||!TP)return;const ph=TP.L[TP.i],p=TP.p,nEx=p.steps.filter(s=>!s.r).length,nCur=ph.s?p.steps.filter(s=>!s.r).indexOf(ph.s)+1:0;
+ const s=ph.kind==='rest'?ph.next:ph.s,e=s?ex(s.e):null;
+ const head=ph.kind==='rest'?'<span style="color:#22C55E">REPOS</span>':ph.kind==='go'?'PRÉPAREZ-VOUS':'EXERCICE '+nCur+' / '+nEx;
+ d.innerHTML=`<div class="tpbar"><i style="width:${Math.round(100*TP.i/TP.L.length)}%"></i></div>
+ <div class="tptop"><button class="ib" data-a="tpStop" aria-label="Arrêter">${ic('cross')}</button><b style="flex:1;text-align:center">${esc(p.n)}</b><span style="width:44px"></span></div>
+ <div class="tphead">${head}</div>
+ <div class="tpname">${ph.kind==='rest'?(s?'Ensuite : '+esc(s.n):'Dernier effort terminé'):esc(s.n)}</div>
+ <div class="tpfig ${ph.kind==='rest'?'dim':''}">${e?fig(e.pose,e.m):''}</div>
+ ${ph.kind==='ex'?`<div class="tpbeat" id="tpbeat">1</div><div class="tprep">Répétition <b id="tprep">1</b></div>`:`<div class="tpbeat small" id="tpbeat"></div>`}
+ <div class="tpclock" id="tpclock"></div>
+ <div class="tptip">${s&&s.tip?esc(s.tip):''}</div>
+ <div class="tpbtns"><button class="btn" data-a="tpPause">${TP.pausedAt?ic('play')+'Reprendre':ic('pause')+'Pause'}</button><button class="btn" data-a="tpSkip">Passer ›</button></div>`;
+ TP.beat=-1;tpTick()}
+function tpTick(){if(!TP)return;const ph=TP.L[TP.i],el=tpEl(),dur=ph.t*1000,left=Math.max(0,Math.ceil((dur-el)/1000));
+ const c=$('#tpclock');if(c)c.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
+ if(TP.pausedAt)return;
+ const b=Math.floor(el/1000);
+ if(b!==TP.beat){TP.beat=b;const bt=$('#tpbeat');
+  if(ph.kind==='ex'){const w=['1','et','2'][b%3];if(bt){bt.textContent=w;bt.className='tpbeat'+(w==='1'?' one':'');void bt.offsetWidth;bt.classList.add('pop')}tpBeep(w==='1'?1046:w==='et'?700:784,w==='1'?.16:.09);const r=$('#tprep');if(r)r.textContent=Math.min(Math.floor(el/(TP.p.rep*1000))+1,Math.floor(ph.t/TP.p.rep))}
+  else{if(left<=3&&left>0){if(bt)bt.textContent=left;tpBeep(880,.12)}else if(bt)bt.textContent=''}}
+ if(el>=dur){if(ph.kind==='ex')TP.done[ph.k]=ph.t;TP.i++;if(TP.i>=TP.L.length){tpEnd(true);return}TP.t0=Date.now();TP.pausedMs=0;tpBeep(1320,.25);tpPaint()}}
+function tpClose(){clearInterval(tpStart.iv);try{TP&&TP.wl&&TP.wl.release()}catch(e){}const d=$('#tp');if(d)d.remove();TP=null}
+function tpEnd(full){if(!TP)return;const p=TP.p,start=TP.start,done=TP.done;tpClose();
+ const items=p.steps.map((s,k)=>({s:s,k:k})).filter(x=>!x.s.r&&done[x.k]).map(x=>({exId:x.s.e,note:x.s.n+' · tempo 1 et 2',sets:[{kg:null,reps:Math.floor(done[x.k]/p.rep),time:done[x.k],dist:null,done:true}]}));
+ if(!items.length){toast('Séance arrêtée : rien à enregistrer');return}
+ const s={id:uid(),cat:'abdo',name:p.n,programId:null,dayId:null,start:start,end:Date.now(),duration:Date.now()-start,items:items,volume:0,sets:items.length,prs:[]};
+ S.sessions.unshift(s);S.sessions.sort((a,b)=>b.start-a.start);S.pending.push(s.id);save();pushSess(s.id);
+ go('session',{sid:s.id,fresh:true});if(full)setTimeout(()=>{try{celebrate(s)}catch(e){}},120)}
 /* ===== Anatomie des mouvements : chapitres par muscle (texte simplifié, d'après « Musculation, anatomie et mouvements », P. Manocchia) =====
    Chaque exercice : [id, muscles travaillés, à faire, à éviter]. Toucher un exercice ouvre sa fiche. */
 const ANAT=[
@@ -3515,7 +3596,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V5.1',APP_BUILD='19/11/2026 à 13:30'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V5.2',APP_BUILD='19/11/2026 à 14:30'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
@@ -3908,7 +3989,7 @@ document.addEventListener('scroll',()=>{idleLast=Date.now()},{passive:true,captu
 function idleCheck(){
  if(document.hidden||Date.now()-idleLast<IDLE_MS)return;
  idleLast=Date.now();
- if(W||$('#auth')||$('#splash')||($('#jr')&&$('#jr').classList.contains('on')))return; /* séance en cours, connexion, JeRIDE : on ne dérange pas */
+ if(W||TP||$('#auth')||$('#splash')||($('#jr')&&$('#jr').classList.contains('on')))return; /* séance en cours, connexion, JeRIDE : on ne dérange pas */
  closeSheet();
  if(view.name==='settings'){backStack=[];go('home')}
  splash(true);
