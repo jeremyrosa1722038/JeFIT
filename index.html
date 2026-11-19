@@ -1594,7 +1594,18 @@ EXL.push(
  ['kbsldl','Soulevé de terre une jambe (kettlebell)','deadlift',['jambes','lombaires'],'weight'],
  ['kblungepass','Fentes avec passage sous la jambe (kettlebell)','lunge',['jambes','abdos'],'weight'],
  ['kbsquatflip','Squat avec retournement (kettlebell)','squat',['jambes','bras'],'weight'],
- ['kbohsquat','Squat kettlebell au-dessus de la tête','squat',['jambes','epaules','abdos'],'weight']
+ ['kbohsquat','Squat kettlebell au-dessus de la tête','squat',['jambes','epaules','abdos'],'weight'],
+ /* Affiche « Kettlebell Full Body Exercises · niveau avancé » */
+ ['kbjerk','Jerk (kettlebell)','ohp',['epaules','jambes','bras'],'weight'],
+ ['kbbentpress','Bent press (kettlebell)','ohp',['epaules','abdos'],'weight'],
+ ['kbohrevlunge','Fente arrière kettlebell au-dessus de la tête','lunge',['jambes','epaules','abdos'],'weight'],
+ ['kbpistolbox','Pistol squat sur box (kettlebell)','pistol',['jambes'],'weight'],
+ ['kbcossack','Squat cosaque (kettlebell)','airsquat',['jambes'],'weight'],
+ ['kbsots','Sots press (kettlebell)','ohp',['epaules','jambes','abdos'],'weight'],
+ ['kbdecksquat','Deck squat (kettlebell)','squat',['jambes','abdos'],'weight'],
+ ['kbunevenpush','Pompes décalées (une main sur kettlebell)','pushup',['pecs','bras','abdos'],'bw'],
+ ['kbburpeejump','Burpee saut par-dessus le kettlebell','bbj',['jambes','pecs'],'bw'],
+ ['kbohkneel','Genou-debout kettlebell au-dessus de la tête','lunge',['jambes','epaules','abdos'],'weight']
 );
 Object.assign(DESC,{
  kbswing1:'Kettlebell dans une main entre les jambes. Pousser les hanches vers l’avant pour envoyer la cloche à hauteur d’épaules, bras tendu, puis la laisser redescendre en reculant les fesses. Dos plat, l’élan vient des hanches. Faire les deux côtés.',
@@ -1625,8 +1636,19 @@ Object.assign(DESC,{
  kblungepass:'Faire une fente avant et passer le kettlebell d’une main à l’autre sous la cuisse avant. Se relever, changer de jambe et repasser la cloche. Buste droit.',
  kbsquatflip:'En squat, tenir le kettlebell par la poignée, cloche en bas. En remontant, lancer légèrement la cloche pour la retourner et la rattraper par le corps (cloche en haut), puis recommencer. Charge légère.',
  kbohsquat:'Kettlebell tenu bras tendu au-dessus de la tête (une main) ou à deux mains. Descendre en squat en gardant la cloche à la verticale et le buste droit. Demande de la mobilité d’épaules.',
+ kbjerk:'Kettlebell en position rack (contre l’épaule). Petite flexion des jambes, poussée explosive pour lancer la cloche, puis redescendre sous elle en refléchissant pour la bloquer bras tendu. Se redresser, cloche au-dessus de la tête.',
+ kbbentpress:'Kettlebell en rack. Pencher le buste sur le côté opposé en poussant la hanche, comme si on passait sous la cloche, jusqu’à avoir le bras tendu. Se redresser lentement, bras toujours vertical. Mouvement lent et contrôlé.',
+ kbohrevlunge:'Kettlebell tenu bras tendu au-dessus de la tête. Reculer une jambe en fente, genou arrière près du sol, puis revenir debout. La cloche reste à la verticale, ventre gainé.',
+ kbpistolbox:'Debout sur une jambe devant une box ou un banc, kettlebell tenu contre la poitrine en contrepoids. Descendre lentement jusqu’à s’asseoir sur la box, l’autre jambe tendue devant, puis remonter sur une jambe.',
+ kbcossack:'Pieds très écartés, kettlebell tenu contre la poitrine. Descendre sur une jambe en gardant l’autre tendue (pointe vers le haut), talon au sol, puis passer de l’autre côté. Buste droit.',
+ kbsots:'Assis au fond d’un squat, kettlebell(s) en rack. Pousser la cloche au-dessus de la tête en restant en bas du squat, buste bien droit, puis la redescendre. Demande beaucoup de mobilité.',
+ kbdecksquat:'Kettlebell contre la poitrine. Descendre en squat, s’asseoir et rouler en arrière sur le dos, puis revenir en avant avec l’élan et remonter directement debout depuis le squat.',
+ kbunevenpush:'En position de pompe, une main au sol, l’autre sur la poignée ou le corps d’un kettlebell. Descendre la poitrine en gardant le corps gainé, remonter. Changer de côté.',
+ kbburpeejump:'Kettlebell posé au sol à côté de soi. Faire un burpee (pompe au sol), se relever puis sauter latéralement par-dessus la cloche. Enchaîner le burpee suivant de l’autre côté.',
+ kbohkneel:'À genoux, kettlebell bras tendu au-dessus de la tête. Avancer un pied, se relever en fente jusqu’à être debout, puis redescendre sur les genoux un par un. La cloche reste verticale.',
 });
-['kbswing1','kbchop','kbwindmill','kbatlas','kbsumohp','kbsprow','kbdefpush','kbpress','kbpullover','kbtricep','kblatraise','kbfrontraise','kbsidebend','kbsidewinder','kbhalftgu','kbohsitup','kbrussian','kbsideplank','kbfig8','kblegraise','kbtorsotwist','kbrow','kbrenegade','kbdeadlift','kbsldl','kblungepass','kbsquatflip','kbohsquat'].forEach(id=>{REQ[id]=['kb']});
+['kbswing1','kbchop','kbwindmill','kbatlas','kbsumohp','kbsprow','kbdefpush','kbpress','kbpullover','kbtricep','kblatraise','kbfrontraise','kbsidebend','kbsidewinder','kbhalftgu','kbohsitup','kbrussian','kbsideplank','kbfig8','kblegraise','kbtorsotwist','kbrow','kbrenegade','kbdeadlift','kbsldl','kblungepass','kbsquatflip','kbohsquat','kbjerk','kbbentpress','kbohrevlunge','kbpistolbox','kbcossack','kbsots','kbdecksquat','kbunevenpush','kbburpeejump','kbohkneel'].forEach(id=>{REQ[id]=['kb']});
+Object.assign(SUBS,{kbjerk:['ohp','dbpress'],kbbentpress:['kbwindmill','dbpress'],kbohrevlunge:['revlunge','bwlunge'],kbpistolbox:['pistol','goblet'],kbcossack:['cossack'],kbsots:['kbohsquat','goblet'],kbdecksquat:['goblet','airsquat'],kbunevenpush:['pushup'],kbburpeejump:['burpee'],kbohkneel:['bwlunge','revlunge']});
 Object.assign(SUBS,{kbswing1:['kbswing','hipbridge'],kbchop:['woodchop','russian'],kbwindmill:['sidebend','sideplank'],kbatlas:['kbswing','burpee'],kbsumohp:['uprow','sumo','airsquat'],kbsprow:['dbrow','sideplank'],kbdefpush:['pushup','declinepush'],kbpress:['dbbench','pushup'],kbpullover:['pullover','superman'],kbtricep:['ohtri2','diamond'],kblatraise:['latraise','lafC'],kbfrontraise:['frontraise','pike'],kbsidebend:['sidebend','sidecrunch'],kbsidewinder:['sidelunge','cossack'],kbhalftgu:['situp','deadbug'],kbohsitup:['situp','crunch'],kbrussian:['russian'],kbsideplank:['sideplank'],kbfig8:['russian','squat'],kblegraise:['legraisefloor'],kbtorsotwist:['russian'],kbrow:['dbrow','australian'],kbrenegade:['x-renegade-row-haltere','plankshoulder'],kbdeadlift:['dbrdl','hipbridge'],kbsldl:['singlerdl','singlebridge'],kblungepass:['bwlunge'],kbsquatflip:['goblet','airsquat'],kbohsquat:['goblet','airsquat']});
 EXL.push(['sprint','Sprints (course)','run',['jambes','mollets'],'dist']);DESC.sprint='Courir le plus vite possible sur la distance, puis récupérer en marchant pendant le repos. Bien s’échauffer avant.';
 const BASE={};EXL.forEach(([id,n,pose,m,t])=>BASE[id]={id,n,pose,m,t});
@@ -1747,7 +1769,7 @@ const LAF=[
 ];
 
 /* ---------- Programmes par défaut ---------- */
-const CATS={hyrox:{n:'HYROX',c:'#E8B400'},split:{n:'Split muscu',c:'#4EA1FF'},libre:{n:'Libre',c:'#7A5AF8'},lafay:{n:'Méthode Lafay',c:'#E0483E'},gomuscu:{n:'go-muscu.com',c:'#F7891A'},tempo:{n:'Tempo guidé',c:'#22C55E'},cali:{n:'Callisthénie',c:'#16A34A'},corde:{n:'Corde à sauter',c:'#F07B16'},abdo:{n:'Abdos',c:'#0EA5E9'},circuit:{n:'Circuit',c:'#EC4899'},muscle:{n:'Par muscle',c:'#14B8A6'}};
+const CATS={hyrox:{n:'HYROX',c:'#E8B400'},split:{n:'Split muscu',c:'#4EA1FF'},libre:{n:'Libre',c:'#7A5AF8'},lafay:{n:'Méthode Lafay',c:'#E0483E'},gomuscu:{n:'go-muscu.com',c:'#F7891A'},tempo:{n:'Tempo guidé',c:'#22C55E'},cali:{n:'Callisthénie',c:'#16A34A'},corde:{n:'Corde à sauter',c:'#F07B16'},abdo:{n:'Abdos',c:'#0EA5E9'},kb:{n:'Kettlebell',c:'#B45309'},circuit:{n:'Circuit',c:'#EC4899'},muscle:{n:'Par muscle',c:'#14B8A6'}};
 const MET={hyrox:8,split:5,libre:5,gomuscu:5,lafay:4.5,cali:4.5,corde:11,abdo:4,circuit:7,muscle:5};
 const it=(exId,sets,o={})=>({id:uid(),exId,sets,rest:nz(o.rest,90),reps:nz(o.reps,null),kg:nz(o.kg,null),time:nz(o.time,null),dist:nz(o.dist,null),note:o.note||''});
 const day=(name,items)=>({id:uid(),name,items});
@@ -2039,6 +2061,21 @@ function seedPrograms(){
   ]),
   /* ----- go-muscu.com : 3 programmes de 4 séances par semaine (source : go-muscu.com, Robin) ----- */
   ...gmPrograms(P),
+  /* ----- V3 : programmes kettlebell ----- */
+  /* Affiche « 30 Day Kettlebell Challenge » : 1 série de chaque, répétitions = 5 + jour/2 arrondi au-dessus (jour 1 : 6 … jour 30 : 20) */
+  P('p-kb-30','kb','Défi kettlebell 30 jours','Un jour = 5 exercices enchaînés, 1 série chacun. On commence à 6 répétitions et on en ajoute 1 tous les 2 jours, jusqu’à 20 au jour 30.',
+   Array.from({length:30},(_,i)=>{const r=5+Math.ceil((i+1)/2);return day('Jour '+(i+1),[it('x-goblet-squat-kettlebell',1,{reps:r,rest:30}),it('kbswing',1,{reps:r,rest:30}),it('kbrussian',1,{reps:r,rest:30,note:'Twist assis'}),it('kbdefpush',1,{reps:r,rest:30,note:'Mains sur les kettlebells'}),it('kbrow',1,{reps:r,rest:30})])})),
+  /* Affiche « Sample full-body kettlebell workout programs » (muscle growth) */
+  P('p-kb-full','kb','Full body kettlebell (prise de muscle)','5 mouvements de base au kettlebell pour tout le corps : squat, swing, épaulé, arraché et fentes.',[
+   day('Full body kettlebell',[it('x-goblet-squat-kettlebell',4,{reps:12,rest:90}),it('kbswing',4,{reps:15,rest:90}),it('x-epaule-kettlebell',4,{reps:10,rest:90}),it('x-arrache-kettlebell',4,{reps:10,rest:90}),it('goblunge',3,{reps:12,rest:75,note:'Chaque jambe'})]),
+  ]),
+  /* Affiche « Kettlebell Full Body Exercises · Men's advanced level » : 4 blocs de 4 exercices, au moins 60 s de repos */
+  P('p-kb-avance','kb','Kettlebell full body · Avancé','16 exercices techniques répartis en 4 séances. Au moins 60 s de repos entre les exercices. Charge modérée : la technique avant tout.',[
+   day('Puissance au-dessus de la tête',[it('x-arrache-kettlebell',3,{reps:5,rest:60,note:'Chaque bras'}),it('kbjerk',3,{reps:6,rest:60}),it('kbbentpress',3,{reps:4,rest:60,note:'Chaque bras'}),it('kbwindmill',3,{reps:5,rest:60,note:'Chaque côté'})]),
+   day('Stabilité & jambes',[it('x-releve-turc-kettlebell',3,{reps:3,rest:60,note:'Chaque côté'}),it('kbohrevlunge',3,{reps:8,rest:60,note:'Chaque jambe'}),it('kbpistolbox',3,{reps:6,rest:60,note:'Chaque jambe'}),it('kbcossack',3,{reps:8,rest:60,note:'Chaque côté'})]),
+   day('Force & gainage',[it('kbsots',3,{reps:8,rest:60}),it('kbdecksquat',3,{reps:8,rest:60}),it('kbrenegade',3,{reps:8,rest:60,note:'Un seul kettlebell · chaque côté'}),it('kblungepass',3,{reps:8,rest:60,note:'Tactical lunge · chaque jambe'})]),
+   day('Conditionnement',[it('kbunevenpush',3,{reps:6,rest:60,note:'Chaque côté'}),it('kbfig8',3,{reps:10,rest:60,note:'Finir chaque passage en tenant la cloche contre la poitrine'}),it('kbburpeejump',3,{reps:10,rest:60}),it('kbohkneel',3,{reps:5,rest:60,note:'Chaque côté'})]),
+  ]),
  ];
 }
 /* Programmes go-muscu.com. Repères : r = répétitions (fourchette), s = séries, p = repos en secondes. 5 à 10 min d'échauffement avant chaque séance. */
@@ -2081,6 +2118,7 @@ if(S.seedV<7){S.programs=S.programs.filter(p=>!(p.id==='p-lafay'&&p.builtin));S.
 if(S.seedV<8){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=8;S.cfgAt=Date.now();}
 if(S.seedV<9){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=9;S.cfgAt=Date.now();} /* + programmes go-muscu.com */
 if(S.seedV<10){const n=seedPrograms().find(p=>p.id==='p-gm-ppl'),k=S.programs.findIndex(p=>p.id==='p-gm-ppl'&&p.builtin);if(n&&k>=0)S.programs[k]=n;S.seedV=10;S.cfgAt=Date.now();} /* PPL J4 : rappels ajoutés */
+if(S.seedV<11){seedPrograms().forEach(p=>{if(!S.programs.some(x=>x.id===p.id))S.programs.push(p)});S.seedV=12;S.cfgAt=Date.now();} /* + programmes kettlebell (30 jours, full body, avancé) */
 S.lafay=S.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]};
 S.deleted=S.deleted||[];S.custom=S.custom||[];
 let W=LS.get(AKEY,null);
