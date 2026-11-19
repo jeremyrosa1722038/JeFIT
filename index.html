@@ -3326,11 +3326,18 @@ function tempoCard(p){const exs=p.steps.filter(s=>!s.r);return `<div class="card
 /* Lecteur : une phase = transition (5 s), exercice ou repos */
 let TP=null;
 function tpBeep(f,d){try{audio();if(!AC)return;const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+.01;o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.4,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+(d||.12));o.start(t);o.stop(t+(d||.12)+.02)}catch(e){}}
+/* Voix : « un » et « deux » dits par la synthèse vocale de l'appareil (français), bip sur le « et ».
+   Sur iPhone/iPad, la voix doit être « débloquée » par un toucher : c'est fait au bouton Démarrer. Sans voix disponible : bips. */
+let tpVoice=null;
+function tpVoicePick(){try{const v=speechSynthesis.getVoices()||[];tpVoice=v.filter(x=>/^fr(-|_|$)/i.test(x.lang)&&/fr-FR|fr_FR/i.test(x.lang))[0]||v.filter(x=>/^fr/i.test(x.lang))[0]||null}catch(e){}}
+try{if(window.speechSynthesis){tpVoicePick();if('onvoiceschanged' in speechSynthesis)speechSynthesis.onvoiceschanged=tpVoicePick}}catch(e){}
+const tpVoiceOn=()=>LS.get('jefit.tpvoice',true)&&!!window.speechSynthesis;
+function tpSay(txt,rate){if(!tpVoiceOn())return false;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang='fr-FR';if(tpVoice)u.voice=tpVoice;u.rate=rate||1.15;u.volume=1;speechSynthesis.speak(u);return true}catch(e){return false}}
 function tpPhases(p){const L=[];p.steps.forEach((s,k)=>{if(s.r){L.push({kind:'rest',t:s.r});return}L.push({kind:'go',t:5,s:s});L.push({kind:'ex',t:s.t,s:s,k:k})});
  L.forEach((ph,i)=>{if(ph.kind==='rest'){for(let j=i+1;j<L.length;j++)if(L[j].kind==='ex'){ph.next=L[j].s;break}}});
  /* pas de transition juste après un repos : le repos sert déjà de préparation */
  return L.filter((ph,i)=>!(ph.kind==='go'&&i>0&&L[i-1].kind==='rest'))}
-function tpStart(id){const p=TEMPO.filter(x=>x.id===id)[0];if(!p)return;audio();
+function tpStart(id){const p=TEMPO.filter(x=>x.id===id)[0];if(!p)return;audio();if(!tpVoice)tpVoicePick();
  TP={p:p,L:tpPhases(p),i:0,t0:Date.now(),pausedAt:null,pausedMs:0,start:Date.now(),beat:-1,done:{}};
  let d=$('#tp');if(!d){d=document.createElement('div');d.id='tp';document.body.appendChild(d)}d.className='on';
  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(w=>{TP&&(TP.wl=w)}).catch(()=>{})}catch(e){}
@@ -3348,13 +3355,17 @@ function tpPaint(){const d=$('#tp');if(!d||!TP)return;const ph=TP.L[TP.i],p=TP.p
  <div class="tpclock" id="tpclock"></div>
  <div class="tptip">${s&&s.tip?esc(s.tip):''}</div>
  <div class="tpbtns"><button class="btn" data-a="tpPause">${TP.pausedAt?ic('play')+'Reprendre':ic('pause')+'Pause'}</button><button class="btn" data-a="tpSkip">Passer ›</button></div>`;
- TP.beat=-1;tpTick()}
+ TP.beat=-1;
+ /* annonce vocale de la phase (le premier appel, au toucher de Démarrer, débloque la voix sur iOS) */
+ if(!TP.pausedAt){if(ph.kind==='go')tpSay(s.n,1.05);else if(ph.kind==='rest')tpSay('Repos'+(s?'. Ensuite, '+s.n:''),1.05)}
+ tpTick()}
 function tpTick(){if(!TP)return;const ph=TP.L[TP.i],el=tpEl(),dur=ph.t*1000,left=Math.max(0,Math.ceil((dur-el)/1000));
  const c=$('#tpclock');if(c)c.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
  if(TP.pausedAt)return;
  const b=Math.floor(el/1000);
  if(b!==TP.beat){TP.beat=b;const bt=$('#tpbeat');
-  if(ph.kind==='ex'){const w=['1','et','2'][b%3];if(bt){bt.textContent=w;bt.className='tpbeat'+(w==='1'?' one':'');void bt.offsetWidth;bt.classList.add('pop')}tpBeep(w==='1'?1046:w==='et'?700:784,w==='1'?.16:.09);const r=$('#tprep');if(r)r.textContent=Math.min(Math.floor(el/(TP.p.rep*1000))+1,Math.floor(ph.t/TP.p.rep))}
+  if(ph.kind==='ex'){const w=['1','et','2'][b%3];if(bt){bt.textContent=w;bt.className='tpbeat'+(w==='1'?' one':'');void bt.offsetWidth;bt.classList.add('pop')}
+   if(w==='et')tpBeep(880,.1);else if(!tpSay(w==='1'?'un':'deux',1.3))tpBeep(w==='1'?1046:784,w==='1'?.16:.09);const r=$('#tprep');if(r)r.textContent=Math.min(Math.floor(el/(TP.p.rep*1000))+1,Math.floor(ph.t/TP.p.rep))}
   else{if(left<=3&&left>0){if(bt)bt.textContent=left;tpBeep(880,.12)}else if(bt)bt.textContent=''}}
  if(el>=dur){if(ph.kind==='ex')TP.done[ph.k]=ph.t;TP.i++;if(TP.i>=TP.L.length){tpEnd(true);return}TP.t0=Date.now();TP.pausedMs=0;tpBeep(1320,.25);tpPaint()}}
 function tpClose(){clearInterval(tpStart.iv);try{TP&&TP.wl&&TP.wl.release()}catch(e){}const d=$('#tp');if(d)d.remove();TP=null}
