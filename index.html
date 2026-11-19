@@ -365,8 +365,10 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .tpbtns{display:flex;justify-content:center;margin-top:14px}.tpbtns .btn{margin:0 6px;min-width:130px}
 @media (prefers-reduced-motion:reduce){.tpbeat.pop{-webkit-animation:none;animation:none}}
 /* Filet d'or sur les titres (voir goldTitles) : ne capte aucun clic */
-.goldline{position:absolute;left:0;top:0;bottom:0;width:0;overflow:hidden;pointer-events:none;white-space:nowrap;-webkit-transition:width 1.8s ease-in-out,opacity .8s;transition:width 1.8s ease-in-out,opacity .8s}
-.goldin{display:block;white-space:normal;font:inherit;letter-spacing:inherit;text-transform:inherit;line-height:inherit;color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:1.3px #FFC23A;-webkit-filter:drop-shadow(0 0 3px rgba(255,178,26,.7));filter:drop-shadow(0 0 3px rgba(255,178,26,.7))}
+.goldline{position:absolute;left:0;top:0;bottom:0;width:0;overflow:hidden;pointer-events:none;white-space:nowrap;opacity:.85;-webkit-transition:width 2.2s cubic-bezier(.4,0,.2,1),opacity 1.2s ease;transition:width 2.2s cubic-bezier(.4,0,.2,1),opacity 1.2s ease;
+ -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 40px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 40px),transparent 100%)}
+.goldin{display:block;white-space:normal;font:inherit;letter-spacing:inherit;text-transform:inherit;line-height:inherit;color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:.6px rgba(255,214,120,.9);-webkit-filter:drop-shadow(0 0 1.5px rgba(255,190,60,.35));filter:drop-shadow(0 0 1.5px rgba(255,190,60,.35))}
+:root[data-theme="light"] .goldin{-webkit-text-stroke-color:rgba(200,140,20,.85);-webkit-filter:none;filter:none}
 .goldin *{color:transparent!important;-webkit-text-fill-color:transparent!important;background:none!important}
 /* Anatomie : bandeau de chapitres (à gauche sur grand écran, en haut et défilant sur téléphone) */
 .anwrap{margin-top:14px;min-width:0;max-width:100%}
@@ -3600,7 +3602,7 @@ const SITE_URL='https://jeremyrosa1722038.github.io/JeFIT/';
    inner.style.width=h.clientWidth+'px';inner.style.textAlign=cs.textAlign;
    ov.appendChild(inner);h.appendChild(ov);void ov.offsetWidth;
    ov.style.width='100%';
-   setTimeout(()=>{ov.style.opacity='0'},2300);setTimeout(()=>{if(ov.parentNode)ov.parentNode.removeChild(ov)},3200);
+   setTimeout(()=>{ov.style.webkitMaskImage=ov.style.maskImage='none';ov.style.opacity='0'},2300);setTimeout(()=>{if(ov.parentNode)ov.parentNode.removeChild(ov)},3700);
   });
  }
  setTimeout(run,4000);setInterval(run,15000);
@@ -3645,7 +3647,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V5.7',APP_BUILD='19/11/2026 à 16:45'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V5.8',APP_BUILD='19/11/2026 à 17:00'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
