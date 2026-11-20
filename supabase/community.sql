@@ -7,15 +7,17 @@
 -- qui ne renvoient jamais l'e-mail, et qui ignorent les profils masqués
 -- (Paramètres › Mon compte › « Visible dans la communauté » = Non).
 
--- Liste des profils : nom, nombre de séances, date de la dernière séance
-create or replace function public.jefit_community()
-returns table (user_id uuid, name text, n int, last bigint, updated_at timestamptz)
+-- Liste des profils : nom, nombre de séances, date de la dernière séance, avatar
+drop function if exists public.jefit_community();
+create function public.jefit_community()
+returns table (user_id uuid, name text, n int, last bigint, updated_at timestamptz, av text)
 language sql stable security definer set search_path = public as $$
   select d.user_id,
          d.data->>'name',
          coalesce(jsonb_array_length(d.data->'sessions'), 0),
          (d.data->'sessions'->0->>'start')::numeric::bigint,
-         d.updated_at
+         d.updated_at,
+         d.data->>'av'
   from public.jefit_data d
   where auth.uid() is not null
     and coalesce((d.data->>'pub')::boolean, true)
