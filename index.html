@@ -592,6 +592,17 @@ svg.wma{animation:wmGlow 2.6s ease}
 .vdate b{color:var(--fg);font-size:16px;font-variant-numeric:tabular-nums}
 .acc-row{display:flex;align-items:center;gap:14px;padding-bottom:12px}
 .avatar{width:48px;height:48px;border-radius:50%;background:var(--grad);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font:900 22px var(--f-disp);flex:none}
+/* Avatars */
+.avatar.avimg,.avatar.avsvg{background:var(--soft);overflow:hidden;padding:0}
+.avatar img,.avatar svg{width:100%;height:100%;display:block;object-fit:cover}
+.avatar.xl{width:76px;height:76px;font-size:32px}
+.avbtn{position:relative;flex:none;border-radius:50%;padding:0}
+.avedit{position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;border-radius:50%;background:var(--card);color:var(--fg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));grid-gap:10px;gap:10px}
+.avopt{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-radius:14px;background:var(--soft);font-size:12px;font-weight:700;color:var(--fg);border:2px solid transparent}
+.avopt span{margin-top:5px}
+.avopt.on{border-color:var(--acc)}
+.avopt .avatar{width:58px;height:58px}
 /* Communauté */
 .ccard{display:flex;align-items:center;gap:12px;text-align:left;width:100%}
 .cnm{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2779,6 +2790,65 @@ VIEWS.badges=()=>{const B=allBadges(),got=B.filter(b=>b.lvl>=0).length,cat=c=>B.
  <div class="sec"><div class="hd"><h2>🚴 Vélo · JeRIDE</h2></div><div class="bgrid">${cat('Vélo').map(badgeTile).join('')}</div></div>
  <div class="sec"><div class="hd"><h2>🏋 Force par exercice</h2><span class="mut" style="font-size:13px">${F.length} exercice${F.length>1?'s':''}</span></div>
  ${F.length?`<div class="bgrid">${F.map(b=>`<button class="bdgb" data-a="exInfo" data-e="${b.exId}">${badgeTile(b)}</button>`).join('')}</div>`:`<div class="card empty"><p>Termine une séance : chaque exercice réalisé reçoit son badge « 1er essai », puis monte de niveau avec tes progrès.</p></div>`}</div>`};
+/* ===================== Avatars (20 personnages cartoon muscu, ou photo) ===================== */
+const AVS=(()=>{
+ const S1='#F1C09A',S2='#D9A07A',S3='#B9774E',S4='#8D5A3B',K='#1d1d1d';
+ const B=c=>`<rect width="64" height="64" fill="${c}" stroke="none"/>`,
+  T=c=>`<path d="M0 66c0-12 9-19 19-21l13 5 13-5c10 2 19 9 19 21z" fill="${c}"/>`,
+  N=c=>`<path d="M25 36h14v11l-7 3-7-3z" fill="${c}"/>`,
+  H=c=>`<ellipse cx="32" cy="28" rx="13" ry="14" fill="${c}"/>`,
+  E=(c,br)=>`<circle cx="27" cy="28" r="1.8" fill="${c||K}" stroke="none"/><circle cx="37" cy="28" r="1.8" fill="${c||K}" stroke="none"/>`+(br===0?'':'<path d="M23.5 24.3l5.5 1.9M40.5 24.3l-5.5 1.9" fill="none" stroke-width="2.2"/>'),
+  M='<path d="M27.5 35q4.5 2.5 9 0" fill="none"/>',
+  Mi=s=>s+`<g transform="matrix(-1 0 0 1 64 0)">${s}</g>`;
+ return {
+ viking:['Viking',B('#2F6FB0')+T('#7A4A2A')+'<path d="M14 52l6-4 4 6 5-4 3 5 3-5 5 4 4-6 6 4" fill="none" stroke="#C9A27A" stroke-width="2"/>'+N(S1)+H(S1)+'<path d="M19 29c0 13 6 20 13 20s13-7 13-20c-2 4-7 6-13 6s-11-2-13-6z" fill="#E07B24"/><path d="M25 35c3-3 5-2 7-1 2-1 4-2 7 1-3 1-5 1-7 0-2 1-4 1-7 0z" fill="#B85A10"/>'+Mi('<path d="M19 20c-7-1-10-7-9-13 2 4 6 6 11 7z" fill="#F4ECD8"/>')+'<path d="M18 23c0-8 6-13 14-13s14 5 14 13z" fill="#A7B0BA"/><path d="M32 10v13" fill="none"/><path d="M17 23h30v3H17z" fill="#7C8794"/><path d="M30.5 26h3v6l-1.5 1-1.5-1z" fill="#7C8794"/>'+E(0,0)],
+ spartiate:['Spartiate',B('#9F1239')+T('#C98A2E')+'<path d="M20 53h24" fill="none" stroke="#8A5A16"/>'+N(S2)+H(S2)+'<path d="M18 31c0-12 6-19 14-19s14 7 14 19v8h-5v-8c0-3-1-6-4-6H27c-3 0-4 3-4 6v8h-5z" fill="#D69A3A"/><path d="M16 17c3-12 29-12 32 0-2 0-3-1-4-2-4-6-20-6-24 0-1 1-2 2-4 2z" fill="#E11D48"/>'+E()+M],
+ amazone:['Amazone',B('#7C3AED')+T('#16A34A')+'<path d="M43 20c8 1 12 10 9 22-2-6-5-9-9-11z" fill="#3B2314"/>'+N(S3)+H(S3)+'<path d="M18 28c-2-11 5-17 14-17s16 6 14 16c-3-5-8-8-14-8-6 0-11 4-14 9z" fill="#3B2314"/><path d="M19.5 21.5c8-4 17-4 25 0" fill="none" stroke="#F43F5E" stroke-width="3"/>'+E(0,0)+'<path d="M24 24.5q3-1.5 5 0M35 24.5q2-1.5 5 0" fill="none"/><path d="M28 34q4 3.5 8 0z" fill="#fff"/><circle cx="19" cy="33" r="1.6" fill="#FACC15"/>'],
+ samourai:['Samouraï',B('#B91C1C')+T('#1F2937')+'<path d="M21 46l11 12 11-12" fill="none" stroke="#E5E7EB" stroke-width="2.5"/>'+N(S1)+H(S1)+'<path d="M19 25c0-9 6-14 13-14s13 5 13 14c-4-3-8-4-13-4s-9 1-13 4z" fill="#111"/><path d="M28 12c0-4 8-4 8 0z" fill="#111"/><ellipse cx="32" cy="8" rx="3.5" ry="3" fill="#111"/><path d="M19 22h26" fill="none" stroke="#F9FAFB" stroke-width="3"/><circle cx="32" cy="22" r="2" fill="#DC2626" stroke="none"/>'+E()+'<path d="M26 34c2-2 4-2 6-1 2-1 4-1 6 1" fill="none" stroke-width="2.4"/><path d="M30 39h4l-2 4z" fill="#111"/>'],
+ ninja:['Ninja',B('#0F766E')+T('#1F2937')+N('#1F2937')+H('#1F2937')+'<path d="M20 23.5h24V32H20z" fill="'+S1+'"/>'+E()+'<path d="M19 20.5h26" fill="none" stroke="#DC2626" stroke-width="3"/><path d="M44 20l9-4-3 5 5 3-11-2z" fill="#DC2626"/>'],
+ pirate:['Pirate',B('#0E7490')+T('#F5F5F4')+'<path d="M6 56h52M3 61h58" fill="none" stroke="#DC2626" stroke-width="3"/>'+N(S2)+H(S2)+'<path d="M20 31c1 10 6 15 12 15s11-5 12-15c-3 2-7 3-12 3s-9-1-12-3z" fill="#1F1F1F"/><path d="M18 24c0-9 6-13 14-13s14 4 14 13z" fill="#DC2626"/><path d="M45 21l8 1-3 6z" fill="#DC2626"/><g fill="#fff" stroke="none"><circle cx="26" cy="17" r="1.3"/><circle cx="34" cy="15" r="1.3"/><circle cx="39" cy="20" r="1.3"/></g><circle cx="27" cy="28" r="1.8" fill="'+K+'" stroke="none"/><path d="M23.5 24.8l5.5 1.6" fill="none" stroke-width="2.2"/><path d="M19 24l22 8" fill="none"/><ellipse cx="37" cy="28.5" rx="3.6" ry="3.2" fill="#111"/><circle cx="19" cy="32" r="2" fill="none" stroke="#FACC15" stroke-width="1.6"/>'],
+ chevalier:['Chevalier',B('#4B5563')+T('#9CA3AF')+'<path d="M32 50v14" fill="none"/><path d="M18 42V26c0-10 6-15 14-15s14 5 14 15v16z" fill="#CBD5E1"/><path d="M32 11v31" fill="none" stroke="#94A3B8"/><path d="M21 26h22" fill="none" stroke-width="3.2"/><circle cx="27" cy="26" r="1" fill="#FDE047" stroke="none"/><circle cx="37" cy="26" r="1" fill="#FDE047" stroke="none"/><g fill="'+K+'" stroke="none"><circle cx="36" cy="33" r=".9"/><circle cx="39" cy="33" r=".9"/><circle cx="36" cy="36" r=".9"/><circle cx="39" cy="36" r=".9"/></g><path d="M33 12c1-7 9-10 15-7-5 1-8 4-9 8z" fill="#DC2626"/>'],
+ boxeur:['Boxeur',B('#DC2626')+T(S4)+N(S4)+H(S4)+'<path d="M18 31c-1-12 5-19 14-19s15 7 14 19h-4c0-5-1-8-3-9H25c-2 1-3 4-3 9z" fill="#2563EB"/><path d="M18.5 30h4v8h-4zM41.5 30h4v8h-4z" fill="#2563EB"/>'+E()+'<path d="M27 34h10v3.5H27z" fill="#F43F5E"/>'],
+ halt:['Haltéro',B('#F59E0B')+'<path d="M3 9h58" fill="none" stroke-width="3"/><g fill="#374151"><rect x="5" y="2" width="5" height="14" rx="1.5"/><rect x="11" y="4" width="3" height="10" rx="1"/><rect x="54" y="2" width="5" height="14" rx="1.5"/><rect x="50" y="4" width="3" height="10" rx="1"/></g>'+T(S1)+'<path d="M19 66V50c4 3 8 4 13 4s9-1 13-4v16z" fill="#2563EB"/>'+N(S1)+H(S1)+'<path d="M19 24c0-8 6-13 13-13s13 5 13 13c-4-3-8-4-13-4s-9 1-13 4z" fill="#3B2314"/><path d="M19 22h26" fill="none" stroke="#F43F5E" stroke-width="3.5"/>'+E()+'<path d="M25 34c3-2.5 5-2.5 7-.5 2-2 4-2 7 .5-2.5 2-5 2-7 .8-2 1.2-4.5 1.2-7-.8z" fill="#3B2314"/>'],
+ robot:['Robot',B('#1E3A8A')+T('#94A3B8')+N('#64748B')+'<path d="M32 14V7" fill="none"/><circle cx="32" cy="6" r="2.5" fill="#F43F5E"/><rect x="14" y="23" width="5" height="10" rx="2" fill="#64748B"/><rect x="45" y="23" width="5" height="10" rx="2" fill="#64748B"/><rect x="18" y="14" width="28" height="25" rx="5" fill="#CBD5E1"/><rect x="21" y="21" width="22" height="9" rx="4.5" fill="#0EA5E9"/><circle cx="27" cy="25.5" r="1.8" fill="#fff" stroke="none"/><circle cx="37" cy="25.5" r="1.8" fill="#fff" stroke="none"/><rect x="25" y="32" width="14" height="4" rx="1" fill="#475569"/><path d="M29 32v4M32 32v4M35 32v4" fill="none" stroke="#CBD5E1" stroke-width="1"/>'],
+ gorille:['Gorille',B('#65A30D')+T('#2B2B33')+N('#2B2B33')+Mi('<circle cx="18.5" cy="29" r="3.5" fill="#2B2B33"/>')+H('#2B2B33')+'<path d="M21 31c0-6 5-9 11-9s11 3 11 9-5 10-11 10-11-4-11-10z" fill="#8C7B6B"/><path d="M21 25c5-4 17-4 22 0" fill="none" stroke-width="3"/>'+E(0,0)+'<path d="M30 32.5h.1M34 32.5h.1" fill="none" stroke-width="2.6"/><path d="M27 36.5q5 2.5 10 0" fill="none"/>'],
+ ours:['Ours',B('#0EA5E9')+T('#8B5A2B')+N('#8B5A2B')+Mi('<circle cx="21" cy="16" r="5" fill="#8B5A2B"/><circle cx="21" cy="16" r="2.2" fill="#D9B48F" stroke="none"/>')+H('#8B5A2B')+'<ellipse cx="32" cy="34" rx="7.5" ry="5.5" fill="#D9B48F"/><ellipse cx="32" cy="31.6" rx="2.6" ry="1.8" fill="'+K+'"/><path d="M29 36q3 2 6 0" fill="none"/>'+E()],
+ lion:['Lion',B('#9333EA')+T('#E0A64B')+N('#F2B84B')+'<path d="M32 7L37 11L43 9L45 15L51 17L49 23L53 28L49 33L51 39L45 41L43 47L37 45L32 49L27 45L21 47L19 41L13 39L15 33L11 28L15 23L13 17L19 15L21 9L27 11Z" fill="#C2410C"/>'+H('#F2B84B')+'<ellipse cx="32" cy="34.5" rx="6.5" ry="4.5" fill="#FDE6B0"/><path d="M29.8 31.5h4.4L32 34z" fill="#7C2D12"/><path d="M32 34v2M29 37q3 1.5 3-1 0 2.5 3 1" fill="none"/>'+E()],
+ taureau:['Taureau',B('#B91C1C')+T('#5A3A28')+N('#6B4430')+Mi('<path d="M21 19c-8 0-11-6-10-11 2 4 6 5 11 6z" fill="#F4ECD8"/><path d="M20 24c-4 0-7-2-8-4 3-1 6-1 8 1z" fill="#6B4430"/>')+H('#6B4430')+'<ellipse cx="32" cy="35.5" rx="8.5" ry="5.5" fill="#D6A88A"/><g fill="'+K+'" stroke="none"><ellipse cx="28.5" cy="35" rx="1.3" ry="1.8"/><ellipse cx="35.5" cy="35" rx="1.3" ry="1.8"/></g><circle cx="32" cy="40.5" r="3" fill="none" stroke="#FACC15" stroke-width="2"/>'+E()],
+ loup:['Loup',B('#1E293B')+T('#7D8794')+N('#8B95A3')+Mi('<path d="M19 22V9l9 6z" fill="#8B95A3"/><path d="M21 18v-5l3 3z" fill="#F1F5F9" stroke="none"/>')+H('#8B95A3')+'<path d="M20 32c3 6 7 9 12 9s9-3 12-9c-3 1-6 0-8-2h-8c-2 2-5 3-8 2z" fill="#F1F5F9"/><path d="M27 30c0-2 2-3 5-3s5 1 5 3l-2 5h-6z" fill="#F1F5F9"/><ellipse cx="32" cy="30" rx="2.3" ry="1.6" fill="'+K+'"/>'+E('#FACC15')],
+ requin:['Requin',B('#0369A1')+'<path d="M27 15l7-11 4 12z" fill="#5B7FA6"/>'+T('#5B7FA6')+'<path d="M16 46c0-20 7-33 16-33s16 13 16 33z" fill="#6B8FB6"/><path d="M20 36c5 3 19 3 24 0l2 10H18z" fill="#F8FAFC"/><path d="M22 33q10 5 20 0l-2 4q-8 4-16 0z" fill="#7F1D1D"/><path d="M23 33.5l1.5 2 1.5-1.5 1.5 2 1.5-1.6 1.5 2 1.5-1.6 1.5 2 1.5-1.6 1.5 2 1.5-1.6 1.5 2 1.5-1.8" fill="none" stroke="#fff" stroke-width="1.2"/><path d="M18 30l2 3M17 34l2 3" fill="none"/>'+E()],
+ dragon:['Dragon',B('#F97316')+T('#15803D')+N('#22C55E')+Mi('<path d="M22 17l-6-10 10 6z" fill="#FDE68A"/>')+'<path d="M27 15l5-6 5 6z" fill="#15803D"/>'+H('#22C55E')+'<ellipse cx="32" cy="35" rx="8.5" ry="5.5" fill="#86EFAC"/><circle cx="29" cy="34" r="1.1" fill="'+K+'" stroke="none"/><circle cx="35" cy="34" r="1.1" fill="'+K+'" stroke="none"/><path d="M27 38q5 2 10 0" fill="none"/>'+E('#B91C1C')],
+ aigle:['Aigle',B('#2563EB')+T('#6B3E1E')+N('#F8FAFC')+Mi('<path d="M21 33l-5 5 7-1z" fill="#F8FAFC"/>')+H('#F8FAFC')+'<path d="M27 30c2-2 8-2 10 0 2 3 1 8-3 10 1-2 1-4-1-5h-5z" fill="#F59E0B"/>'+E()],
+ rhino:['Rhino',B('#CA8A04')+T('#6B7280')+N('#9CA3AF')+Mi('<path d="M20 20l-3-8 8 4z" fill="#9CA3AF"/>')+H('#9CA3AF')+'<ellipse cx="32" cy="35.5" rx="9" ry="5.5" fill="#B4BAC4"/><path d="M28 37h.1M36 37h.1" fill="none" stroke-width="2.4"/><path d="M29 32c0-5 2-10 6-14-1 5 0 10 1 14z" fill="#F4ECD8"/>'+E()],
+ panda:['Panda',B('#10B981')+T(K)+N('#F8FAFC')+Mi('<circle cx="21" cy="16" r="5" fill="'+K+'"/>')+H('#F8FAFC')+'<ellipse cx="26.5" cy="28" rx="4" ry="5" fill="'+K+'" transform="rotate(25 26.5 28)"/><ellipse cx="37.5" cy="28" rx="4" ry="5" fill="'+K+'" transform="rotate(-25 37.5 28)"/><circle cx="27" cy="27.5" r="1.6" fill="#fff" stroke="none"/><circle cx="37" cy="27.5" r="1.6" fill="#fff" stroke="none"/><ellipse cx="32" cy="33" rx="2.4" ry="1.7" fill="'+K+'"/><path d="M29 36q3 2 3-1 0 3 3 1" fill="none"/><path d="M19.5 20.5c8-4 17-4 25 0" fill="none" stroke="#EF4444" stroke-width="3"/>'],
+ };
+})();
+const AVK=Object.keys(AVS);
+const avSVG=k=>`<svg viewBox="0 0 64 64" role="img" aria-label="${AVS[k][0]}"><g stroke="#1d1d1d" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">${AVS[k][1]}</g></svg>`;
+const AV_IMG=/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/;
+/* Avatar d'un profil : personnage, photo (JPEG validé) ou, à défaut, l'initiale */
+function avHTML(v,name,cls){cls=cls||'avatar';v=typeof v==='string'?v:'';
+ if(AV_IMG.test(v))return `<div class="${cls} avimg"><img src="${v}" alt=""></div>`;
+ if(AVS[v])return `<div class="${cls} avsvg">${avSVG(v)}</div>`;
+ return `<div class="${cls}">${esc(String(name||'?').charAt(0).toUpperCase())}</div>`}
+const avGet=()=>{const a=LS.get('jefit.av',null);return (a&&a.v)||''};
+function avSave(v){LS.set('jefit.av',{v:v||'',at:Date.now()});COMM=null;sbQueue()}
+/* Photo choisie sur l'appareil : recadrée en carré 160 px, JPEG léger (~10 Ko) */
+function avFile(inp){const f=inp.files&&inp.files[0];if(!f)return;
+ if(!/^image\//.test(f.type||'image/')){toast('Choisis une image (JPG, PNG…)');return}
+ let url;try{url=URL.createObjectURL(f)}catch(e){toast('Image illisible');return}
+ const im=new Image();
+ im.onload=()=>{try{const N=160,c=document.createElement('canvas');c.width=N;c.height=N;const x=c.getContext('2d'),s=Math.min(im.width,im.height);
+  x.fillStyle='#fff';x.fillRect(0,0,N,N);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,N,N);
+  const d=c.toDataURL('image/jpeg',0.82);URL.revokeObjectURL(url);avSave(d);closeSheet();render();toast('Photo de profil enregistrée')}catch(e){toast('Image illisible')}};
+ im.onerror=()=>{URL.revokeObjectURL(url);toast('Image illisible : essaie un JPG ou un PNG')};
+ im.src=url}
+function avPicker(){const cur=avGet();
+ openSheet(`<h2>Mon avatar</h2><p class="mut" style="margin:0 0 12px">Choisis ton personnage ou mets ta photo. Il s’affiche dans la Communauté.</p>
+ <div class="avgrid">${AVK.map(k=>`<button class="avopt ${cur===k?'on':''}" data-a="avSet" data-v="${k}"><div class="avatar avsvg">${avSVG(k)}</div><span>${AVS[k][0]}</span></button>`).join('')}</div>
+ <div class="btnrow" style="margin-top:14px"><label class="btn pri">📷 Mettre ma photo<input type="file" accept="image/*" style="display:none" onchange="avFile(this)"></label><button class="btn" data-a="avSet" data-v="">Juste mon initiale</button></div>`,
+ `<button class="btn" data-a="close">Fermer</button>`)}
+
 /* ===================== Communauté : profils des autres, en lecture seule ===================== */
 /* Les données d'un autre profil ne remplacent S / RIDES que le temps de dessiner la page (visWrap) :
    la synchro et les sauvegardes continuent de ne voir que nos propres données. */
@@ -2799,7 +2869,7 @@ function profBuild(r){const d=(r&&r.data)||{};
  const S2={programs:d.programs||[],custom:d.custom||[],sessions:(d.sessions||[]).filter(s=>s&&Array.isArray(s.items)).sort((a,b)=>b.start-a.start),cycles:d.cycles||{},avoid:d.avoid||[],
   lafay:d.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]},tomb:[],pending:[],deleted:[],cfgAt:0};
  const rides=(r.rides||[]).filter(x=>x&&x.id!=null).map(rideOf).filter(x=>x.start&&x.duration>=60000);
- return {name:d.name||'?',S:S2,rides,bw:+d.bw||80,sex:d.sex==='f'?'f':'h'};
+ return {name:d.name||'?',S:S2,rides,bw:+d.bw||80,sex:d.sex==='f'?'f':'h',av:d.av||''};
 }
 async function profLoad(uid){
  PROF[uid]={busy:true};
@@ -2818,7 +2888,7 @@ function cvLock(){const m=$('#main');if(!m)return;
   else{e.removeAttribute('data-a');e.removeAttribute('role');e.classList.add('cvro');e.setAttribute('tabindex','-1')}})}
 const myUid=()=>(LS.get('jefit.sbs',{})||{}).uid;
 function cCard(u){const mine=u.user_id===myUid(),last=+u.last||0,n=+u.n||0,nm=String(u.name||'?');
- return `<button class="card ccard" data-a="cOpen" data-u="${esc(u.user_id)}" data-n="${esc(nm)}"><div class="avatar">${esc(nm.charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><b class="cnm">${esc(nm)}${mine?' <span class="pill">Moi</span>':''}</b><div class="mut" style="font-size:13px;margin-top:2px">${n} séance${n>1?'s':''}${last?' · dernière le '+esc(DSHORT.format(last)):''}</div></div><span style="transform:scaleX(-1);display:flex;color:var(--mut)">${icS('back',18)}</span></button>`}
+ return `<button class="card ccard" data-a="cOpen" data-u="${esc(u.user_id)}" data-n="${esc(nm)}">${avHTML(u.av,nm)}<div style="flex:1;min-width:0"><b class="cnm">${esc(nm)}${mine?' <span class="pill">Moi</span>':''}</b><div class="mut" style="font-size:13px;margin-top:2px">${n} séance${n>1?'s':''}${last?' · dernière le '+esc(DSHORT.format(last)):''}</div></div><span style="transform:scaleX(-1);display:flex;color:var(--mut)">${icS('back',18)}</span></button>`}
 VIEWS.community=()=>{
  const head=`<div class="top"><h1>Communauté</h1>${sbLinked()?`<button class="btn sm" data-a="cLoad">${ic('swap')}Actualiser</button>`:''}</div><p class="mut" style="margin:0 0 14px">Touche un profil pour voir son accueil et ses badges, en lecture seule.</p>`;
  if(!sbOn()||!sbLinked())return head+`<div class="card empty"><h3 style="color:var(--fg)">Connecte ton compte en ligne</h3><p>La communauté passe par la sauvegarde en ligne : Paramètres › Sauvegarde en ligne › Connecter mon compte.</p><button class="btn pri" data-a="tab" data-v="settings">${ic('gear')}Paramètres</button></div>`;
@@ -2833,7 +2903,7 @@ VIEWS.cview=()=>{
  const uid=view.uid,st=PROF[uid];if(!st)setTimeout(()=>profLoad(uid),0);
  const p=st&&st.p,nm=String(p?p.name:(view.nm||'?')),ct=view.ct||'home';
  const bar=`<button class="lnk" data-a="tab" data-v="community" style="font-weight:700;color:var(--mut);margin:4px 0 10px">‹ Tous les profils</button>
- <div class="cvbar"><div class="avatar">${esc(nm.charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><div class="eyebrow">Profil · lecture seule</div><b class="cnm">${esc(nm)}</b></div><button class="btn pri sm" data-a="cBack">${ic('home')}Revenir à mon interface</button></div>
+ <div class="cvbar">${avHTML(p?p.av:(((COMM&&COMM.list)||[]).filter(x=>x.user_id===uid)[0]||{}).av,nm)}<div style="flex:1;min-width:0"><div class="eyebrow">Profil · lecture seule</div><b class="cnm">${esc(nm)}</b></div><button class="btn pri sm" data-a="cBack">${ic('home')}Revenir à mon interface</button></div>
  <div class="seg" style="margin:12px 0 0">${[['home','Accueil'],['badges','Badges']].map(([k,l])=>`<button class="${ct===k?'on':''}" data-a="cTab" data-v="${k}">${l}</button>`).join('')}</div>`;
  if(!p)return bar+`<div class="card empty sec"><p>${st&&st.err?esc(st.err):'Chargement du profil…'}</p>${st&&st.err?`<button class="btn" data-a="cLoad">Réessayer</button>`:''}</div>`;
  return bar+`<div class="cvwrap">${visWrap(p,()=>(ct==='badges'?VIEWS.badges:VIEWS.home)())}</div>`;
@@ -3170,6 +3240,8 @@ const A={
  cOpen:el=>{const u=el.dataset.u;if(u===myUid()){backStack=[];go('home');return}delete PROF[u];go('cview',{uid:u,nm:el.dataset.n,ct:'home'})},
  cTab:el=>{view.ct=el.dataset.v;view.ro=0;view.hw=null;render();window.scrollTo(0,0)},
  cBack:()=>{backStack=[];go('home')},
+ avPick:()=>avPicker(),
+ avSet:el=>{avSave(el.dataset.v);closeSheet();render();toast('Avatar mis à jour')},
  cLoad:()=>{if(view.name==='cview'){delete PROF[view.uid];render()}else commLoad()},
  pubTog:()=>{const on=LS.get('jefit.pub',true)!==false;LS.set('jefit.pub',!on);COMM=null;sbQueue();render();toast(on?'Ton profil est masqué de la communauté':'Ton profil est visible dans la communauté')},
  back:()=>{const b=backStack.pop();b?(view=b,render(),scrollTo(0,0)):go('progress')},
@@ -3776,7 +3848,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V6.0',APP_BUILD='20/11/2026 à 10:53'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V6.1',APP_BUILD='20/11/2026 à 11:30'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
@@ -3825,11 +3897,12 @@ function sbWelcome(){if(!sbOn()||!sbLinked())return;sbFn('welcome').then(j=>{if(
 const sbTaken=e=>/already|registered|exists/i.test(e&&e.message||'')||(e&&e.code==='user_already_exists');
 /* Connexion au compte en ligne ; le crée s'il n'existe pas encore */
 async function sbConnect(name,pw){try{await sbLogin(name,pw)}catch(e){if(e.status!==400)throw e;try{await sbSignup(name,pw)}catch(e2){if(sbTaken(e2)){const x=new Error('Mot de passe incorrect pour ce compte en ligne.');x.code='badpw';throw x}throw e2}}}
-function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),sex:LS.get('jefit.sex','h'),pub:LS.get('jefit.pub',true)!==false,at:Date.now()})}
+function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),sex:LS.get('jefit.sex','h'),pub:LS.get('jefit.pub',true)!==false,av:avGet(),avAt:(LS.get('jefit.av',null)||{}).at||0,at:Date.now()})}
 function sbMerge(r){
  if(!r||r.app!=='JeFIT')return false;let ch=false;
  const tomb=new Set([...(S.tomb||[]),...(r.tomb||[])]);if(tomb.size!==S.tomb.length){S.tomb=[...tomb];ch=true}
  if((r.cfgAt||0)>(S.cfgAt||0)){S.programs=clone(r.programs||S.programs);S.custom=clone(r.custom||[]);if(r.lafay)S.lafay=clone(r.lafay);if(Array.isArray(r.avoid))S.avoid=clone(r.avoid);if(r.cycles&&typeof r.cycles==='object')S.cycles=clone(r.cycles);if(typeof r.mly==='string')S.mly=r.mly;S.cfgAt=r.cfgAt;ch=true;if(typeof queuePushCfg==='function')queuePushCfg()}
+ if(typeof r.av==='string'&&(r.avAt||0)>((LS.get('jefit.av',null)||{}).at||0)){LS.set('jefit.av',{v:r.av,at:r.avAt});ch=true} /* avatar choisi sur un autre appareil */
  const have=new Set(S.sessions.map(s=>s.id));(r.sessions||[]).forEach(s=>{if(!have.has(s.id)&&!tomb.has(s.id)){S.sessions.push(clone(s));S.pending.push(s.id);ch=true}});
  const n=S.sessions.length;S.sessions=S.sessions.filter(s=>!tomb.has(s.id));if(S.sessions.length!==n)ch=true;
  if(ch){S.sessions.sort((a,b)=>b.start-a.start);LS.set(KEY,S);S.pending.forEach(pushSess)}
@@ -3880,8 +3953,9 @@ VIEWS.settings=()=>{
  <div class="card ver"><div><div class="eyebrow">Version</div><div class="vnum">${APP_V}</div></div><div class="vdate">Mise à jour du<br><b>${APP_BUILD}</b></div></div>
 
  <div class="sec"><div class="hd"><h2>Mon compte</h2></div><div class="card set-card">
-  <div class="acc-row"><div class="avatar">${esc((a.name||'?').charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><b style="font-size:17px">${esc(a.name)}</b><div class="mut" style="font-size:13px">${a.created?'Compte créé le '+esc(DAY.format(a.created)):''} · ${S.sessions.length} séance(s) enregistrée(s)</div></div></div>
+  <div class="acc-row"><button class="avbtn" data-a="avPick" aria-label="Changer mon avatar">${avHTML(avGet(),a.name,'avatar xl')}<span class="avedit">${icS('edit',14)}</span></button><div style="flex:1;min-width:0"><b style="font-size:17px">${esc(a.name)}</b><div class="mut" style="font-size:13px">${a.created?'Compte créé le '+esc(DAY.format(a.created)):''} · ${S.sessions.length} séance(s) enregistrée(s)</div></div></div>
   <button class="mi" data-a="accMail">${ic('note')}<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">${a.email?'E-mail : '+esc(a.email):'Ajouter mon e-mail'}</span></button>
+  <button class="mi" data-a="avPick">${ic('users')}Changer mon avatar</button>
   <button class="mi" data-a="accPw">${ic('edit')}Changer le mot de passe</button>
   <button class="mi" data-a="pubTog">${ic('users')}<span style="flex:1">Visible dans la communauté</span><b style="color:${LS.get('jefit.pub',true)!==false?'var(--ok)':'var(--mut)'}">${LS.get('jefit.pub',true)!==false?'Oui':'Non'}</b></button>
   <button class="mi" data-a="logout" style="color:var(--danger)">${ic('back')}Se déconnecter</button>
