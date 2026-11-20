@@ -592,6 +592,11 @@ svg.wma{animation:wmGlow 2.6s ease}
 .vdate b{color:var(--fg);font-size:16px;font-variant-numeric:tabular-nums}
 .acc-row{display:flex;align-items:center;gap:14px;padding-bottom:12px}
 .avatar{width:48px;height:48px;border-radius:50%;background:var(--grad);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font:900 22px var(--f-disp);flex:none}
+/* Communauté */
+.ccard{display:flex;align-items:center;gap:12px;text-align:left;width:100%}
+.cnm{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cvbar{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--soft);border:1px solid var(--acc);flex-wrap:wrap}
+.cvro{cursor:default}.cvro:active{transform:none}
 .set-card .mi:first-child{border-top:0}
 .btnrow{display:flex;flex-wrap:wrap;gap:8px}
 .btnrow .btn{flex:1 1 140px}
@@ -2204,6 +2209,7 @@ const I={
  stairs:'<path d="M3 20h5v-5h5v-5h5V5h3"/>',
  cross:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
  bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6 6 0 0 1 3.5 6"/>',
  medal:'<circle cx="12" cy="9" r="6"/><path d="M8.6 13.8L7 22l5-2.6 5 2.6-1.6-8.2"/><path d="M12 6.5l.8 1.6 1.7.2-1.2 1.2.3 1.7-1.6-.8-1.6.8.3-1.7-1.2-1.2 1.7-.2z"/>',
 };
 /* Icône au trait à taille fixe (même famille que le bandeau) */
@@ -2227,15 +2233,16 @@ function weekStart(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDat
 /* ---------- Navigation ---------- */
 let view={name:'home'},sheetOpen=false;
 function go(name,p={}){view={name,...p};render();window.scrollTo(0,0)}
-const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['badges','Badges','medal'],['progress','Progrès','chart'],['settings','Paramètres','gear']];
+const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['badges','Badges','medal'],['community','Communauté','users'],['progress','Progrès','chart'],['settings','Paramètres','gear']];
 function navHTML(){
- const tabOf={program:'programs',dayedit:'programs',quick:'programs',lafay:'programs',anatomie:'programs',session:'home',history:'home',exercise:'progress'};
+ const tabOf={program:'programs',dayedit:'programs',quick:'programs',lafay:'programs',anatomie:'programs',session:'home',history:'home',exercise:'progress',cview:'community'};
  const cur=tabOf[view.name]||view.name;
  return `<div class="brand" data-a="tab" data-v="home" data-tip="Accueil" role="button" aria-label="Accueil">${WM('wm lg')}</div><div class="nav-in">${TABS.map(([k,l,i])=>`<button class="navb ${cur===k?'on':''}" data-a="tab" data-v="${k}" data-tip="${l}" aria-label="${l}">${ic(i)}<span ${k==='workout'&&W?'class="live" data-clock':''}>${k==='workout'&&W?fmtT(elapsed(W)/1000):l}</span></button>`).join('')}</div><div class="nav-r">${sbChip(true)}<button class="npill clock" data-a="tab" data-v="workout" data-clock2>${W?hms(elapsed(W)):'00:00:00'}</button>`;
 }
 function render(){
  const V=VIEWS[view.name]||VIEWS.home;
  $('#main').innerHTML=V();
+ if(view.name==='cview')cvLock();
  $('#nav').innerHTML=navHTML();
  renderRest();renderLive();watchMore();
 }
@@ -2602,8 +2609,8 @@ function celebrate(s){const R=sessRecap(s);const d=document.createElement('div')
    Force : 1RM estimé ÷ poids de corps (paliers par exercice). Poids du corps : répétitions. Gainage : secondes. */
 const LVL=['1er essai','Bronze','Argent','Or','Platine','Diamant','Élite'];
 const LVC=[['#86EFAC','#15803D'],['#F0B07A','#8A4B1E'],['#F4F6FA','#8C96A8'],['#FFE27A','#C98A00'],['#C9FBF3','#3AA79D'],['#BFE3FF','#3B6CFF'],['#FFB8E6','#9B2CFF']];
-const bwKg=()=>+LS.get('jelift.bw',80)||80;
-const isFem=()=>LS.get('jefit.sex','h')==='f';
+const bwKg=()=>VISA?VISA.bw:(+LS.get('jelift.bw',80)||80);
+const isFem=()=>VISA?VISA.sex==='f':LS.get('jefit.sex','h')==='f';
 /* Paliers Bronze→Élite en × poids du corps (homme) ; femme ≈ 65 % */
 const STD={bench:[.5,.75,1,1.25,1.5,1.75],inclinebb:[.4,.6,.85,1.05,1.3,1.5],declinebench:[.5,.75,1,1.25,1.5,1.75],closebench:[.4,.65,.85,1.1,1.3,1.5],dbbench:[.2,.3,.4,.5,.62,.75],incline:[.17,.25,.35,.45,.55,.65],
  squat:[.75,1,1.25,1.5,2,2.5],frontsquat:[.6,.8,1,1.25,1.6,2],deadlift:[1,1.25,1.5,2,2.5,3],rdl:[.75,1,1.25,1.5,1.9,2.3],hipthrust:[.75,1.1,1.5,2,2.5,3],legpress:[1,1.5,2,2.75,3.5,4.5],
@@ -2772,6 +2779,65 @@ VIEWS.badges=()=>{const B=allBadges(),got=B.filter(b=>b.lvl>=0).length,cat=c=>B.
  <div class="sec"><div class="hd"><h2>🚴 Vélo · JeRIDE</h2></div><div class="bgrid">${cat('Vélo').map(badgeTile).join('')}</div></div>
  <div class="sec"><div class="hd"><h2>🏋 Force par exercice</h2><span class="mut" style="font-size:13px">${F.length} exercice${F.length>1?'s':''}</span></div>
  ${F.length?`<div class="bgrid">${F.map(b=>`<button class="bdgb" data-a="exInfo" data-e="${b.exId}">${badgeTile(b)}</button>`).join('')}</div>`:`<div class="card empty"><p>Termine une séance : chaque exercice réalisé reçoit son badge « 1er essai », puis monte de niveau avec tes progrès.</p></div>`}</div>`};
+/* ===================== Communauté : profils des autres, en lecture seule ===================== */
+/* Les données d'un autre profil ne remplacent S / RIDES que le temps de dessiner la page (visWrap) :
+   la synchro et les sauvegardes continuent de ne voir que nos propres données. */
+var COMM=null,PROF={},VISA=null;
+const CV_IN={radarP:1,perNav:1,wkPick:1,histMore:1}; /* seules actions permises dans un profil visité */
+function commErr(e){
+ if(e&&e.code==='nolink')return 'Reconnecte ton compte en ligne dans Paramètres.';
+ if(e&&(e.code==='PGRST202'||e.code==='42883'||e.status===404))return 'nosql';
+ return e&&e.message==='Failed to fetch'?'Hors ligne : réessaie quand tu auras du réseau.':((e&&e.message)||'Erreur');
+}
+async function commLoad(){
+ if(COMM&&COMM.busy)return;const old=COMM&&COMM.list;COMM={busy:true,list:old};
+ try{const r=await sbFetch('/rest/v1/rpc/jefit_community',{method:'POST',body:'{}'});COMM={list:r||[],at:Date.now()}}
+ catch(e){COMM={list:old,err:commErr(e)}}
+ if(view.name==='community')soft();
+}
+function profBuild(r){const d=(r&&r.data)||{};
+ const S2={programs:d.programs||[],custom:d.custom||[],sessions:(d.sessions||[]).filter(s=>s&&Array.isArray(s.items)).sort((a,b)=>b.start-a.start),cycles:d.cycles||{},avoid:d.avoid||[],
+  lafay:d.lafay||{lvl:1,since:Date.now(),v:{},chk:{},cap:{},n1:null,hist:[]},tomb:[],pending:[],deleted:[],cfgAt:0};
+ const rides=(r.rides||[]).filter(x=>x&&x.id!=null).map(rideOf).filter(x=>x.start&&x.duration>=60000);
+ return {name:d.name||'?',S:S2,rides,bw:+d.bw||80,sex:d.sex==='f'?'f':'h'};
+}
+async function profLoad(uid){
+ PROF[uid]={busy:true};
+ try{const r=await sbFetch('/rest/v1/rpc/jefit_profile',{method:'POST',body:JSON.stringify({uid})});PROF[uid]=r&&r.data?{p:profBuild(r)}:{err:'Ce profil n’est plus visible dans la communauté.'}}
+ catch(e){const m=commErr(e);PROF[uid]={err:m==='nosql'?'La communauté n’est pas encore activée sur le serveur.':m}}
+ if(view.name==='cview'&&view.uid===uid)soft();
+}
+function visWrap(p,fn){const s0=S,r0=RIDES,w0=W,v0=view;
+ S=p.S;RIDES=p.rides;W=null;VISA=p;view={...v0,name:v0.ct==='badges'?'badges':'home'};
+ try{return fn()}finally{S=s0;RIDES=r0;W=w0;VISA=null;view=v0}}
+/* Profil visité : retire l'en-tête et neutralise tout ce qui modifie */
+function cvLock(){const m=$('#main');if(!m)return;
+ [].forEach.call(m.querySelectorAll('.cvwrap>.top,.cvwrap>h1,.cvwrap [data-sbchip]'),e=>e.parentNode.removeChild(e));
+ [].forEach.call(m.querySelectorAll('.cvwrap [data-a]'),e=>{if(CV_IN[e.dataset.a])return;
+  if(e.classList.contains('ib')||e.classList.contains('btn'))e.style.display='none';
+  else{e.removeAttribute('data-a');e.removeAttribute('role');e.classList.add('cvro');e.setAttribute('tabindex','-1')}})}
+const myUid=()=>(LS.get('jefit.sbs',{})||{}).uid;
+function cCard(u){const mine=u.user_id===myUid(),last=+u.last||0,n=+u.n||0,nm=String(u.name||'?');
+ return `<button class="card ccard" data-a="cOpen" data-u="${esc(u.user_id)}" data-n="${esc(nm)}"><div class="avatar">${esc(nm.charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><b class="cnm">${esc(nm)}${mine?' <span class="pill">Moi</span>':''}</b><div class="mut" style="font-size:13px;margin-top:2px">${n} séance${n>1?'s':''}${last?' · dernière le '+esc(DSHORT.format(last)):''}</div></div><span style="transform:scaleX(-1);display:flex;color:var(--mut)">${icS('back',18)}</span></button>`}
+VIEWS.community=()=>{
+ const head=`<div class="top"><h1>Communauté</h1>${sbLinked()?`<button class="btn sm" data-a="cLoad">${ic('swap')}Actualiser</button>`:''}</div><p class="mut" style="margin:0 0 14px">Touche un profil pour voir son accueil et ses badges, en lecture seule.</p>`;
+ if(!sbOn()||!sbLinked())return head+`<div class="card empty"><h3 style="color:var(--fg)">Connecte ton compte en ligne</h3><p>La communauté passe par la sauvegarde en ligne : Paramètres › Sauvegarde en ligne › Connecter mon compte.</p><button class="btn pri" data-a="tab" data-v="settings">${ic('gear')}Paramètres</button></div>`;
+ if(!COMM)setTimeout(commLoad,0);
+ if(!COMM||(COMM.busy&&!COMM.list))return head+`<div class="card empty"><p>Chargement des profils…</p></div>`;
+ if(COMM.err==='nosql')return head+`<div class="card empty"><h3 style="color:var(--fg)">Communauté pas encore activée</h3><p>Dans Supabase › SQL Editor, lancez une seule fois le script <b>supabase/community.sql</b>.</p></div>`;
+ const L=COMM.list||[];
+ return head+(COMM.err?`<div class="card" style="border:1px solid var(--danger);margin-bottom:12px">${esc(COMM.err)}</div>`:'')
+  +(L.length?`<div class="grid">${L.map(cCard).join('')}</div>`:`<div class="card empty"><p>Aucun profil pour l’instant.</p></div>`);
+};
+VIEWS.cview=()=>{
+ const uid=view.uid,st=PROF[uid];if(!st)setTimeout(()=>profLoad(uid),0);
+ const p=st&&st.p,nm=String(p?p.name:(view.nm||'?')),ct=view.ct||'home';
+ const bar=`<button class="lnk" data-a="tab" data-v="community" style="font-weight:700;color:var(--mut);margin:4px 0 10px">‹ Tous les profils</button>
+ <div class="cvbar"><div class="avatar">${esc(nm.charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><div class="eyebrow">Profil · lecture seule</div><b class="cnm">${esc(nm)}</b></div><button class="btn pri sm" data-a="cBack">${ic('home')}Revenir à mon interface</button></div>
+ <div class="seg" style="margin:12px 0 0">${[['home','Accueil'],['badges','Badges']].map(([k,l])=>`<button class="${ct===k?'on':''}" data-a="cTab" data-v="${k}">${l}</button>`).join('')}</div>`;
+ if(!p)return bar+`<div class="card empty sec"><p>${st&&st.err?esc(st.err):'Chargement du profil…'}</p>${st&&st.err?`<button class="btn" data-a="cLoad">Réessayer</button>`:''}</div>`;
+ return bar+`<div class="cvwrap">${visWrap(p,()=>(ct==='badges'?VIEWS.badges:VIEWS.home)())}</div>`;
+};
 /* Annonce de nouveaux badges (après une sortie vélo par exemple) */
 function badgePop(list){const d=document.createElement('div');d.className='cele';
  d.innerHTML=`<div class="celc"><div class="celt" style="font-size:44px">BRAVO !</div><div class="celbt">${list.length>1?list.length+' nouveaux badges':'Nouveau badge !'}</div><div class="celb">${list.slice(0,3).map(b=>`<div>${medal(b.lvl,b.glyph||'',80)}<span>${esc(b.name)}<b>${LVL[b.lvl]}</b></span></div>`).join('')}</div><button class="btn pri" style="margin-top:22px" data-a="tab" data-v="badges">Voir mes badges</button><div class="celtap">Touchez pour fermer</div></div>`;
@@ -3101,6 +3167,11 @@ const curDay=()=>{const p=S.programs.find(x=>x.id===view.pid);return p&&p.days.f
 let backStack=[];
 const A={
  tab:el=>{backStack=[];go(el.dataset.v)},
+ cOpen:el=>{const u=el.dataset.u;if(u===myUid()){backStack=[];go('home');return}delete PROF[u];go('cview',{uid:u,nm:el.dataset.n,ct:'home'})},
+ cTab:el=>{view.ct=el.dataset.v;view.ro=0;view.hw=null;render();window.scrollTo(0,0)},
+ cBack:()=>{backStack=[];go('home')},
+ cLoad:()=>{if(view.name==='cview'){delete PROF[view.uid];render()}else commLoad()},
+ pubTog:()=>{const on=LS.get('jefit.pub',true)!==false;LS.set('jefit.pub',!on);COMM=null;sbQueue();render();toast(on?'Ton profil est masqué de la communauté':'Ton profil est visible dans la communauté')},
  back:()=>{const b=backStack.pop();b?(view=b,render(),scrollTo(0,0)):go('progress')},
  cat:el=>{view.cat=el.dataset.v;render()},
  close:()=>closeSheet(),
@@ -3705,7 +3776,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V5.9',APP_BUILD='19/11/2026 à 17:15'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V6.0',APP_BUILD='20/11/2026 à 10:53'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
@@ -3754,7 +3825,7 @@ function sbWelcome(){if(!sbOn()||!sbLinked())return;sbFn('welcome').then(j=>{if(
 const sbTaken=e=>/already|registered|exists/i.test(e&&e.message||'')||(e&&e.code==='user_already_exists');
 /* Connexion au compte en ligne ; le crée s'il n'existe pas encore */
 async function sbConnect(name,pw){try{await sbLogin(name,pw)}catch(e){if(e.status!==400)throw e;try{await sbSignup(name,pw)}catch(e2){if(sbTaken(e2)){const x=new Error('Mot de passe incorrect pour ce compte en ligne.');x.code='badpw';throw x}throw e2}}}
-function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),at:Date.now()})}
+function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),sex:LS.get('jefit.sex','h'),pub:LS.get('jefit.pub',true)!==false,at:Date.now()})}
 function sbMerge(r){
  if(!r||r.app!=='JeFIT')return false;let ch=false;
  const tomb=new Set([...(S.tomb||[]),...(r.tomb||[])]);if(tomb.size!==S.tomb.length){S.tomb=[...tomb];ch=true}
@@ -3812,6 +3883,7 @@ VIEWS.settings=()=>{
   <div class="acc-row"><div class="avatar">${esc((a.name||'?').charAt(0).toUpperCase())}</div><div style="flex:1;min-width:0"><b style="font-size:17px">${esc(a.name)}</b><div class="mut" style="font-size:13px">${a.created?'Compte créé le '+esc(DAY.format(a.created)):''} · ${S.sessions.length} séance(s) enregistrée(s)</div></div></div>
   <button class="mi" data-a="accMail">${ic('note')}<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">${a.email?'E-mail : '+esc(a.email):'Ajouter mon e-mail'}</span></button>
   <button class="mi" data-a="accPw">${ic('edit')}Changer le mot de passe</button>
+  <button class="mi" data-a="pubTog">${ic('users')}<span style="flex:1">Visible dans la communauté</span><b style="color:${LS.get('jefit.pub',true)!==false?'var(--ok)':'var(--mut)'}">${LS.get('jefit.pub',true)!==false?'Oui':'Non'}</b></button>
   <button class="mi" data-a="logout" style="color:var(--danger)">${ic('back')}Se déconnecter</button>
  </div><p class="mut" style="font-size:13px;margin:8px 4px 0">Vos programmes et séances sont gardés dans ce navigateur : en rouvrant JeFIT, tout est déjà là.</p></div>
 
@@ -4107,7 +4179,7 @@ setInterval(idleCheck,10000);
 /* En revenant sur l'app après plus de 5 min, la scène du début accueille aussi */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)idleCheck()});
 
-document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const f=A[el.dataset.a];if(f){e.preventDefault();f(el,e)}});
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;if(view.name==='cview'&&el.closest('.cvwrap')&&!CV_IN[el.dataset.a]){e.preventDefault();return}const f=A[el.dataset.a];if(f){e.preventDefault();f(el,e)}});
 document.addEventListener('pointerdown',audio,{once:true});
 $('#ov').addEventListener('click',closeSheet);
 let inputT=null;
