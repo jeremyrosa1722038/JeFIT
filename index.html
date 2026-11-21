@@ -62,7 +62,9 @@ input,select,textarea{font:inherit;color:var(--fg)}
 
 /* ---------- Coquille ---------- */
 #nav{position:fixed;z-index:20;background:var(--bar);border-color:var(--line)}
-#main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(14px + env(safe-area-inset-top,0px)) 150px;max-width:1240px;margin:0 auto}
+#main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:150px;max-width:1240px;margin:0 auto}
+/* Téléphone : bande opaque sous l'heure / la Dynamic Island, prolongée d'un fondu pour que rien ne passe dans le flou du haut */
+@media (max-width:819px){body::before{height:calc(env(safe-area-inset-top,0px) + 6px);background:var(--bg);box-shadow:0 6px 12px 2px var(--bg)}}
 .nav-in{display:flex}
 .navb{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--mut);font-size:11px;font-weight:700;flex:1;padding:8px 0 6px}
 .navb svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -82,7 +84,7 @@ input,select,textarea{font:inherit;color:var(--fg)}
  .navb.on{background:var(--grad);color:var(--acc-ink)}
  .navb.on .live{color:var(--acc-ink)}
  .nav-r{display:flex;align-items:center;gap:10px;margin-left:auto}
- #main{margin-top:calc(76px + env(safe-area-inset-top,0px));padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));padding-block:22px 120px}
+ #main{margin-top:calc(76px + env(safe-area-inset-top,0px));padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));padding-top:22px;padding-bottom:120px}
  .mob-only{display:none!important}
 }
 @media (min-width:820px) and (max-width:1279px){.navb span:not(.live){display:none}.navb.on span{display:inline}}
@@ -137,7 +139,7 @@ a.btn{text-decoration:none}
 .libgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:4px}
 .chips::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:9px 16px;border-radius:12px;background:var(--soft);font:700 15px var(--f-disp);color:var(--mut)}
-.chip.on{background:var(--acc);color:#fff}
+.chip.on{background:var(--acc);background:var(--grad);color:var(--acc-ink)}
 /* Mode clair : boutons et filtres en vrais encarts blancs (comme les cartes) au lieu d'un gris qui se confond avec le fond */
 :root[data-theme="light"] .chip:not(.on),:root[data-theme="light"] .btn:not(.pri){background:var(--card);border:1px solid var(--line);box-shadow:0 1px 3px rgba(20,30,50,.07)}
 a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--acc)}
@@ -149,7 +151,7 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 
 /* ---------- Pictos ---------- */
 .fig .b,.fig .hd{fill:var(--fig)} .fig .bf{fill:var(--fig2)} .fig .hl{fill:var(--hl);opacity:.22}
-.fig .m{fill:var(--mus)} .fig .mf{opacity:.6} .fig .mh{fill:var(--mus2);opacity:.75} .fig .mc{fill:var(--mus)}
+.fig .m{fill:var(--mus);fill:url(#mgr)} .fig .mf{opacity:.6} .fig .mh{fill:#FFE38A;opacity:.5} .fig .mc{fill:var(--mus)}
 .fig .eq{stroke:var(--eq);stroke-width:3;fill:none;stroke-linecap:round}
 .fig .eqf{fill:var(--eq)} .fig .cb{stroke:var(--eq2);stroke-width:1.3;fill:none} .fig .pl{fill:var(--plate)} .fig .plr{fill:none;stroke:var(--card);stroke-width:1;opacity:.5} .fig .plh{fill:var(--card)}
 .fig .sh{fill:var(--fg);opacity:.08} .fig .fl{stroke:var(--line);stroke-width:2} .fig .ball{fill:var(--warm)}
@@ -302,7 +304,7 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .bdgt{flex:1;min-width:0}.bdgn{font-weight:800;font-size:15px;line-height:1.2}.bdgl{font:900 13px var(--f-disp);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
 .bdgv{font-size:13px;color:var(--mut);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bdgp{height:7px;border-radius:5px;background:var(--soft);overflow:hidden;margin-top:8px}.bdgp i{display:block;height:100%;border-radius:5px}
-.bdgx{font-size:12px;font-weight:700;color:var(--mut);margin-top:4px}
+.bdgx{font-size:12px;font-weight:800;color:var(--warm);margin-top:4px}:root[data-theme="light"] .bdgx{color:#B7791F}
 .bdgb{display:block;width:100%;padding:0;text-align:left}.card .bdg{border:0;padding:0;background:none}
 .bhero{background:radial-gradient(circle at 50% 0,rgba(255,178,26,0.18),transparent 70%),var(--card);background:radial-gradient(circle at 50% 0,color-mix(in srgb,#FFB21A 18%,transparent),transparent 70%),var(--card)}
 .bhm{display:flex;justify-content:space-between;gap:4px;overflow-x:auto}.bhl{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px}.bhl.z{opacity:.35}
@@ -375,14 +377,14 @@ a.chip{text-decoration:none}.chip.bike{background:var(--acc-soft);color:var(--ac
 .goldin *{color:transparent!important;-webkit-text-fill-color:transparent!important;background:none!important}
 /* Anatomie : bandeau de chapitres (à gauche sur grand écran, en haut et défilant sur téléphone) */
 .anwrap{margin-top:14px;min-width:0;max-width:100%}
-.anrail{position:-webkit-sticky;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:8px 0;margin:0 0 8px;width:100%;max-width:100%;box-sizing:border-box}
+.anrail{position:relative;z-index:5;display:flex;flex-wrap:wrap;background:var(--bg);padding:8px 0 2px;margin:0 0 8px;width:100%;max-width:100%;box-sizing:border-box}
 .anbody{min-width:0;max-width:100%}
-.anchip{flex:none;display:flex;align-items:center;margin:0 4px;padding:8px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--fg);font:700 13px var(--f-body);white-space:nowrap}
+.anchip{flex:none;display:flex;align-items:center;margin:0 6px 6px 0;padding:8px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--fg);font:700 13px var(--f-body);white-space:nowrap}
 .anchip span{margin-right:6px}.anchip.on{background:var(--grad);color:var(--acc-ink);border-color:transparent}
 .ansec{padding-top:10px;margin-bottom:26px}
 @media (min-width:820px){
  .anwrap{display:flex;align-items:flex-start}
- .anrail{flex:none;width:210px;flex-direction:column;overflow:visible;top:calc(90px + env(safe-area-inset-top,0px));margin:0 20px 0 0;padding:0}
+ .anrail{position:-webkit-sticky;position:sticky;flex-wrap:nowrap;flex:none;width:210px;flex-direction:column;overflow:visible;top:calc(90px + env(safe-area-inset-top,0px));margin:0 20px 0 0;padding:0}
  .anchip{margin:0 0 6px;border-radius:12px;white-space:normal;text-align:left}
  .anbody{flex:1;min-width:0}
 }
@@ -604,8 +606,49 @@ svg.wma{animation:wmGlow 2.6s ease}
 .avopt span{margin-top:5px}
 .avopt.on{border-color:var(--acc)}
 .avopt .avatar{width:58px;height:58px}
+/* Carte des muscles (face / dos) */
+:root{--bmb:#2B3448;--bmn:#3E4861}
+:root[data-theme="light"]{--bmb:#D3D9E3;--bmn:#B9C2D0}
+.bmap{width:100%;max-width:360px;display:block;margin:0 auto}
+.bmap .bb{fill:var(--bmb)}.bmap .bn{fill:var(--bmn)}.bmap .bh{fill:var(--mus);fill:url(#mgr)}
+.bmap .bl{fill:none;stroke:var(--bmb);stroke-width:.8;stroke-linecap:round}
+.bmap text{fill:var(--mut);font:800 9px var(--f-body);letter-spacing:1px}
+/* Fils d'or */
+.gold{border:1.5px solid transparent!important;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#8A6416,#FFE69A 22%,#C8901E 48%,#FFF4C8 68%,#A8761A) border-box!important;position:relative;overflow:hidden;box-shadow:0 0 18px -8px rgba(255,194,26,.45)}
+.gold::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(100deg,rgba(255,226,140,0),rgba(255,226,140,.18),rgba(255,226,140,0));-webkit-transform:skewX(-18deg);transform:skewX(-18deg);pointer-events:none;opacity:0}
+.bhero.gold{background:radial-gradient(circle at 50% 0,rgba(255,178,26,.18),rgba(255,178,26,0) 70%) padding-box,linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#8A6416,#FFE69A 22%,#C8901E 48%,#FFF4C8 68%,#A8761A) border-box!important}
+.ver.gold{background:linear-gradient(135deg,var(--card),var(--soft)) padding-box,linear-gradient(135deg,#8A6416,#FFE69A 22%,#C8901E 48%,#FFF4C8 68%,#A8761A) border-box!important}
+body.vfx .gold::after,.regen.gold::after{-webkit-animation:goldSweep 1.5s .35s ease-out;animation:goldSweep 1.5s .35s ease-out}
+@-webkit-keyframes goldSweep{0%{left:-60%;opacity:1}100%{left:130%;opacity:1}}
+@keyframes goldSweep{0%{left:-60%;opacity:1}100%{left:130%;opacity:1}}
+.rtip.warn{box-shadow:inset 0 0 0 1px rgba(255,214,120,.55),0 0 14px -6px rgba(255,194,26,.7)}
+/* Arrivée sur une page : les blocs montent en fondu, l'un après l'autre (une seule fois, pas en continu) */
+body.vfx #main>.card,body.vfx #main>.sec,body.vfx #main>h1,body.vfx #main>.top,body.vfx #main>.grid,body.vfx #main>.cvbar{-webkit-animation:fadeUp .45s ease-out both;animation:fadeUp .45s ease-out both}
+body.vfx #main>:nth-child(2){-webkit-animation-delay:.05s;animation-delay:.05s}body.vfx #main>:nth-child(3){-webkit-animation-delay:.1s;animation-delay:.1s}body.vfx #main>:nth-child(4){-webkit-animation-delay:.15s;animation-delay:.15s}body.vfx #main>:nth-child(5){-webkit-animation-delay:.2s;animation-delay:.2s}body.vfx #main>:nth-child(n+6){-webkit-animation-delay:.25s;animation-delay:.25s}
+@-webkit-keyframes fadeUp{from{opacity:0;-webkit-transform:translateY(14px)}to{opacity:1;-webkit-transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+button.card,.chip,.anchip,.avopt{transition:transform .15s ease}
+button.card:active,.chip:active,.anchip:active,.avopt:active{-webkit-transform:scale(.97);transform:scale(.97)}
+body.vfx .kpi .v{-webkit-animation:kpiPop .5s .2s ease-out both;animation:kpiPop .5s .2s ease-out both}
+@-webkit-keyframes kpiPop{from{opacity:0;-webkit-transform:scale(.7)}to{opacity:1;-webkit-transform:none}}
+@keyframes kpiPop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+body.vfx .bdg svg{-webkit-animation:kpiPop .5s .15s ease-out both;animation:kpiPop .5s .15s ease-out both}
+@media (prefers-reduced-motion:reduce){body.vfx #main>*,body.vfx .kpi .v,body.vfx .bdg svg{-webkit-animation:none!important;animation:none!important}.gold::after{display:none}}
+/* Tutoriel « installer l'app » */
+#inst{position:fixed;top:0;right:0;bottom:0;left:0;z-index:60;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.instw{max-width:520px;margin:0 auto}
+.istep{display:flex;align-items:center;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);margin-top:10px}
+.istep .n{width:30px;height:30px;flex:none;border-radius:50%;background:var(--grad);color:var(--acc-ink);font:900 16px var(--f-disp);display:flex;align-items:center;justify-content:center;margin-right:12px}
+.istep .t{flex:1;min-width:0;font-size:15px;line-height:1.4}
+.istep .ico{width:52px;height:52px;flex:none;margin-left:10px;border-radius:14px;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.istep .ico svg{width:30px;height:30px}
+.ikey{display:inline-block;padding:1px 8px;border-radius:7px;background:var(--soft);font-weight:800}
+/* Amis */
+.fbtn{flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--soft);font-size:20px;color:var(--mut)}
+.fbtn.on{background:var(--grad);color:var(--acc-ink)}
 /* Communauté */
-.ccard{display:flex;align-items:center;gap:12px;text-align:left;width:100%}
+.ccard{display:flex;align-items:center;gap:10px;text-align:left;width:100%}
+.ccmain{display:flex;align-items:center;gap:12px;flex:1;min-width:0;text-align:left;color:inherit;padding:0}
 .cnm{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cvbar{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--soft);border:1px solid var(--acc);flex-wrap:wrap}
 .cvro{cursor:default}.cvro:active{transform:none}
@@ -618,7 +661,7 @@ details.sql pre{white-space:pre-wrap;word-break:break-word;background:var(--soft
 details.sql ol{padding-left:20px;margin:8px 0;font-size:14px;color:var(--mut)}
 @media (max-width:819px){.navb{min-width:0}.navb span{font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 </style>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="jlg" gradientUnits="userSpaceOnUse" x1="-10" y1="0" x2="150" y2="0"><stop offset="0" stop-color="#FFC21A"/><stop offset="1" stop-color="#FF6A1A"/></linearGradient><linearGradient id="jlg2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="640" y2="0"><stop offset="0" stop-color="#FFC21A"/><stop offset="1" stop-color="#FF6A1A"/></linearGradient></defs></svg><nav id="nav"></nav><main id="main"></main><div id="ov"></div><div id="sheet" role="dialog" aria-modal="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="mgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD43A"/><stop offset="1" stop-color="#FF6A1A"/></linearGradient><linearGradient id="jlg" gradientUnits="userSpaceOnUse" x1="-10" y1="0" x2="150" y2="0"><stop offset="0" stop-color="#FFC21A"/><stop offset="1" stop-color="#FF6A1A"/></linearGradient><linearGradient id="jlg2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="640" y2="0"><stop offset="0" stop-color="#FFC21A"/><stop offset="1" stop-color="#FF6A1A"/></linearGradient></defs></svg><nav id="nav"></nav><main id="main"></main><div id="ov"></div><div id="sheet" role="dialog" aria-modal="true"></div>
 <script>
 /* ===== Pictogrammes d'exercices (SVG originaux, vue 100×100, sol y=92) ===== */
 const FL='<ellipse class="sh" cx="50" cy="93" rx="34" ry="3"/>';
@@ -712,6 +755,38 @@ function fig(id,muscles){
  if(M.has('epaules')){o+=`<circle cx="${sh1[0]}" cy="${sh1[1]}" r="4.4" class="m"/><circle cx="${sh1[0]-1}" cy="${sh1[1]-1.2}" r="1.6" class="mh"/>`;if(fr)o+=`<circle cx="${sh2[0]}" cy="${sh2[1]}" r="4.4" class="m"/><circle cx="${sh2[0]-1}" cy="${sh2[1]-1.2}" r="1.6" class="mh"/>`;}
  o+=P.eqf||'';
  return `<svg class="fig" viewBox="0 0 100 100" aria-hidden="true">${o}</svg>`;
+}
+/* Carte des muscles face / dos : les muscles travaillés en dégradé jaune → orange (demi-corps gauche, le droit est le miroir) */
+const BM={
+ base:'M60 27L56 27L56 31C51 33 46 33.5 42 34.5C35 36 31.5 41 31 48L30 62C29 70 27 84 27 96L26 104C26 108 28 110 30 110C32 109 33 106 33 102L35 94C37 86 40 78 41 70L43 60C43 72 44 86 45 98C42 112 41 128 43 144C42 158 42 172 44 186L42 193L51 193L51 186C53 172 54 158 54 146C57 130 59 116 60 104Z',
+ trapF:'M56 30L50 33.5L57 35.5Z',
+ delt:'M44 34.5C37 35 32.5 39.5 32 46L32.5 52C35.5 49 38.5 47 41.5 46L46 37Z',
+ pec:'M59.5 38L47.5 37.5C43.5 40.5 42.5 46.5 43.5 52C47.5 56.5 54.5 56.5 59.5 54.5Z',
+ arm:'M32.8 54C31 60 31 66.5 32.8 71.5C35.8 71.5 38.6 67.5 39.6 61.5L40.8 49.5C37.8 50.5 35 52 32.8 54Z',
+ fore:'M32.5 74C30 82 28.8 90 29.5 98L33.2 98C36.2 90 38.4 82 38.8 74Z',
+ abs:'M59.5 58L52.5 58C51.5 66 51.5 80 53.5 92L59.5 96Z',
+ obl:'M51 58L46.5 56.5C44.5 66 45.5 80 48.5 92L52.8 94C50.8 82 50 68 51 58Z',
+ quad:'M57.5 102L47 100C43.5 112 42.5 128 44.5 142L52 146C55.5 132 57.5 116 57.5 102Z',
+ add:'M59.5 104L58.5 104C57.5 116 55.5 128 53.5 140L58 135C59.5 125 59.8 114 59.5 104Z',
+ shin:'M45.5 150C43.5 160 43.5 172 45.5 184L50 184C52 172 53 160 52 150Z',
+ trap:'M60 27.5L56 29C52 32 47 33.5 44.5 35L52 40L60 52Z',
+ lats:'M59.5 54L52 42L45.5 39C43.5 48 44.2 58 47 70C51 76 55.5 80 59.5 82Z',
+ low:'M59.5 84C55.5 82 52 80 49 78L50 94L59.5 98Z',
+ glute:'M59.5 100L48 98.5C44.5 104 44.5 112 47 118C52 121 56.5 120 59.5 117Z',
+ ham:'M57.5 120.5L47 120.5C44.5 130 44.5 140 45.5 146L53 146C55.5 138 57.5 128 57.5 120.5Z',
+ calf:'M45 150C42 158 43 168 46 176L51 176C53 168 53 158 52 150Z'};
+function bodyMap(e){
+ const M=new Set((e&&e.m)||[]),sub=(exCls(e)||[])[1];
+ /* bras : poussée (pecs, épaules) → triceps ; tirage (dos) → biceps ; sinon selon la classification de l'exercice */
+ const push=M.has('pecs')||(M.has('epaules')&&!M.has('dos')),pull=M.has('dos');
+ const on=k=>M.has(k)?'bh':'bn',
+  armF=M.has('bras')&&(sub==='Biceps'||(sub!=='Triceps'&&!push))?'bh':'bn',
+  armB=M.has('bras')&&(sub==='Triceps'||(sub!=='Biceps'&&!pull))?'bh':'bn';
+ const P=(k,c)=>`<path class="${c}" d="${BM[k]}"/>`,half=s=>s+`<g transform="matrix(-1 0 0 1 120 0)">${s}</g>`;
+ const base=`<circle class="bb" cx="60" cy="16" r="10"/>`+half(P('base','bb'));
+ const front=base+half(P('trapF',on('dos'))+P('delt',on('epaules'))+P('pec',on('pecs'))+P('arm',armF)+P('fore','bn')+P('abs',on('abdos'))+P('obl',on('abdos'))+P('quad',on('jambes'))+P('add',on('jambes'))+P('shin',on('mollets')))+'<path class="bl" d="M52.6 66H67.4M52.4 74H67.6M52.8 82H67.2M60 58V95"/>';
+ const back=base+half(P('trap',on('dos'))+P('delt',on('epaules'))+P('arm',armB)+P('fore','bn')+P('lats',on('dos'))+P('low',on('lombaires'))+P('glute',on('jambes'))+P('ham',on('jambes'))+P('calf',on('mollets')))+'<path class="bl" d="M60 30V98"/>';
+ return `<svg class="bmap" viewBox="0 0 250 212" role="img" aria-label="Muscles travaillés"><g>${front}</g><g transform="translate(130 0)">${back}</g><text x="60" y="208" text-anchor="middle">FACE</text><text x="190" y="208" text-anchor="middle">DOS</text></svg>`;
 }
 /* ===================== JeFIT ===================== */
 const $=s=>document.querySelector(s);
@@ -2244,7 +2319,9 @@ function weekStart(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDat
 
 /* ---------- Navigation ---------- */
 let view={name:'home'},sheetOpen=false;
-function go(name,p={}){view={name,...p};render();window.scrollTo(0,0)}
+function go(name,p={}){view={name,...p};render();window.scrollTo(0,0);vfxRun()}
+/* Effets d'arrivée sur une page (fondu, fils d'or) : joués une fois à chaque changement de page */
+let vfxT=null;function vfxRun(){const b=document.body;if(!b||reduceMotion())return;b.classList.remove('vfx');void b.offsetWidth;b.classList.add('vfx');clearTimeout(vfxT);vfxT=setTimeout(()=>b.classList.remove('vfx'),2000)}
 const TABS=[['home','Accueil','home'],['programs','Programmes','list'],['badges','Badges','medal'],['community','Communauté','users'],['progress','Progrès','chart'],['settings','Paramètres','gear']];
 function navHTML(){
  const tabOf={program:'programs',dayedit:'programs',quick:'programs',lafay:'programs',anatomie:'programs',session:'home',history:'home',exercise:'progress',cview:'community'};
@@ -2294,7 +2371,7 @@ function leastMuscle(){
 function leastCard(){
  const L=leastMuscle(),today=new Date().toDateString();if(!L||LS.get('jefit.leastHide','')===today+L.a)return '';
  const when=L.last?` (dernière fois : ${DSHORT.format(L.last)})`:'';
- return `<div class="card sec" style="display:flex;align-items:center;gap:12px;border:1px solid var(--warm)"><span style="font-size:26px;flex:none">💡</span><div style="flex:1;min-width:0"><b>Pense à travailler ${RART[L.a]} !</b><div class="mut" style="font-size:13px;margin-top:2px">C’est le muscle le moins sollicité cette semaine : ${L.n} série${L.n>1?'s':''}${when}.</div></div><button class="ib" data-a="leastHide" data-v="${esc(L.a)}" aria-label="Masquer pour aujourd’hui">${ic('cross')}</button></div>`;
+ return `<div class="card sec gold" style="display:flex;align-items:center;gap:12px"><span style="font-size:26px;flex:none">💡</span><div style="flex:1;min-width:0"><b>Pense à travailler ${RART[L.a]} !</b><div class="mut" style="font-size:13px;margin-top:2px">C’est le muscle le moins sollicité cette semaine : ${L.n} série${L.n>1?'s':''}${when}.</div></div><button class="ib" data-a="leastHide" data-v="${esc(L.a)}" aria-label="Masquer pour aujourd’hui">${ic('cross')}</button></div>`;
 }
 VIEWS.home=()=>{
  const now=Date.now();
@@ -2314,7 +2391,7 @@ VIEWS.home=()=>{
  ${cycActive().map((c,i)=>cycCard(c,i)).join('')||(next?`<div class="card sec"><span class="eyebrow">Dernier programme suivi</span><h2 style="margin:6px 0 10px">${esc(next.p.name)}</h2><button class="card" style="background:var(--grad);color:var(--acc-ink);box-shadow:none;text-align:left;padding:12px;width:100%" data-a="startDay" data-p="${next.p.id}" data-d="${next.d.id}"><div class="eyebrow" style="color:inherit;opacity:.8">Prochaine séance · démarrer</div><div style="font-weight:800;margin-top:4px">${esc(next.d.name)}</div></button></div>`
   :`<div class="card sec" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap"><div><span class="eyebrow">Aucun programme en cours</span><div class="mut" style="font-size:14px;margin-top:4px">Lance un programme pour suivre tes semaines et ta prochaine séance ici.</div></div><button class="btn pri" data-a="tab" data-v="programs">${ic('list')}Programmes</button></div>`)}
  ${Object.keys(S.cycles||{}).map(cycOf).filter(c=>c&&c.ended).map(c=>`<div class="card sec" style="border:1px solid var(--ok)"><span class="eyebrow">Programme terminé</span><h2 style="margin:6px 0 4px">Bravo ! ${esc(c.p.name)}</h2><p class="mut" style="margin:0 0 12px">${c.done} séances en ${c.weeks} semaines. Change de programme pour continuer à progresser.</p><div class="quick"><button class="btn pri" data-a="tab" data-v="programs">Choisir un programme</button><button class="btn" data-a="cyStop" data-p="${c.p.id}">Masquer</button></div></div>`).join('')}
- <div class="sec card">
+ <div class="sec card gold">
   <div class="seg rseg" style="margin:0 0 12px">${[['w','Semaine'],['m','Mois'],['y','Année']].map(([k,l])=>`<button class="${R.p===k?'on':''}" data-a="radarP" data-v="${k}">${l}</button>`).join('')}</div>
   <div style="display:flex;align-items:center;gap:8px"><button class="ib" data-a="perNav" data-v="-1" aria-label="Période précédente">${ic('back')}</button><b style="flex:1;text-align:center;font-size:16px">${esc(R.label)}</b><button class="ib" data-a="perNav" data-v="1" aria-label="Période suivante" ${R.o>=0?'disabled style="opacity:.25;transform:scaleX(-1)"':'style="transform:scaleX(-1)"'}>${ic('back')}</button></div>
   ${R.o<0?`<div style="text-align:center;margin-top:6px"><button class="lnk" data-a="perNav" data-v="0" style="font-size:13px;font-weight:700;color:var(--acc)">Revenir à aujourd’hui</button></div>`:''}
@@ -2581,9 +2658,19 @@ VIEWS.session=()=>{
  <div class="grid sec">${s.items.map(i=>{const e=ex(i.exId),t=TYPES[e.t];let n=0;const isPr=(s.prs||[]).includes(i.exId);
   return `<div class="card"><div class="exrow" style="margin-bottom:8px">${picto(i.exId)}<button class="nm" style="color:var(--acc);text-align:left" data-a="exInfo" data-e="${i.exId}">${esc(e.n)}</button>${isPr?'<span class="pr" style="margin-left:auto">PR</span>':''}</div>${i.note?`<p class="mut" style="margin:0 0 6px;font-size:14px">${esc(i.note)}</p>`:''}
   <table class="sets-t"><tr><th>SÉRIE</th>${t.lab.map(l=>`<th>${l}</th>`).join('')}<th></th></tr>${i.sets.map(x=>{if(!x.w&&!x.d&&!x.f)n++;return `<tr class="${x.pr?'prrow':''}"><td class="${x.w?'w':x.f?'f':x.d?'d':''}">${x.pr?TROPHY:setLbl(x,n)}</td>${t.cols.map(c=>`<td>${x[c]==null?'–':c==='time'?fmtT(x[c]):fmtN(x[c])}</td>`).join('')}<td style="text-align:right">${x.pr?'<b class="prb">Record</b>':x.up?`<b class="up">▲ ${esc(x.up)}</b>`:''}</td></tr>`}).join('')}</table>
-  <button class="btn sm" style="margin-top:10px" data-a="exInfo" data-e="${i.exId}">${ic('chart')}Récap de l’exercice</button></div>`}).join('')}</div>`;
+  <div class="btnrow" style="margin-top:10px"><button class="btn sm" data-a="exInfo" data-e="${i.exId}">${ic('chart')}Récap de l’exercice</button><button class="btn sm" data-a="sxSwap" data-k="${s.items.indexOf(i)}">${ic('swap')}Changer l’exercice</button></div></div>`}).join('')}</div>`;
 };
 
+/* Séance terminée : remplacer un exercice (les séries faites sont gardées).
+   La séance reçoit un nouvel identifiant et l'ancien part dans S.tomb : la correction se propage ainsi à tous les appareils. */
+function sxReplace(sid,k,exId){
+ const s=S.sessions.find(x=>x.id===sid);if(!s||!s.items[k]||!exId)return;
+ const old=s.id,it=s.items[k];if(it.exId===exId)return;
+ it.exId=exId;s.prs=(s.prs||[]).filter(e=>s.items.some(i=>i.exId===e));
+ s.volume=volOf(s.items);s.id=uid();S.tomb.push(old);S.pending=S.pending.filter(x=>x!==old);S.pending.push(s.id);
+ save();if(typeof pushSess==='function')pushSess(s.id);
+ view.sid=s.id;render();toast('Exercice remplacé : '+ex(exId).n);
+}
 /* Séance faite → séance de programme (séries de travail, dernières charges / reps / durées) */
 function sessToDay(s,name){return day(name||s.name,s.items.map(i=>{const w=i.sets.filter(x=>!x.w),l=w[w.length-1]||i.sets[i.sets.length-1]||{};
  return it(i.exId,Math.max(1,w.length),{reps:nz(l.reps,null),kg:nz(l.kg,null),time:nz(l.time,null),dist:nz(l.dist,null),rest:90,note:i.note||''})}))}
@@ -2771,7 +2858,7 @@ function radarRegen(){const box=$('#radarc'),sh=$('#sheet');if(!box||view.name!=
  setTimeout(()=>{const b=$('#radarc');if(b)b.classList.remove('regen')},2400)}
 setInterval(radarRegen,60000);
 function radarCard(){const R=curPer(),D=radarData(R),T=radarTips(D,R);
- return `<div class="sec card" id="radarc"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="eyebrow">Équilibre musculaire <span class="rgen">· analyse…</span></span><span class="mut" style="font-size:13px;font-weight:700">${esc(R.label)}</span></div>
+ return `<div class="sec card gold" id="radarc"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="eyebrow">Équilibre musculaire <span class="rgen">· analyse…</span></span><span class="mut" style="font-size:13px;font-weight:700">${esc(R.label)}</span></div>
  <div class="rwrap">${radarSVG(D.pc)}<div class="rtips"><div class="mut" style="font-size:13px;font-weight:700">${D.n} séance${D.n>1?'s':''} · ${D.tot} série${D.tot>1?'s':''} de travail</div>${T.map(x=>`<div class="rtip ${x.k}">${x.k==='warn'?'⚠️':x.k==='ok'?'✅':'ℹ️'} ${esc(x.t)}</div>`).join('')}</div></div></div>`}
 /* ----- Onglet Badges ----- */
 function badgeTile(b){const n=b.next;return `<div class="bdg ${b.lvl<0?'lock':''}">${medal(b.lvl,b.glyph,62)}<div class="bdgt"><div class="bdgn">${esc(b.name)}</div><div class="bdgl" style="color:${b.lvl<0?'var(--mut)':LVC[b.lvl][1]}">${b.lvl<0?'À débloquer':LVL[b.lvl]}</div><div class="bdgv">${esc(b.valTxt)}</div>
@@ -2779,7 +2866,7 @@ function badgeTile(b){const n=b.next;return `<div class="bdg ${b.lvl<0?'lock':''
 VIEWS.badges=()=>{const B=allBadges(),got=B.filter(b=>b.lvl>=0).length,cat=c=>B.filter(b=>b.cat===c),F=cat('Force').sort((a,b)=>b.lvl-a.lvl||b.val-a.val);
  const count=LVL.map((_,i)=>B.filter(b=>b.lvl===i).length);
  return `<div class="top"><h1>Badges</h1></div>
- <div class="card bhero"><div class="bhm">${LVL.map((l,i)=>`<div class="bhl ${count[i]?'':'z'}">${medal(i,'',46)}<b>${count[i]}</b><span>${l}</span></div>`).join('')}</div><p class="mut" style="margin:12px 0 0;text-align:center;font-weight:700">${got} badge${got>1?'s':''} débloqué${got>1?'s':''} · fais monter chaque badge jusqu’à <span style="color:#9B2CFF">Élite</span></p></div>
+ <div class="card bhero gold"><div class="bhm">${LVL.map((l,i)=>`<div class="bhl ${count[i]?'':'z'}">${medal(i,'',46)}<b>${count[i]}</b><span>${l}</span></div>`).join('')}</div><p class="mut" style="margin:12px 0 0;text-align:center;font-weight:700">${got} badge${got>1?'s':''} débloqué${got>1?'s':''} · fais monter chaque badge jusqu’à <span style="color:#9B2CFF">Élite</span></p></div>
  <details class="card sec bexp"><summary><b>Comment ça marche ?</b><span class="mut">Les niveaux, les calculs</span></summary>
   <p>Chaque badge a <b>7 niveaux</b>. Le premier, <b>« 1er essai »</b>, se débloque dès que tu fais l’exercice (ou ta première sortie vélo) : bravo, tu as commencé ! Ensuite il évolue :</p>
   <div class="bexl">${LVL.map((l,i)=>`<div>${medal(i,'',40)}<span>${l}</span></div>`).join('')}</div>
@@ -2791,6 +2878,78 @@ VIEWS.badges=()=>{const B=allBadges(),got=B.filter(b=>b.lvl>=0).length,cat=c=>B.
  <div class="sec"><div class="hd"><h2>🚴 Vélo · JeRIDE</h2></div><div class="bgrid">${cat('Vélo').map(badgeTile).join('')}</div></div>
  <div class="sec"><div class="hd"><h2>🏋 Force par exercice</h2><span class="mut" style="font-size:13px">${F.length} exercice${F.length>1?'s':''}</span></div>
  ${F.length?`<div class="bgrid">${F.map(b=>`<button class="bdgb" data-a="exInfo" data-e="${b.exId}">${badgeTile(b)}</button>`).join('')}</div>`:`<div class="card empty"><p>Termine une séance : chaque exercice réalisé reçoit son badge « 1er essai », puis monte de niveau avec tes progrès.</p></div>`}</div>`};
+/* ===================== Administrateur ===================== */
+/* Seul le compte « Jeremy » voit les réglages techniques (Supabase, script SQL, sauvegarde JSON) */
+const isAdmin=()=>{const a=ACC.get();return !!a&&slug(a.name||'')==='jeremy'};
+
+/* ===================== Notifications ===================== */
+/* Permission demandée par une fenêtre de l'app (jamais d'office). Affichées par le service worker sw.js quand il existe. */
+const notifOK=()=>{try{return 'Notification' in window}catch(e){return false}};
+const notifOn=()=>notifOK()&&Notification.permission==='granted';
+try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+function notif(title,body){if(!notifOn())return;
+ const o={body:body,icon:'icon-192.png',badge:'icon-192.png',tag:'jefit',renotify:true,vibrate:[200,100,200]};
+ const plain=()=>{try{new Notification(title,o)}catch(e){}};
+ try{if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration)navigator.serviceWorker.getRegistration().then(r=>{if(r&&r.showNotification)r.showNotification(title,o);else plain()}).catch(plain);else plain()}catch(e){plain()}}
+const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone=()=>{try{return !!navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)}catch(e){return false}};
+function notifPopup(force){
+ if(!force){const a=LS.get('jefit.notifAsked',0);if(a&&Date.now()-a<7*864e5)return;if(notifOK()&&Notification.permission!=='default')return;if(!notifOK()&&!(isIOS()&&!isStandalone()))return}
+ if(notifOK()&&Notification.permission==='denied'){openSheet(`<h2>🔕 Notifications bloquées</h2><p class="mut" style="margin:0">Elles ont été refusées pour JeFIT. Pour les réactiver : réglages de ton téléphone (ou du navigateur) › Notifications › JeFIT.</p>`,`<button class="btn pri" data-a="close">Compris</button>`);return}
+ if(!notifOK()){openSheet(`<h2>🔔 Recevoir des notifications ?</h2><p class="mut" style="margin:0 0 6px">Sur iPhone, les notifications marchent quand JeFIT est <b>installé sur l’écran d’accueil</b>. C’est rapide, on te montre comment.</p>`,`<button class="btn" data-a="notifLater">Plus tard</button><button class="btn pri" data-a="instShow">📲 Voir le tutoriel</button>`);LS.set('jefit.notifAsked',Date.now());return}
+ openSheet(`<div style="text-align:center;font-size:46px;line-height:1">🔔</div><h2 style="text-align:center">Recevoir des notifications ?</h2>
+ <div class="istep" style="margin-top:6px"><span style="font-size:24px;margin-right:12px">⏱</span><div class="t"><b>Fin du temps de repos</b><br><span class="mut" style="font-size:13px">Même si tu as changé d’appli pendant la récup.</span></div></div>
+ <div class="istep"><span style="font-size:24px;margin-right:12px">💪</span><div class="t"><b>Ton entraînement</b><br><span class="mut" style="font-size:13px">Séance en cours, nouveaux badges…</span></div></div>
+ <p class="mut" style="font-size:13px;margin:10px 0 0;text-align:center">Tu pourras changer d’avis dans Paramètres.</p>`,
+ `<button class="btn" data-a="notifLater">Plus tard</button><button class="btn pri" data-a="notifYes">Oui, activer</button>`)}
+function notifEnable(){LS.set('jefit.notifAsked',Date.now());closeSheet();if(!notifOK())return;
+ const done=p=>{if(p==='granted'){toast('Notifications activées 🔔');notif('JeFIT','Les notifications sont activées. Bon entraînement ! 💪')}else toast('Notifications refusées');if(view.name==='settings')render()};
+ try{const r=Notification.requestPermission(done);if(r&&r.then)r.then(done)}catch(e){}}
+
+/* ===================== Ouverture depuis l'icône : intro + Accueil ===================== */
+/* Quand on revient sur l'app après 30 s ailleurs (icône de l'écran d'accueil), l'intro se rejoue et on repart de l'Accueil.
+   Exceptions : séance en cours, tempo guidé, connexion, JeRIDE. */
+let hidAt=0;
+function appResume(){if(W||TP||$('#auth')||$('#splash')||$('#inst')||($('#jr')&&$('#jr').classList.contains('on')))return;
+ closeSheet();if(view.name!=='home'){backStack=[];go('home')}else window.scrollTo(0,0);splash(true)}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){hidAt=Date.now();return}if(hidAt&&Date.now()-hidAt>30000)appResume();hidAt=0});
+addEventListener('pageshow',e=>{if(e.persisted)appResume()});
+
+/* ===================== Tutoriel : installer JeFIT sur le téléphone ===================== */
+let instEvt=null;addEventListener('beforeinstallprompt',e=>{try{e.preventDefault()}catch(_){}instEvt=e});
+const INI={
+ safari:'<svg viewBox="0 0 24 24" fill="none" stroke="#1E90FF" stroke-width="1.8"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="#1E90FF" stroke="none"/><path d="M15.5 8.5l-2 5-5 2" stroke="#FF3B30"/></svg>',
+ share:'<svg viewBox="0 0 24 24" fill="none" stroke="#1E90FF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9H6v11h12V9h-2"/><path d="M12 3v11M8.5 6.5L12 3l3.5 3.5"/></svg>',
+ dots:'<svg viewBox="0 0 24 24" fill="#8E99AF"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+ add:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
+ ok:'<svg viewBox="0 0 24 24" fill="none" stroke="#1E90FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+ chrome:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#DB4437"/><path d="M12 12L3.3 7A10 10 0 0 0 7 20.7z" fill="#0F9D58"/><path d="M12 12l5 8.7A10 10 0 0 0 20.7 7z" fill="#FFCD40"/><circle cx="12" cy="12" r="4.6" fill="#fff"/><circle cx="12" cy="12" r="3.6" fill="#4285F4"/></svg>',
+ kebab:'<svg viewBox="0 0 24 24" fill="#8E99AF"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>',
+ inst:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>'};
+function instShow(tab){
+ tab=tab||(isIOS()?'ios':'android');
+ const st=(n,t,ico)=>`<div class="istep"><span class="n">${n}</span><div class="t">${t}</div><span class="ico">${ico}</span></div>`;
+ const tile=`<span class="ico" style="background:#0E1320">${WM('wm')}</span>`;
+ const ios=st(1,'Ouvre JeFIT dans <b>Safari</b>',INI.safari)
+  +st(2,'Touche le bouton <b>Partager</b> en bas de l’écran<br><span class="mut" style="font-size:13px">Pas visible ? Touche d’abord <span class="ikey">•••</span></span>',INI.share)
+  +st(3,'Fais défiler et touche <b>« Sur l’écran d’accueil »</b>',INI.add)
+  +st(4,'Touche <b>Ajouter</b> en haut à droite',INI.ok)
+  +`<div class="istep"><span class="n">5</span><div class="t"><b>C’est fait !</b> Ouvre JeFIT depuis son icône, comme une vraie appli.</div>${tile}</div>`;
+ const and=(instEvt?`<button class="btn pri blk" style="margin-top:12px" data-a="instGo">📲 Installer JeFIT maintenant</button><p class="mut" style="text-align:center;font-size:13px;margin:8px 0 0">ou à la main :</p>`:'')
+  +st(1,'Ouvre JeFIT dans <b>Chrome</b>',INI.chrome)
+  +st(2,'Touche le menu <b>⋮</b> en haut à droite',INI.kebab)
+  +st(3,'Touche <b>« Installer l’application »</b><br><span class="mut" style="font-size:13px">ou « Ajouter à l’écran d’accueil »</span>',INI.inst)
+  +st(4,'Confirme avec <b>Installer</b>',INI.ok)
+  +`<div class="istep"><span class="n">5</span><div class="t"><b>C’est fait !</b> L’icône JeFIT est sur ton écran d’accueil.</div>${tile}</div>`;
+ let d=$('#inst');if(!d){d=document.createElement('div');d.id='inst';document.body.appendChild(d)}
+ d.innerHTML=`<div class="instw"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px;letter-spacing:2px;color:var(--mut)">TUTORIEL</b><button class="ib" data-a="instClose" aria-label="Fermer">${ic('cross')}</button></div>
+ <h1 style="margin:6px 0 4px">Installer JeFIT sur ton téléphone</h1><p class="mut" style="margin:0 0 14px">En 30 secondes : l’icône JeFIT sur ton écran d’accueil, en plein écran, avec les notifications.</p>
+ ${isStandalone()?`<div class="card" style="border:1px solid var(--ok);margin-bottom:12px">✅ JeFIT est déjà installé sur cet appareil.</div>`:''}
+ <div class="seg" style="margin:0"><button class="${tab==='ios'?'on':''}" data-a="instTab" data-v="ios">📱 iPhone / iPad</button><button class="${tab==='android'?'on':''}" data-a="instTab" data-v="android">🤖 Android</button></div>
+ ${tab==='ios'?ios:and}
+ <button class="btn blk" style="margin-top:16px" data-a="instClose">J’ai compris</button></div>`;
+}
+
 /* ===================== Avatars (20 personnages cartoon muscu, ou photo) ===================== */
 const AVS=(()=>{
  const S1='#F1C09A',S2='#D9A07A',S3='#B9774E',S4='#8D5A3B',K='#1d1d1d';
@@ -2888,23 +3047,28 @@ function cvLock(){const m=$('#main');if(!m)return;
   if(e.classList.contains('ib')||e.classList.contains('btn'))e.style.display='none';
   else{e.removeAttribute('data-a');e.removeAttribute('role');e.classList.add('cvro');e.setAttribute('tabindex','-1')}})}
 const myUid=()=>(LS.get('jefit.sbs',{})||{}).uid;
-function cCard(u){const mine=u.user_id===myUid(),last=+u.last||0,n=+u.n||0,nm=String(u.name||'?');
- return `<button class="card ccard" data-a="cOpen" data-u="${esc(u.user_id)}" data-n="${esc(nm)}">${avHTML(u.av,nm)}<div style="flex:1;min-width:0"><b class="cnm">${esc(nm)}${mine?' <span class="pill">Moi</span>':''}</b><div class="mut" style="font-size:13px;margin-top:2px">${n} séance${n>1?'s':''}${last?' · dernière le '+esc(DSHORT.format(last)):''}</div></div><span style="transform:scaleX(-1);display:flex;color:var(--mut)">${icS('back',18)}</span></button>`}
+/* Amis : liste personnelle (synchronisée sur mes appareils), affichée en tête de la Communauté */
+const friendsGet=()=>{const f=LS.get('jefit.friends',null);return (f&&Array.isArray(f.l))?f.l:[]};
+const isFriend=u=>friendsGet().indexOf(u)>=0;
+function friendTog(u){const l=friendsGet().filter(x=>x!==u),add=l.length===friendsGet().length;if(add)l.push(u);LS.set('jefit.friends',{l,at:Date.now()});sbQueue();return add}
+function cCard(u){const mine=u.user_id===myUid(),last=+u.last||0,n=+u.n||0,nm=String(u.name||'?'),fr=isFriend(u.user_id);
+ return `<div class="card ccard"><button class="ccmain" data-a="cOpen" data-u="${esc(u.user_id)}" data-n="${esc(nm)}">${avHTML(mine?(avGet()||u.av):u.av,nm)}<div style="flex:1;min-width:0"><b class="cnm">${esc(nm)}${mine?' <span class="pill">Moi</span>':''}</b><div class="mut" style="font-size:13px;margin-top:2px">${n} séance${n>1?'s':''}${last?' · dernière le '+esc(DSHORT.format(last)):''}</div></div></button>${mine?'':`<button class="fbtn ${fr?'on':''}" data-a="fTog" data-u="${esc(u.user_id)}" data-n="${esc(nm)}" aria-label="${fr?'Retirer de mes amis':'Ajouter à mes amis'}" title="${fr?'Retirer de mes amis':'Ajouter à mes amis'}">${fr?'★':'☆'}</button>`}</div>`}
 VIEWS.community=()=>{
  const head=`<div class="top"><h1>Communauté</h1>${sbLinked()?`<button class="btn sm" data-a="cLoad">${ic('swap')}Actualiser</button>`:''}</div><p class="mut" style="margin:0 0 14px">Touche un profil pour voir son accueil et ses badges, en lecture seule.</p>`;
  if(!sbOn()||!sbLinked())return head+`<div class="card empty"><h3 style="color:var(--fg)">Connecte ton compte en ligne</h3><p>La communauté passe par la sauvegarde en ligne : Paramètres › Sauvegarde en ligne › Connecter mon compte.</p><button class="btn pri" data-a="tab" data-v="settings">${ic('gear')}Paramètres</button></div>`;
  if(!COMM)setTimeout(commLoad,0);
  if(!COMM||(COMM.busy&&!COMM.list))return head+`<div class="card empty"><p>Chargement des profils…</p></div>`;
  if(COMM.err==='nosql')return head+`<div class="card empty"><h3 style="color:var(--fg)">Communauté pas encore activée</h3><p>Dans Supabase › SQL Editor, lancez une seule fois le script <b>supabase/community.sql</b>.</p></div>`;
- const L=COMM.list||[];
+ const L=COMM.list||[],F=L.filter(u=>isFriend(u.user_id));
  return head+(COMM.err?`<div class="card" style="border:1px solid var(--danger);margin-bottom:12px">${esc(COMM.err)}</div>`:'')
-  +(L.length?`<div class="grid">${L.map(cCard).join('')}</div>`:`<div class="card empty"><p>Aucun profil pour l’instant.</p></div>`);
+  +`<div class="sec" style="margin-top:0"><div class="hd"><h2>⭐ Mes amis</h2><span class="mut" style="font-size:13px">${F.length}</span></div>${F.length?`<div class="grid">${F.map(cCard).join('')}</div>`:`<div class="card mut" style="font-size:14px">Touche ☆ à côté d’un profil pour l’ajouter à tes amis : il apparaîtra ici.</div>`}</div>`
+  +`<div class="sec"><div class="hd"><h2>Tous les profils</h2><span class="mut" style="font-size:13px">${L.length}</span></div>${L.length?`<div class="grid">${L.map(cCard).join('')}</div>`:`<div class="card empty"><p>Aucun profil pour l’instant.</p></div>`}</div>`;
 };
 VIEWS.cview=()=>{
  const uid=view.uid,st=PROF[uid];if(!st)setTimeout(()=>profLoad(uid),0);
  const p=st&&st.p,nm=String(p?p.name:(view.nm||'?')),ct=view.ct||'home';
  const bar=`<button class="lnk" data-a="tab" data-v="community" style="font-weight:700;color:var(--mut);margin:4px 0 10px">‹ Tous les profils</button>
- <div class="cvbar">${avHTML(p?p.av:(((COMM&&COMM.list)||[]).filter(x=>x.user_id===uid)[0]||{}).av,nm)}<div style="flex:1;min-width:0"><div class="eyebrow">Profil · lecture seule</div><b class="cnm">${esc(nm)}</b></div><button class="btn pri sm" data-a="cBack">${ic('home')}Revenir à mon interface</button></div>
+ <div class="cvbar">${avHTML(p?p.av:(((COMM&&COMM.list)||[]).filter(x=>x.user_id===uid)[0]||{}).av,nm)}<div style="flex:1;min-width:0"><div class="eyebrow">Profil · lecture seule</div><b class="cnm">${esc(nm)}</b></div><button class="fbtn ${isFriend(uid)?'on':''}" data-a="fTog" data-u="${esc(uid)}" data-n="${esc(nm)}" aria-label="Ami" title="${isFriend(uid)?'Retirer de mes amis':'Ajouter à mes amis'}">${isFriend(uid)?'★':'☆'}</button><button class="btn pri sm" data-a="cBack">${ic('home')}Revenir à mon interface</button></div>
  <div class="seg" style="margin:12px 0 0">${[['home','Accueil'],['badges','Badges']].map(([k,l])=>`<button class="${ct===k?'on':''}" data-a="cTab" data-v="${k}">${l}</button>`).join('')}</div>`;
  if(!p)return bar+`<div class="card empty sec"><p>${st&&st.err?esc(st.err):'Chargement du profil…'}</p>${st&&st.err?`<button class="btn" data-a="cLoad">Réessayer</button>`:''}</div>`;
  return bar+`<div class="cvwrap">${visWrap(p,()=>(ct==='badges'?VIEWS.badges:VIEWS.home)())}</div>`;
@@ -2951,6 +3115,7 @@ VIEWS.exercise=()=>{
   ${DESC[e.id]?`<p style="margin:0 0 16px;line-height:1.55;max-width:68ch">${esc(DESC[e.id])}${PAGE[e.id]?` <span class="mut">(livre p. ${PAGE[e.id]})</span>`:''}</p>`:''}
   <div class="card"><div class="chips" style="margin-bottom:12px">${ms.map(m=>`<button class="chip ${m[0]===M[0]?'on':''}" data-a="metric" data-v="${m[0]}">${m[1]}</button>`).join('')}</div>
   ${pts.length?chart(pts,M):`<div class="empty" style="padding:24px">Terminez une séance avec cet exercice pour voir la courbe.</div>`}</div></div></div>
+ <div class="sec card gold"><div class="hd" style="margin-bottom:6px"><h2 style="margin:0">Muscles travaillés</h2><span class="mut" style="font-size:13px;font-weight:700">${e.m.map(m=>MUS[m]).join(' · ')}</span></div>${bodyMap(e)}</div>
  ${(()=>{const b=allBadges().find(x=>x.key==='x-'+e.id);return b?`<div class="sec"><div class="hd"><h2>Ton badge</h2><button class="btn sm" data-a="tab" data-v="badges">${ic('medal')}Tous mes badges</button></div><div class="card">${badgeTile(b)}</div></div>`:''})()}
  ${en.length?`<div class="sec"><div class="hd"><h2 style="display:flex;align-items:center;gap:8px">${TROPHY}Records personnels</h2></div><div class="card recs">${recs.map(r=>`<div class="rec"><div class="l">${r.m[1]}</div><div class="v">${r.best?fmtM(r.best.v,r.m[3]):'–'}</div><div class="d">${r.best?DSHORT.format(r.best.t):''}</div></div>`).join('')}${(()=>{if(e.t!=='weight')return '';let b=null;en.forEach(x=>x.sets.forEach(s=>{const v=(s.kg||0)*(s.reps||0);if(v&&(!b||v>b.v))b={v,s,t:x.t}}));return b?`<div class="rec"><div class="l">Meilleure série</div><div class="v">${setTxt('weight',b.s)}</div><div class="d">${DSHORT.format(b.t)}</div></div>`:''})()}</div></div>
  <div class="sec"><div class="hd"><h2>Historique</h2></div><div class="grid">${[...en].reverse().map(x=>`<button class="card" style="text-align:left" data-a="openSession" data-s="${x.sid}"><div style="font-weight:700">${esc(DAY.format(x.t))}</div><div class="mut" style="font-size:14px;margin-top:4px;line-height:1.6">${x.sets.map(s=>setTxt(e.t,s)).join('<br>')}</div></button>`).join('')}</div></div>`:''}`;
@@ -3169,7 +3334,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function tick(){
  if(!W)return;const t=fmtT(elapsed(W)/1000);document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=t);
  const eb=$('[data-eta]');if(eb&&(!tick.n||++tick.n%5===0||!eb.innerHTML)){tick.n=tick.n||1;eb.innerHTML=wkEta()} /* toutes les 5 s : léger pour les vieux iPad */document.querySelectorAll('[data-clock2]').forEach(e=>e.textContent=hms(elapsed(W)));
- if(W.rest){const left=Math.ceil((W.rest.end-Date.now())/1000);if(left<=0){W.rest=null;saveW();if(!cueOn)sndPlay(sndCfg().k,true);cueOn=false;cueNodes=[];renderRest();if(navigator.vibrate)try{navigator.vibrate([200,100,200])}catch(e){}}else{const r=$('[data-rest]');if(r)r.textContent=fmtT(left);const b=$('#restbar .bar');if(b)b.style.width=100*left/W.rest.total+'%'}}
+ if(W.rest){const left=Math.ceil((W.rest.end-Date.now())/1000);if(left<=0){W.rest=null;saveW();if(document.hidden)notif('Repos terminé ⏱','C’est reparti : série suivante ! 💪');if(!cueOn)sndPlay(sndCfg().k,true);cueOn=false;cueNodes=[];renderRest();if(navigator.vibrate)try{navigator.vibrate([200,100,200])}catch(e){}}else{const r=$('[data-rest]');if(r)r.textContent=fmtT(left);const b=$('#restbar .bar');if(b)b.style.width=100*left/W.rest.total+'%'}}
 }
 setInterval(tick,500);
 function updWkStats(){const v=$('#wkvol');if(v)v.textContent=fmtN(volOf(W.items))+' kg';const s=$('#wksets');if(s)s.textContent=setsOf(W.items)}
@@ -3218,7 +3383,7 @@ let PK={sel:[],q:'',g:'all',mu:'all',mode:'wk',replace:null};
 const nrm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 const exMatch=(e,q)=>!q||nrm(e.n).includes(q)||nrm(clsTxt(e)).includes(q);
 /* Muscles visés : ceux de la séance qu'on modifie, ou de la séance de programme en cours */
-function pkFocus(mode){let d=null;if(mode==='day')d=curDay();else if(W&&W.programId){const p=S.programs.find(x=>x.id===W.programId);d=p&&p.days.find(x=>x.id===W.dayId)}return d&&d.focus&&d.focus.length?d.focus:null}
+function pkFocus(mode){let d=null;if(mode==='sx')return null;if(mode==='day')d=curDay();else if(W&&W.programId){const p=S.programs.find(x=>x.id===W.programId);d=p&&p.days.find(x=>x.id===W.dayId)}return d&&d.focus&&d.focus.length?d.focus:null}
 function openPicker(mode,replace=null){const foc=pkFocus(mode);PK={sel:[],q:'',g:foc?'focus':'all',mu:'all',mode,replace,lim:60,foc,done:doneSet()};openSheet(pickerBody(),pickerFoot());watchMore()}
 function pickerList(){const q=nrm(PK.q);return allEx().filter(e=>{const c=exCls(e);return (PK.g==='all'||(PK.g==='focus'?focMatch(e,PK.foc):c[0]===PK.g))&&(PK.mu==='all'||c[1]===PK.mu)&&exMatch(e,q)})}
 function grpChips(g,mu,act,list){const ms=g==='all'||g==='focus'?[]:grpMuscles(list,g);
@@ -3242,6 +3407,14 @@ const A={
  cTab:el=>{view.ct=el.dataset.v;view.ro=0;view.hw=null;render();window.scrollTo(0,0)},
  cBack:()=>{backStack=[];go('home')},
  avPick:()=>avPicker(),
+ fTog:el=>{const add=friendTog(el.dataset.u);const y=scrollY;render();scrollTo(0,y);toast(add?el.dataset.n+' ajouté à tes amis ⭐':el.dataset.n+' retiré de tes amis')},
+ notifAsk:()=>notifPopup(true),
+ notifYes:()=>notifEnable(),
+ notifLater:()=>{LS.set('jefit.notifAsked',Date.now());closeSheet()},
+ instShow:()=>instShow(),
+ instClose:()=>{const d=$('#inst');if(d)d.remove()},
+ instTab:el=>instShow(el.dataset.v),
+ instGo:()=>{if(!instEvt)return;try{instEvt.prompt();instEvt.userChoice.then(r=>{if(r&&r.outcome==='accepted'){toast('JeFIT est installé 🎉');const d=$('#inst');if(d)d.remove()}instEvt=null})}catch(e){}},
  avSet:el=>{avSave(el.dataset.v);closeSheet();render();toast('Avatar mis à jour')},
  cLoad:()=>{if(view.name==='cview'){delete PROF[view.uid];render()}else commLoad()},
  pubTog:()=>{const on=LS.get('jefit.pub',true)!==false;LS.set('jefit.pub',!on);COMM=null;sbQueue();render();toast(on?'Ton profil est masqué de la communauté':'Ton profil est visible dans la communauté')},
@@ -3298,6 +3471,7 @@ const A={
  pkg:el=>{PK.g=el.dataset.g;PK.mu=el.dataset.mu||'all';PK.lim=60;$('#pkchips').innerHTML=grpChips(PK.g,PK.mu,'pkg',allEx());refreshPicker();const l=$('#pklist');if(l)l.scrollIntoView({block:'nearest'})},
  libg:el=>{view.lg=el.dataset.g;view.lm=el.dataset.mu||'all';view.lim=60;const y=scrollY;render();scrollTo(0,y)},
  pkAdd:()=>{if(!PK.sel.length)return;
+  if(PK.mode==='sx'){sxReplace(PK.sid,PK.replace,PK.sel[0]);closeSheet();return}
   if(PK.mode==='day'){const d=curDay();PK.sel.forEach(id=>{const e=ex(id);d.items.push(it(id,3,{reps:e.t==='weight'||e.t==='bw'?10:null,time:e.t==='time'?30:null,dist:e.t.startsWith('dist')?100:null,rest:e.t==='time'?60:90}))});touchCfg()}
   else if(PK.replace!=null){const i=W.items[PK.replace];i.exId=PK.sel[0];i.target={};i.sets.forEach(s=>{s.kg=s.reps=s.time=s.dist=null;s.done=false});saveW()}
   else{PK.sel.forEach(id=>W.items.push(mkItem(id)));saveW()}
@@ -3401,6 +3575,7 @@ const A={
  exMenu:el=>{const k=+el.dataset.k;openSheet(`<h2>${esc(ex(W.items[k].exId).n)}</h2><div><button class="mi" data-a="exNote" data-k="${k}">${ic('note')}Ajouter une note</button><button class="mi" data-a="exInfo" data-e="${W.items[k].exId}">${ic('chart')}Voir la progression</button><button class="mi" data-a="exReplace" data-k="${k}">${ic('swap')}Remplacer l’exercice</button>${W.items[k].ss?`<button class="mi" data-a="ssOff" data-k="${k}">${ic('cross')}Retirer du superset</button>`:''}${W.items.length>1?`<button class="mi" data-a="ssPick" data-k="${k}">${ic('swap')}${W.items[k].ss?'Ajouter un exercice au superset':'Créer un superset avec…'}</button>`:''}<button class="mi" data-a="exOrder">${ic('list')}Réorganiser les exercices</button><button class="mi dng" data-a="exDel" data-k="${k}">${ic('trash')}Retirer de la séance</button></div>`)},
  exNote:el=>{W.items[+el.dataset.k].showNote=true;saveW();closeSheet();render();const t=$('#nt'+el.dataset.k);t&&t.focus()},
  exReplace:el=>{closeSheet();setTimeout(()=>openPicker('wk',+el.dataset.k),260)},
+ sxSwap:el=>{const sid=view.sid;openPicker('sx',+el.dataset.k);PK.sid=sid},
  exMove:el=>{const k=+el.dataset.k,t=k+ +el.dataset.v;if(t>=0&&t<W.items.length){[W.items[k],W.items[t]]=[W.items[t],W.items[k]];saveW()}closeSheet();render()},
  exDel:el=>{W.items.splice(+el.dataset.k,1);ssClean();saveW();closeSheet();render()},
  noteDel:el=>{const it=W.items[+el.dataset.k];it.note='';it.showNote=false;saveW();render()},
@@ -3851,7 +4026,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V6.2',APP_BUILD='20/11/2026 à 17:03'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V6.3',APP_BUILD='21/11/2026 à 10:23'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
@@ -3900,12 +4075,13 @@ function sbWelcome(){if(!sbOn()||!sbLinked())return;sbFn('welcome').then(j=>{if(
 const sbTaken=e=>/already|registered|exists/i.test(e&&e.message||'')||(e&&e.code==='user_already_exists');
 /* Connexion au compte en ligne ; le crée s'il n'existe pas encore */
 async function sbConnect(name,pw){try{await sbLogin(name,pw)}catch(e){if(e.status!==400)throw e;try{await sbSignup(name,pw)}catch(e2){if(sbTaken(e2)){const x=new Error('Mot de passe incorrect pour ce compte en ligne.');x.code='badpw';throw x}throw e2}}}
-function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),sex:LS.get('jefit.sex','h'),pub:LS.get('jefit.pub',true)!==false,av:avGet(),avAt:(LS.get('jefit.av',null)||{}).at||0,at:Date.now()})}
+function sbSnap(){const a=ACC.get()||{};return clone({app:'JeFIT',v:1,name:a.name,email:a.email||'',avoid:S.avoid||[],cycles:S.cycles||{},mly:S.mly||'',programs:S.programs,custom:S.custom,lafay:S.lafay,sessions:S.sessions,tomb:S.tomb,cfgAt:S.cfgAt,bw:LS.get('jelift.bw',80),sex:LS.get('jefit.sex','h'),pub:LS.get('jefit.pub',true)!==false,av:avGet(),avAt:(LS.get('jefit.av',null)||{}).at||0,friends:friendsGet(),friendsAt:(LS.get('jefit.friends',null)||{}).at||0,at:Date.now()})}
 function sbMerge(r){
  if(!r||r.app!=='JeFIT')return false;let ch=false;
  const tomb=new Set([...(S.tomb||[]),...(r.tomb||[])]);if(tomb.size!==S.tomb.length){S.tomb=[...tomb];ch=true}
  if((r.cfgAt||0)>(S.cfgAt||0)){S.programs=clone(r.programs||S.programs);S.custom=clone(r.custom||[]);if(r.lafay)S.lafay=clone(r.lafay);if(Array.isArray(r.avoid))S.avoid=clone(r.avoid);if(r.cycles&&typeof r.cycles==='object')S.cycles=clone(r.cycles);if(typeof r.mly==='string')S.mly=r.mly;S.cfgAt=r.cfgAt;ch=true;if(typeof queuePushCfg==='function')queuePushCfg()}
  if(typeof r.av==='string'&&(r.avAt||0)>((LS.get('jefit.av',null)||{}).at||0)){LS.set('jefit.av',{v:r.av,at:r.avAt});ch=true} /* avatar choisi sur un autre appareil */
+ if(Array.isArray(r.friends)&&(r.friendsAt||0)>((LS.get('jefit.friends',null)||{}).at||0)){LS.set('jefit.friends',{l:r.friends,at:r.friendsAt});ch=true}
  const have=new Set(S.sessions.map(s=>s.id));(r.sessions||[]).forEach(s=>{if(!have.has(s.id)&&!tomb.has(s.id)){S.sessions.push(clone(s));S.pending.push(s.id);ch=true}});
  const n=S.sessions.length;S.sessions=S.sessions.filter(s=>!tomb.has(s.id));if(S.sessions.length!==n)ch=true;
  if(ch){S.sessions.sort((a,b)=>b.start-a.start);LS.set(KEY,S);S.pending.forEach(pushSess)}
@@ -3953,7 +4129,7 @@ VIEWS.settings=()=>{
  const a=ACC.get()||{name:'?'},c=sbCfg();
  const sbText=!sbOn()?'Renseignez l’URL et la clé de votre projet Supabase pour retrouver vos séances sur tous vos appareils (et préparer l’envoi vers Strava).':!sbLinked()?'Projet configuré. Connectez votre compte pour sauvegarder en ligne.':`Compte en ligne : <b>${esc(sbEmail(a.name))}</b>. Chaque modification est envoyée automatiquement.`;
  return `<div class="top"><h1>Paramètres</h1></div>
- <div class="card ver"><div><div class="eyebrow">Version</div><div class="vnum">${APP_V}</div></div><div class="vdate">Mise à jour du<br><b>${APP_BUILD}</b></div></div>
+ <div class="card ver gold"><div><div class="eyebrow">Version</div><div class="vnum">${APP_V}</div></div><div class="vdate">Mise à jour du<br><b>${APP_BUILD}</b></div></div>
 
  <div class="sec"><div class="hd"><h2>Mon compte</h2></div><div class="card set-card">
   <div class="acc-row"><button class="avbtn" data-a="avPick" aria-label="Changer mon avatar">${avHTML(avGet(),a.name,'avatar xl')}<span class="avedit">${icS('edit',14)}</span></button><div style="flex:1;min-width:0"><b style="font-size:17px">${esc(a.name)}</b><div class="mut" style="font-size:13px">${a.created?'Compte créé le '+esc(DAY.format(a.created)):''} · ${S.sessions.length} séance(s) enregistrée(s)</div></div></div>
@@ -3964,7 +4140,11 @@ VIEWS.settings=()=>{
   <button class="mi" data-a="logout" style="color:var(--danger)">${ic('back')}Se déconnecter</button>
  </div><p class="mut" style="font-size:13px;margin:8px 4px 0">Vos programmes et séances sont gardés dans ce navigateur : en rouvrant JeFIT, tout est déjà là.</p></div>
 
- <div class="sec"><div class="hd"><h2>Sauvegarde en ligne · Supabase</h2>${sbChip()}</div><div class="card form">
+ ${isAdmin()?'':`<div class="sec"><div class="hd"><h2>Sauvegarde</h2>${sbChip()}</div><div class="card form">
+  <p style="margin:0;font-size:14px">☁️ ${sbLinked()?'Tes séances, programmes et badges sont <b>sauvegardés automatiquement</b> : connecte-toi avec le même nom sur un autre appareil, tout te suit.':'Connecte ton compte pour sauvegarder tes séances et les retrouver sur tous tes appareils.'}</p>
+  ${sbLinked()?`<button class="btn blk" data-a="sbNow">${ic('swap')}Synchroniser maintenant</button>`:sbOn()?`<button class="btn pri blk" data-a="sbLink">Connecter mon compte</button>`:''}
+ </div></div>`}
+ ${!isAdmin()?'':`<div class="sec"><div class="hd"><h2>Sauvegarde en ligne · Supabase <span class="pill">Admin</span></h2>${sbChip()}</div><div class="card form">
   <p class="mut" style="margin:0;font-size:14px">${sbText}</p>
   <div id="sbmsg" class="mut" style="font-size:13px">${esc(sbMsg)}</div>
   ${sbLinked()?`<div class="btnrow"><button class="btn pri" data-a="sbNow">${ic('swap')}Synchroniser maintenant</button><button class="btn" data-a="sbUnlink">Déconnecter Supabase</button></div>`:sbOn()?`<button class="btn pri blk" data-a="sbLink">Connecter mon compte</button>`:''}
@@ -3975,21 +4155,23 @@ VIEWS.settings=()=>{
    <ol><li>Créez un nouveau projet Supabase « JeFIT ».</li><li>Authentication › Sign In / Providers › Email : désactivez <b>Confirm email</b> (le compte se fait avec un nom, sans e-mail).</li><li>SQL Editor : collez et lancez ce script.</li><li>Project Settings › API : copiez l’URL et la clé <b>anon public</b> ici.</li></ol>
    <pre>${esc(SB_SQL)}</pre><button class="btn sm" data-a="copyTxt" data-t="${esc(SB_SQL)}">${ic('copy')}Copier le script</button>
   </details>
- </div></div>
+ </div></div>`}
 
  <div class="sec"><div class="hd"><h2>Partager JeFIT</h2></div><div class="card form" style="align-items:center;text-align:center">
   <p class="mut" style="margin:0;font-size:14px">Faites scanner ce QR code ou envoyez le lien pour ouvrir JeFIT.</p>
   <div style="width:220px;max-width:100%">${qrSVG(SITE_URL)}</div>
   <a href="${SITE_URL}" target="_blank" rel="noopener" style="font-weight:600;word-break:break-all">${SITE_URL}</a>
   <div class="btnrow" style="justify-content:center"><button class="btn pri" data-a="shareSite">${ic('up')}Partager le lien</button><button class="btn" data-a="copyTxt" data-t="${SITE_URL}">${ic('copy')}Copier le lien</button></div>
+  <button class="btn blk" data-a="instShow">📲 Installer JeFIT sur mon téléphone (tutoriel)</button>
  </div></div>
 
  <div class="sec"><div class="hd"><h2>Préférences</h2></div><div class="card set-card">
   <div style="display:flex;align-items:center;gap:10px;padding:4px 0 10px"><span style="font-weight:600;flex:1">Paliers des badges de force</span><div class="seg" style="margin:0;min-width:210px">${[['h','Homme'],['f','Femme']].map(([k,l])=>`<button class="${LS.get('jefit.sex','h')===k?'on':''}" data-a="sexSet" data-v="${k}">${l}</button>`).join('')}</div></div>
   <label class="form" style="flex-direction:row;align-items:center;gap:10px;padding-bottom:10px"><span style="font-weight:600;flex:1">Poids corporel (calories et badges)</span><input id="bwi" data-f="bw" inputmode="decimal" style="width:90px;text-align:center" value="${LS.get('jelift.bw',80)}"> kg</label>
   <div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span style="font-weight:600;flex:1">Affichage</span><div class="seg" style="margin:0;min-width:210px">${[['dark','🌙 Nuit'],['light','☀️ Jour']].map(([k,l])=>`<button class="${LS.get('jelift.theme','dark')===k?'on':''}" data-a="themeSet" data-v="${k}">${l}</button>`).join('')}</div></div>
-  <button class="mi" data-a="export">${ic('copy')}Copier une sauvegarde (JSON)</button>
-  <button class="mi" data-a="import">${ic('note')}Importer une sauvegarde</button>
+  <button class="mi" data-a="notifAsk">${ic('bell')}<span style="flex:1">Notifications</span><b style="color:${notifOn()?'var(--ok)':'var(--mut)'}">${notifOn()?'Activées':'Activer'}</b></button>
+  ${isAdmin()?`<button class="mi" data-a="export">${ic('copy')}Copier une sauvegarde (JSON)</button>
+  <button class="mi" data-a="import">${ic('note')}Importer une sauvegarde</button>`:''}
   <button class="mi" data-a="restore">${ic('swap')}Réinstaller les programmes par défaut</button>
   <button class="mi" data-a="replayIntro">${ic('play')}Revoir l’intro</button>
  </div></div>`;
@@ -4030,11 +4212,12 @@ function authHTML(){
   <div class="form"><label>Nom<input id="an" autocomplete="username" autocapitalize="words" maxlength="30"></label><label>E-mail (facultatif, pour vous contacter)<input id="ae" type="email" autocomplete="email" inputmode="email" autocapitalize="off"></label><label>Mot de passe (6 caractères min.)<input id="ap1" type="password" autocomplete="new-password"></label><label>Confirmer le mot de passe<input id="ap2" type="password" autocomplete="new-password"></label></div>
   ${remBox}<div class="err" id="aerr"></div><button class="btn pri blk" data-a="authGo">Créer mon compte</button>
   <p class="note">${on?'Vos séances sont gardées dans ce navigateur et sauvegardées en ligne.':'Vos séances sont gardées dans ce navigateur : pas besoin de les retaper.'}</p>`;
- return `<div class="ac">${WM()}${tabs}${body}${/^forgot/.test(authMode)||(SB_DEF.url&&SB_DEF.key)?'':cloudLnk}</div>`;
+ const instB=isStandalone()?'':`<button class="btn blk" data-a="instShow" style="margin-top:14px;flex-direction:column;line-height:1.3"><span>📲 Installer JeFIT sur mon téléphone</span><span class="mut" style="font-size:12px;font-weight:600">Tutoriel iPhone et Android en images</span></button>`;
+ return `<div class="ac">${WM()}${tabs}${body}${/^forgot/.test(authMode)||(SB_DEF.url&&SB_DEF.key)?'':cloudLnk}${/^forgot|cloud/.test(authMode)?'':instB}</div>`;
 }
-function showAuth(){authMode=ACC.get()||sbOn()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"],[data-a="authCodeOk"],.btn[data-a="authCode"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
+function showAuth(){authMode=ACC.get()?'login':'create';let d=$('#auth');if(!d){d=document.createElement('div');d.id='auth';document.body.appendChild(d);d.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=d.querySelector('[data-a="authGo"],[data-a="authReset"],[data-a="authCodeOk"],.btn[data-a="authCode"]');if(b){e.preventDefault();b.click()}}})}d.innerHTML=authHTML();if(!$('#splash'))d.classList.add('in');closeSheet();authFocus()}
 function authFocus(){if($('#splash'))return;const i=[...document.querySelectorAll('#auth input:not([type=checkbox])')].find(x=>!x.value)||document.querySelector('#auth input');if(i)i.focus()}
-function hideAuth(){const d=$('#auth');if(d)d.remove()}
+function hideAuth(){const d=$('#auth');if(d)d.remove();setTimeout(()=>{if(ACC.logged()&&!sheetOpen&&!$('#auth')&&!$('#splash'))notifPopup()},1800)}
 const aErr=t=>{const e=$('#aerr');if(e)e.textContent=t};
 async function makeAccount(name,pw,email){const salt=uid()+uid(),algo=pwAlgo();ACC.set({name,email:email||'',salt,algo,hash:await hashPw(pw,salt,algo),created:Date.now()});LS.set('jefit.logged',true)}
 async function authGo(btn){
@@ -4136,7 +4319,7 @@ function splash(quick){
  d.innerHTML=`<div class="spw"><svg viewBox="0 0 162 48" role="img" aria-label="JeFIT">${logoSVG('sp')}</svg><div class="spu"></div><div class="sp-tag">Prêt à transpirer ?</div></div><div class="sp-skip">Touchez pour passer</div>`;
  document.body.appendChild(d);
  let done=false;const timers=[];
- const end=()=>{if(done)return;done=true;timers.forEach(clearTimeout);d.classList.add('out');const a=$('#auth');if(a)setTimeout(()=>a.classList.add('in'),150);setTimeout(()=>{d.remove();authFocus()},600)};
+ const end=()=>{if(done)return;done=true;timers.forEach(clearTimeout);d.classList.add('out');const a=$('#auth');if(a)setTimeout(()=>a.classList.add('in'),150);setTimeout(()=>{d.remove();authFocus();vfxRun()},600)};
  d.addEventListener('click',end);
  const reduce=reduceMotion();
  const start=()=>{if(done)return;d.classList.add('go');if(reduce){timers.push(setTimeout(end,1400));return}timers.push(setTimeout(()=>logoSheen(d.querySelector('#spsh'),()=>done),1450),setTimeout(end,quick?2300:3000))};
@@ -4276,7 +4459,7 @@ document.addEventListener('change',e=>{const el=e.target,f=el.dataset.f;if(!f)re
 applyTheme();render();if(W)wake();initSync();
 splash();
 if(!LS.get('jefit.remember',false))LS.del('jefit.logged');
-if(!ACC.logged())showAuth();else sbSync();
+if(!ACC.logged())showAuth();else{sbSync();setTimeout(()=>{if(ACC.logged()&&!sheetOpen&&!$('#auth')&&!$('#splash')&&!W)notifPopup()},4500)}
 loadRides().then(()=>{if(!LS.get('jefit.bseen',null))badgeCheck(true)});
 if(!sbOn())setSb('off');else if(!sbLinked())setSb('nolink');
 </script>
