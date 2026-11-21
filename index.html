@@ -2732,13 +2732,17 @@ function exLevel(id,b){const e=ex(id);if(!b||!b.n)return null;const f=isFem()?.6
  const next=lvl<6?{lvl:lvl+1,txt:toTxt(lvl),pct:Math.max(0,Math.min(100,Math.round(100*(val-(lvl?th[lvl-1]:0))/(th[lvl]-(lvl?th[lvl-1]:0)))))}:null;
  return {lvl,val,th,txt,next}}
 const lvlOf=(v,th)=>{let l=-1;th.forEach((t,k)=>{if(v>=t)l=k});return l};
-function streakWeeks(L){const wk=new Set(L.map(s=>weekStart(s.start)));let w=weekStart(Date.now());if(!wk.has(w))w-=7*864e5;let n=0;while(wk.has(w)){n++;w-=7*864e5}return n}
+/* Assiduité : une semaine (lundi → dimanche) compte si elle a au moins 2 séances (muscu ou vélo).
+   La semaine en cours ne casse pas la série tant qu'elle n'est pas finie : on part de la semaine précédente si elle n'a pas encore ses 2 séances. */
+const STREAK_MIN=2;
+function streakWeeks(L){const c={};L.forEach(s=>{const w=weekStart(s.start);c[w]=(c[w]||0)+1});const ok=w=>(c[w]||0)>=STREAK_MIN;
+ let w=weekStart(Date.now());if(!ok(w))w-=7*864e5;let n=0;while(ok(w)){n++;w-=7*864e5}return n}
 /* Tous les badges : régularité, vélo, force par exercice */
 function allBadges(sessions=S.sessions,rides=RIDES){const B=[],bw=bwKg();
  const G=(key,cat,name,glyph,val,th,fmt,desc)=>{const l=lvlOf(val,th);B.push({key,cat,name,glyph,lvl:l,val,valTxt:fmt(val),desc,next:l<6?{lvl:l+1,txt:`${fmt(th[l+1])} pour ${LVL[l+1]}`,pct:Math.max(0,Math.min(100,Math.round(100*(val-(l>=0?th[l]:0))/(th[l+1]-(l>=0?th[l]:0)))))}:null})};
  const all=[...sessions,...rides],vol=sessions.reduce((a,s)=>a+(s.volume||0),0),prs=sessions.reduce((a,s)=>a+s.items.reduce((b,i)=>b+i.sets.filter(x=>x.pr).length,0),0);
  G('r-sess','Régularité','Séances de muscu','db',sessions.length,[1,10,25,50,100,250,500],v=>fmtN(v)+' séance'+(v>1?'s':''),'Nombre de séances terminées.');
- G('r-streak','Régularité','Semaines d’affilée','fl',streakWeeks(all),[1,2,4,8,12,26,52],v=>v+' sem.','Semaines consécutives avec au moins une séance (muscu ou vélo).');
+ G('r-streak','Régularité','Semaines d’affilée','fl',streakWeeks(all),[1,2,4,8,12,26,52],v=>v+' sem.','Semaines consécutives avec au moins 2 séances (muscu ou vélo).');
  G('r-vol','Régularité','Charge soulevée','kb',vol/1000,[.1,1,10,50,100,250,500],v=>fmtN(+v.toFixed(1))+' t','Total des kilos soulevés, toutes séances confondues.');
  G('r-pr','Régularité','Records battus','tr',prs,[1,5,15,30,60,100,200],v=>v+' record'+(v>1?'s':''),'Séries marquées d’un trophée doré.');
  const km=rides.reduce((a,r)=>a+(r.dist||0),0)/1000,lng=Math.max(0,...rides.map(r=>(r.dist||0)/1000)),wkg=Math.max(0,...rides.filter(r=>r.duration>=600000&&r.pAvg).map(r=>r.pAvg/bw));
@@ -2872,7 +2876,7 @@ VIEWS.badges=()=>{const B=allBadges(),got=B.filter(b=>b.lvl>=0).length,cat=c=>B.
   <div class="bexl">${LVL.map((l,i)=>`<div>${medal(i,'',40)}<span>${l}</span></div>`).join('')}</div>
   <p><b>Force (musculation)</b> : on prend ton meilleur <b>1RM estimé</b> (charge × répétitions) et on le divise par ton <b>poids de corps</b> (${fmtN(bwKg())} kg, modifiable dans Paramètres). Au développé couché, par exemple : Bronze 0,5×, Argent 0,75×, <b>Or 1× ton poids</b>, Platine 1,25×, Diamant 1,5×, Élite 1,75×. Chaque exercice a ses propres paliers (plus hauts au squat et au soulevé de terre, plus bas aux élévations).</p>
   <p><b>Poids du corps</b> (tractions, pompes, dips…) : au nombre de répétitions d’affilée. <b>Gainage</b> : à la durée tenue.</p>
-  <p><b>Vélo</b> : nombre de sorties, distance cumulée, plus longue sortie et puissance (W/kg). <b>Régularité</b> : séances, semaines d’affilée, kilos soulevés au total, records battus.</p>
+  <p><b>Vélo</b> : nombre de sorties, distance cumulée, plus longue sortie et puissance (W/kg). <b>Régularité</b> : séances, semaines d’affilée (une semaine compte dès <b>2 séances</b> entre lundi et dimanche), kilos soulevés au total, records battus.</p>
   <p class="mut" style="font-size:13px">Les paliers de force sont réglés pour ${isFem()?'une femme':'un homme'} (modifiable dans Paramètres).</p></details>
  <div class="sec"><div class="hd"><h2>🔥 Régularité</h2></div><div class="bgrid">${cat('Régularité').map(badgeTile).join('')}</div></div>
  <div class="sec"><div class="hd"><h2>🚴 Vélo · JeRIDE</h2></div><div class="bgrid">${cat('Vélo').map(badgeTile).join('')}</div></div>
@@ -4026,7 +4030,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V6.3',APP_BUILD='21/11/2026 à 10:23'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V6.4',APP_BUILD='21/11/2026 à 10:47'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
