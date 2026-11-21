@@ -3063,10 +3063,10 @@ VIEWS.community=()=>{
  if(!COMM)setTimeout(commLoad,0);
  if(!COMM||(COMM.busy&&!COMM.list))return head+`<div class="card empty"><p>Chargement des profils…</p></div>`;
  if(COMM.err==='nosql')return head+`<div class="card empty"><h3 style="color:var(--fg)">Communauté pas encore activée</h3><p>Dans Supabase › SQL Editor, lancez une seule fois le script <b>supabase/community.sql</b>.</p></div>`;
- const L=COMM.list||[],F=L.filter(u=>isFriend(u.user_id));
+ const L0=COMM.list||[],F=L0.filter(u=>isFriend(u.user_id)),L=L0.filter(u=>!isFriend(u.user_id)); /* un ami n'apparaît qu'une fois, dans « Mes amis » */
  return head+(COMM.err?`<div class="card" style="border:1px solid var(--danger);margin-bottom:12px">${esc(COMM.err)}</div>`:'')
   +`<div class="sec" style="margin-top:0"><div class="hd"><h2>⭐ Mes amis</h2><span class="mut" style="font-size:13px">${F.length}</span></div>${F.length?`<div class="grid">${F.map(cCard).join('')}</div>`:`<div class="card mut" style="font-size:14px">Touche ☆ à côté d’un profil pour l’ajouter à tes amis : il apparaîtra ici.</div>`}</div>`
-  +`<div class="sec"><div class="hd"><h2>Tous les profils</h2><span class="mut" style="font-size:13px">${L.length}</span></div>${L.length?`<div class="grid">${L.map(cCard).join('')}</div>`:`<div class="card empty"><p>Aucun profil pour l’instant.</p></div>`}</div>`;
+  +`<div class="sec"><div class="hd"><h2>${F.length?'Autres profils':'Tous les profils'}</h2><span class="mut" style="font-size:13px">${L.length}</span></div>${L.length?`<div class="grid">${L.map(cCard).join('')}</div>`:`<div class="card empty"><p>${F.length?'Tous les profils sont dans tes amis.':'Aucun profil pour l’instant.'}</p></div>`}</div>`;
 };
 VIEWS.cview=()=>{
  const uid=view.uid,st=PROF[uid];if(!st)setTimeout(()=>profLoad(uid),0);
@@ -4030,7 +4030,7 @@ function qrSVG(text){
  let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
  return `<svg viewBox="0 0 ${N+8} ${N+8}" shape-rendering="crispEdges" role="img" aria-label="QR code vers ${esc(text)}" style="display:block;width:100%;height:auto;background:#fff;border-radius:10px"><path fill="#000" d="${d}"/></svg>`;
 }
-const APP_V='V6.4',APP_BUILD='21/11/2026 à 10:47'; /* à mettre à jour à chaque mise en ligne */
+const APP_V='V6.6',APP_BUILD='21/11/2026 à 11:59'; /* à mettre à jour à chaque mise en ligne */
 /* Une note laissée vide se referme d'elle-même quand on quitte la case */
 document.addEventListener('focusout',e=>{const t=e.target;if(!t||(t.dataset&&t.dataset.f)!=='wnote'||!W)return;const it=W.items[+t.dataset.k];if(it&&!t.value.trim()){setTimeout(()=>{if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.notew'))return;if(t.value.trim())return;it.note='';it.showNote=false;saveW();const w=t.closest('.notew');if(w)w.remove()},150)}});
 
@@ -4178,6 +4178,7 @@ VIEWS.settings=()=>{
   <button class="mi" data-a="import">${ic('note')}Importer une sauvegarde</button>`:''}
   <button class="mi" data-a="restore">${ic('swap')}Réinstaller les programmes par défaut</button>
   <button class="mi" data-a="replayIntro">${ic('play')}Revoir l’intro</button>
+  <button class="mi" data-a="instShow">${ic('up')}Revoir le tuto d’installation sur le téléphone</button>
  </div></div>`;
 };
 
